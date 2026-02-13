@@ -9,42 +9,47 @@ import java.lang.invoke.VarHandle
 
 class Vertex(pos: Pair<Float, Float>, col: Triple<Float, Float, Float>) {
 
-	val delegate: MemorySegment
+	operator fun component1(): NativeArray<Float> = this.pos
+	operator fun component2(): NativeArray<Float> = this.col
 
-//	operator fun invoke(pos: MemorySegment, col: MemorySegment) {
-//		val instance: MemorySegment = Arena.global().allocate(LAYOUT)
-//		instance.pos = pos
-//		instance.col = col
-//	}
+	constructor(pos: Array<Float>, col: Array<Float>) : this(Pair(pos[0], pos[1]), Triple(col[0], col[1], col[2])) {
+		require(pos.size == 2) { "Pos was of unexpected size '${pos.size}'! Content: ${pos.contentToString()}!" }
+		require(col.size == 3) { "Col was of unexpected size '${col.size}'! Content: ${col.contentToString()}!" }
+	}
+
+	constructor(pos: List<Float>, col: List<Float>) : this(pos.toTypedArray(), col.toTypedArray())
+
+	val delegate: MemorySegment = Arena.global().allocate(LAYOUT)
+
+	val pos: NativeArray<Float> = delegate.pos
+	val col: NativeArray<Float> = delegate.col
 
 	init {
-		val instance: MemorySegment = Arena.global().allocate(LAYOUT)
-		instance.pos2.apply {
+		this.pos.apply {
 			this[0] = pos.first
 			this[1] = pos.second
 		}
-		instance.col2.apply {
+		this.col.apply {
 			this[0] = col.first
 			this[1] = col.second
 			this[2] = col.third
 		}
-		this.delegate = instance
-		println("Vertex {")
-		instance.pos2.apply {
-			print("\tpos: [")
-			print("${this[0]}, ${this[1]}")
-			println("],")
-		}
-		instance.col2.apply {
-			print("\tcol: [")
-			print("${this[0]}, ${this[1]}, ${this[2]}")
-			println("]")
-		}
-		println("}")
+		println(this)
 	}
 
-	val col: NativeArray<Float> = delegate.col2
-	val pos: NativeArray<Float> = delegate.pos2
+	override fun toString(): String = buildString {
+		appendLine("Vertex {")
+
+		append("\tpos: [")
+		for (entry: Float in pos) append("$entry, ")
+		appendLine("\b\b],")
+
+		append("\tcol: [")
+		for (entry: Float in col) append("$entry, ")
+		appendLine("\b\b]")
+
+		append('}')
+	}
 
 	companion object {
 
@@ -52,19 +57,11 @@ class Vertex(pos: Pair<Float, Float>, col: Triple<Float, Float, Float>) {
 
 		val LAYOUT__POS: SequenceLayout = VEC2_LAYOUT.withName("pos")
 		val HANDLE__POS: VarHandle
-
-		//	var MemorySegment.pos: MemorySegment
-		//		get() = HANDLE__POS.get(this, 0L) as MemorySegment
-		//		set(value) = HANDLE__POS.set(this, 0L, 0L, value)
-		val MemorySegment.pos2: NativeArray<Float> get() = NativeArray(this, HANDLE__POS)
+		val MemorySegment.pos: NativeArray<Float> get() = NativeArray(this, HANDLE__POS, 2L)
 
 		val LAYOUT__COL: SequenceLayout = VEC3_LAYOUT.withName("col")
 		val HANDLE__COL: VarHandle
-
-		//	var MemorySegment.col: MemorySegment
-		//		get() = HANDLE__COL.get(this, 0L) as MemorySegment
-		//		set(value) = HANDLE__COL.set(this, 0L, 0L, value)
-		val MemorySegment.col2: NativeArray<Float> get() = NativeArray(this, HANDLE__COL)
+		val MemorySegment.col: NativeArray<Float> get() = NativeArray(this, HANDLE__COL, 3L)
 
 		init {
 			LAYOUT = MemoryLayout.structLayout(
