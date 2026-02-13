@@ -3,7 +3,7 @@ package io.github.epicvon2468.school.prac1.glfw
 import java.lang.foreign.MemorySegment
 import java.lang.invoke.VarHandle
 
-data class NativeArray<T>(
+data class StructBackedArray<T>(
 	private val segment: MemorySegment,
 	private val handle: VarHandle,
 	val elementCount: Long

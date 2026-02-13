@@ -9,8 +9,8 @@ import java.lang.invoke.VarHandle
 
 class Vertex(pos: Pair<Float, Float>, col: Triple<Float, Float, Float>) {
 
-	operator fun component1(): NativeArray<Float> = this.pos
-	operator fun component2(): NativeArray<Float> = this.col
+	operator fun component1(): StructBackedArray<Float> = this.pos
+	operator fun component2(): StructBackedArray<Float> = this.col
 
 	constructor(pos: Array<Float>, col: Array<Float>) : this(Pair(pos[0], pos[1]), Triple(col[0], col[1], col[2])) {
 		require(pos.size == 2) { "Pos was of unexpected size '${pos.size}'! Content: ${pos.contentToString()}!" }
@@ -21,8 +21,8 @@ class Vertex(pos: Pair<Float, Float>, col: Triple<Float, Float, Float>) {
 
 	val delegate: MemorySegment = Arena.global().allocate(LAYOUT)
 
-	val pos: NativeArray<Float> = delegate.pos
-	val col: NativeArray<Float> = delegate.col
+	val pos: StructBackedArray<Float> = delegate.pos
+	val col: StructBackedArray<Float> = delegate.col
 
 	init {
 		this.pos.apply {
@@ -57,11 +57,11 @@ class Vertex(pos: Pair<Float, Float>, col: Triple<Float, Float, Float>) {
 
 		val LAYOUT__POS: SequenceLayout = VEC2_LAYOUT.withName("pos")
 		val HANDLE__POS: VarHandle
-		val MemorySegment.pos: NativeArray<Float> get() = NativeArray(this, HANDLE__POS, 2L)
+		val MemorySegment.pos: StructBackedArray<Float> get() = StructBackedArray(this, HANDLE__POS, 2L)
 
 		val LAYOUT__COL: SequenceLayout = VEC3_LAYOUT.withName("col")
 		val HANDLE__COL: VarHandle
-		val MemorySegment.col: NativeArray<Float> get() = NativeArray(this, HANDLE__COL, 3L)
+		val MemorySegment.col: StructBackedArray<Float> get() = StructBackedArray(this, HANDLE__COL, 3L)
 
 		init {
 			LAYOUT = MemoryLayout.structLayout(

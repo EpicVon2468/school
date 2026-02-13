@@ -21,10 +21,7 @@ fun vecOf(count: Long): SequenceLayout = MemoryLayout.sequenceLayout(count, C_FL
 // https://docs.oracle.com/en/java/javase/25/core/foreign-function-and-memory-api.html
 fun main() {
 	NULL()
-	Vertex.LAYOUT__POS
-	Arena.ofShared().use {
-		Vertex(pos = 1f to 2f, col = Triple(3f, 4f, 5f))
-	}
+	Vertex(pos = arrayOf(1f, 2f), col = arrayOf(3f, 4f, 5f))
 	println(FRAGMENT_SHADER)
 	println(VERTEX_SHADER)
 }
