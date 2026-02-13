@@ -7,7 +7,9 @@ import java.lang.foreign.SequenceLayout
 import java.lang.foreign.StructLayout
 import java.lang.invoke.VarHandle
 
-data object Vertex {
+class Vertex(pos: Pair<Float, Float>, col: Triple<Float, Float, Float>) {
+
+	val delegate: MemorySegment
 
 //	operator fun invoke(pos: MemorySegment, col: MemorySegment) {
 //		val instance: MemorySegment = Arena.global().allocate(LAYOUT)
@@ -15,7 +17,7 @@ data object Vertex {
 //		instance.col = col
 //	}
 
-	operator fun invoke(pos: Pair<Float, Float>, col: Triple<Float, Float, Float>) {
+	init {
 		val instance: MemorySegment = Arena.global().allocate(LAYOUT)
 		instance.pos2.apply {
 			this[0] = pos.first
@@ -26,6 +28,7 @@ data object Vertex {
 			this[1] = col.second
 			this[2] = col.third
 		}
+		this.delegate = instance
 		println("Vertex {")
 		instance.pos2.apply {
 			print("\tpos: [")
@@ -40,36 +43,44 @@ data object Vertex {
 		println("}")
 	}
 
-	val LAYOUT: StructLayout
+	val col: NativeArray<Float> = delegate.col2
+	val pos: NativeArray<Float> = delegate.pos2
 
-	val LAYOUT__POS: SequenceLayout = VEC2_LAYOUT.withName("pos")
-	val HANDLE__POS: VarHandle
-//	var MemorySegment.pos: MemorySegment
-//		get() = HANDLE__POS.get(this, 0L) as MemorySegment
-//		set(value) = HANDLE__POS.set(this, 0L, 0L, value)
-	val MemorySegment.pos2: NativeArray<Float> get() = NativeArray(this, HANDLE__COL)
+	companion object {
 
-	val LAYOUT__COL: SequenceLayout = VEC3_LAYOUT.withName("col")
-	val HANDLE__COL: VarHandle
-//	var MemorySegment.col: MemorySegment
-//		get() = HANDLE__COL.get(this, 0L) as MemorySegment
-//		set(value) = HANDLE__COL.set(this, 0L, 0L, value)
-	val MemorySegment.col2: NativeArray<Float> get() = NativeArray(this, HANDLE__COL)
+		val LAYOUT: StructLayout
 
-	init {
-		LAYOUT = MemoryLayout.structLayout(
-			LAYOUT__POS,
-			LAYOUT__COL
-		).withName("Vertex")
+		val LAYOUT__POS: SequenceLayout = VEC2_LAYOUT.withName("pos")
+		val HANDLE__POS: VarHandle
 
-		// https://docs.oracle.com/en/java/javase/25/core/memory-layouts-and-structured-access.html
-		HANDLE__POS = LAYOUT.varHandle(
-			MemoryLayout.PathElement.groupElement("pos"),
-			MemoryLayout.PathElement.sequenceElement()
-		)
-		HANDLE__COL = LAYOUT.varHandle(
-			MemoryLayout.PathElement.groupElement("col"),
-			MemoryLayout.PathElement.sequenceElement()
-		)
+		//	var MemorySegment.pos: MemorySegment
+		//		get() = HANDLE__POS.get(this, 0L) as MemorySegment
+		//		set(value) = HANDLE__POS.set(this, 0L, 0L, value)
+		val MemorySegment.pos2: NativeArray<Float> get() = NativeArray(this, HANDLE__COL)
+
+		val LAYOUT__COL: SequenceLayout = VEC3_LAYOUT.withName("col")
+		val HANDLE__COL: VarHandle
+
+		//	var MemorySegment.col: MemorySegment
+		//		get() = HANDLE__COL.get(this, 0L) as MemorySegment
+		//		set(value) = HANDLE__COL.set(this, 0L, 0L, value)
+		val MemorySegment.col2: NativeArray<Float> get() = NativeArray(this, HANDLE__COL)
+
+		init {
+			LAYOUT = MemoryLayout.structLayout(
+				LAYOUT__POS,
+				LAYOUT__COL
+			).withName("Vertex")
+
+			// https://docs.oracle.com/en/java/javase/25/core/memory-layouts-and-structured-access.html
+			HANDLE__POS = LAYOUT.varHandle(
+				MemoryLayout.PathElement.groupElement("pos"),
+				MemoryLayout.PathElement.sequenceElement()
+			)
+			HANDLE__COL = LAYOUT.varHandle(
+				MemoryLayout.PathElement.groupElement("col"),
+				MemoryLayout.PathElement.sequenceElement()
+			)
+		}
 	}
 }
