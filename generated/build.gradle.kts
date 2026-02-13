@@ -1,5 +1,12 @@
 plugins {
 	id("java")
+	id("idea")
+}
+
+idea {
+	module {
+		generatedSourceDirs.add(project.file("src/main/java"))
+	}
 }
 
 group = "org.glfw"
