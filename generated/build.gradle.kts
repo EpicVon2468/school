@@ -20,4 +20,5 @@ tasks.withType<JavaCompile> {
 }
 
 // jextract --include-dir /usr/include/GLFW --output . --target-package org.glfw --library glfw --use-system-load-library /usr/include/GLFW/glfw3.h
+// Removed the linearmaths package since it didn't actually expand any macros
 // jextract --include-dir . --output ./src/main/java --target-package linearmaths --use-system-load-library $PWD/linearmaths.h
