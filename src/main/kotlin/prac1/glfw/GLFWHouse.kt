@@ -20,6 +20,10 @@ fun vecOf(count: Long): SequenceLayout = MemoryLayout.sequenceLayout(count, C_FL
 
 fun main() {
 	NULL()
+	Vertex.LAYOUT__POS
+	Arena.ofShared().use {
+		Vertex(pos = 1f to 2f, col = Triple(3f, 4f, 5f))
+	}
 	println(FRAGMENT_SHADER)
 	println(VERTEX_SHADER)
 }
