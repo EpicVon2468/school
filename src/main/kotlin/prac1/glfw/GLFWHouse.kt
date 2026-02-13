@@ -18,6 +18,7 @@ fun vecOf(count: Long): SequenceLayout = MemoryLayout.sequenceLayout(count, C_FL
 //val vertices: MemorySegment = Arena.global().allocate(Vertex.LAYOUT).apply {
 //}
 
+// https://docs.oracle.com/en/java/javase/25/core/foreign-function-and-memory-api.html
 fun main() {
 	NULL()
 	Vertex.LAYOUT__POS

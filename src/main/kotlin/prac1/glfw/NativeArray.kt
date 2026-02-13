@@ -6,7 +6,7 @@ import java.lang.invoke.VarHandle
 data class NativeArray<T>(val segment: MemorySegment, val handle: VarHandle) {
 
 	@Suppress("UNCHECKED_CAST")
-	operator fun get(index: Int): T? = handle.get(segment, 0L, index) as T?
+	operator fun get(index: Long): T? = handle.get(segment, 0L, index) as T?
 
-	operator fun set(index: Int, value: T?) = handle.set(segment, 0L, index, value)
+	operator fun set(index: Long, value: T?) = handle.set(segment, 0L, index, value)
 }

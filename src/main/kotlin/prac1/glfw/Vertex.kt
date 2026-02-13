@@ -35,7 +35,7 @@ class Vertex(pos: Pair<Float, Float>, col: Triple<Float, Float, Float>) {
 			print("${this[0]}, ${this[1]}")
 			println("],")
 		}
-		instance.pos2.apply {
+		instance.col2.apply {
 			print("\tcol: [")
 			print("${this[0]}, ${this[1]}, ${this[2]}")
 			println("]")
@@ -56,7 +56,7 @@ class Vertex(pos: Pair<Float, Float>, col: Triple<Float, Float, Float>) {
 		//	var MemorySegment.pos: MemorySegment
 		//		get() = HANDLE__POS.get(this, 0L) as MemorySegment
 		//		set(value) = HANDLE__POS.set(this, 0L, 0L, value)
-		val MemorySegment.pos2: NativeArray<Float> get() = NativeArray(this, HANDLE__COL)
+		val MemorySegment.pos2: NativeArray<Float> get() = NativeArray(this, HANDLE__POS)
 
 		val LAYOUT__COL: SequenceLayout = VEC3_LAYOUT.withName("col")
 		val HANDLE__COL: VarHandle
