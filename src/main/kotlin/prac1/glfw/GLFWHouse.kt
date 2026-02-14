@@ -1,19 +1,13 @@
 package io.github.epicvon2468.school.prac1.glfw
 
-import glad.gl_h
-
 import org.glfw.glfw3_h.*
 
 import java.io.InputStream
 
 import java.lang.foreign.Arena
-import java.lang.foreign.FunctionDescriptor
-import java.lang.foreign.Linker
 import java.lang.foreign.MemoryLayout
 import java.lang.foreign.MemorySegment
 import java.lang.foreign.SequenceLayout
-import java.lang.foreign.ValueLayout
-import java.lang.invoke.MethodHandle
 
 import kotlin.system.exitProcess
 
@@ -75,17 +69,12 @@ fun main() {
 	}
 
 	glfwMakeContextCurrent(window)
-	if (gl_h.gladLoadGL(`glfwGetProcAddress$address`()) == 0) {
-		println("ERROR - Glad failed to load GL!")
-		glfwTerminate()
-		exitProcess(1)
-	}
+	@Suppress("UnusedExpression")
+	GL
 	glfwSwapInterval(1)
 
-	val linker: Linker = Linker.nativeLinker()
-	val glEnable: MethodHandle = linker.downcallHandle(gl_h.glad_glEnable(), FunctionDescriptor.ofVoid(ValueLayout.JAVA_INT))
-	glEnable.invokeExact(GL_DEBUG_OUTPUT())
-	glEnable.invokeExact(GL_DEBUG_OUTPUT_SYNCHRONOUS())
+	GL.enable(GL_DEBUG_OUTPUT())
+	GL.enable(GL_DEBUG_OUTPUT_SYNCHRONOUS())
 
 	while (glfwWindowShouldClose(window) != 1) {
 		glfwSwapBuffers(window)
