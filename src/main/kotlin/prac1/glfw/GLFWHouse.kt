@@ -116,6 +116,12 @@ fun main() {
 	val vertexShader: Int = GL.createShader(GL_VERTEX_SHADER())
 	if (vertexShader == 0) error("Could not create vertexShader!")
 	GL.shaderSource(vertexShader, 1, VERTEX_SHADER)
+	GL.compileShader(vertexShader)
+
+	val fragmentShader: Int = GL.createShader(GL_FRAGMENT_SHADER())
+	if (fragmentShader == 0) error("Could not create fragmentShader!")
+	GL.shaderSource(fragmentShader, 1, FRAGMENT_SHADER)
+	GL.compileShader(fragmentShader)
 
 	// Do a first glViewport to fix alignment.
 	Arena.ofShared().use { arena: Arena ->

@@ -258,4 +258,16 @@ data object GL {
 		C_POINTER,
 		C_POINTER
 	)
+
+	/**
+	 * `void glCompileShader(GLuint shader);`
+	 */
+	fun compileShader(shader: Int): Unit = glCompileShader.invokeExact(shader) as Unit
+	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glCompileShader.xhtml
+	private val glCompileShader: MethodHandle by lazy {
+		linker.downcallHandle(glad_glCompileShader(), glCompileShader__descriptor)
+	}
+	val glCompileShader__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
+		GLuint
+	)
 }
