@@ -123,6 +123,11 @@ fun main() {
 	GL.shaderSource(fragmentShader, 1, FRAGMENT_SHADER)
 	GL.compileShader(fragmentShader)
 
+	val program: Int = GL.createProgram()
+	GL.attachShader(program, fragmentShader)
+	GL.attachShader(program, vertexShader)
+	GL.linkProgram(program)
+
 	// Do a first glViewport to fix alignment.
 	Arena.ofShared().use { arena: Arena ->
 		val width: MemorySegment = arena.allocate(C_INT)

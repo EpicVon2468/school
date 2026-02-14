@@ -270,4 +270,41 @@ data object GL {
 	val glCompileShader__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
 		GLuint
 	)
+
+	/**
+	 * `GLuint glCreateProgram(void);`
+	 */
+	fun createProgram(): Int = glCreateProgram.invokeExact() as Int
+	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glCreateProgram.xhtml
+	private val glCreateProgram: MethodHandle by lazy {
+		linker.downcallHandle(glad_glCreateProgram(), glCreateProgram__descriptor)
+	}
+	val glCreateProgram__descriptor: FunctionDescriptor = FunctionDescriptor.of(
+		GLuint
+	)
+
+	/**
+	 * `void glAttachShader(Gluint program, GLuint shader);`
+	 */
+	fun attachShader(program: Int, shader: Int): Unit = glAttachShader.invokeExact(program, shader) as Unit
+	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glAttachShader.xhtml
+	private val glAttachShader: MethodHandle by lazy {
+		linker.downcallHandle(glad_glAttachShader(), glAttachShader__descriptor)
+	}
+	val glAttachShader__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
+		GLuint,
+		GLuint
+	)
+
+	/**
+	 * `void glLinkProgram(GLuint program);`
+	 */
+	fun linkProgram(program: Int): Unit = glLinkProgram.invokeExact(program) as Unit
+	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glLinkProgram.xhtml
+	private val glLinkProgram: MethodHandle by lazy {
+		linker.downcallHandle(glad_glLinkProgram(), glLinkProgram__descriptor)
+	}
+	val glLinkProgram__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
+		GLuint
+	)
 }
