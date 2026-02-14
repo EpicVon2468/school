@@ -27,6 +27,13 @@ val vertices: MemorySegment = global.allocateArray(
 	-0.25f, 0.0f, 0.0f
 )
 
+val vertices2: MemorySegment = global.allocateArray(
+	C_FLOAT,
+	0.0f, 0.5f, 0.0f,
+	0.5f, -0.5f, 0.0f,
+	-0.5f, -0.5f, 0.0f
+)
+
 // Bash: 'locate libGL'
 // https://docs.oracle.com/en/java/javase/25/core/foreign-function-and-memory-api.html
 // https://github.com/EpicVon2468/KMP_GE/blob/master/src/nativeMain/kotlin/io/github/epicvon2468/kmp_ge/core/main.kt
@@ -118,14 +125,16 @@ fun main() {
 	}
 
 	while (!GLFW.windowShouldClose(window)) {
-		GL.clear(GL_COLOR_BUFFER_BIT())
 		GL.clearColour(1f, 1f, 1f, 1f)
+		GL.clear(GL_COLOR_BUFFER_BIT())
 
 		GL.useProgram(program)
 		GL.uniform1f(uTimeLocation, GLFW.getTime().toFloat())
-		GL.bindVertexArray(vertexArray[GLuint, 0])
 
+		// https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/2.2.hello_triangle_indexed/hello_triangle_indexed.cpp
+		GL.bindVertexArray(vertexArray[GLuint, 0])
 		GL.drawArrays(GL_TRIANGLES(), 0, 3)
+		GL.bindVertexArray(0)
 
 		glfwSwapBuffers(window)
 		glfwPollEvents()
