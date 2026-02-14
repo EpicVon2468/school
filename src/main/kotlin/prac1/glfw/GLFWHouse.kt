@@ -10,7 +10,6 @@ import java.lang.foreign.Linker
 import java.lang.foreign.MemoryLayout
 import java.lang.foreign.MemorySegment
 import java.lang.foreign.SequenceLayout
-import java.lang.foreign.ValueLayout
 import java.lang.invoke.MethodHandle
 import java.lang.invoke.MethodHandles
 import java.lang.invoke.MethodType
@@ -22,10 +21,13 @@ val VEC3_LAYOUT: SequenceLayout = vecOf(3L)
 
 fun vecOf(count: Long): SequenceLayout = MemoryLayout.sequenceLayout(count, C_FLOAT)
 
+private val linker: Linker = Linker.nativeLinker()
+val global: Arena = Arena.global()
+
 val verticesLayout: SequenceLayout = MemoryLayout.sequenceLayout(3L, Vertex.LAYOUT)
 // https://dev.java/learn/ffm/access-structure/
 // FIXME: Apparently I also gave up on Vertex in KMP_GE;  I'll have to use the other method for now, but hopefully I'll figure this out.
-//val vertices: MemorySegment = Arena.global().allocate(verticesLayout).apply {
+//val vertices: MemorySegment = global.allocate(verticesLayout).apply {
 //	val vh: VarHandle = Vertex.LAYOUT.arrayElementVarHandle()
 //	fun set(index: Long, value: Any) = vh.set(this, 0L, index, value)
 //	val vertices = arrayOf(
@@ -37,7 +39,7 @@ val verticesLayout: SequenceLayout = MemoryLayout.sequenceLayout(3L, Vertex.LAYO
 //	set(1L, vertices[1].delegate)
 //	set(2L, vertices[2].delegate)
 //}
-val vertices = Arena.global().allocateArray(
+val vertices = global.allocateArray(
 	vecOf(9L),
 	0.0f, 0.5f, 0.0f,
 	0.5f, -0.5f, 0.0f,
@@ -67,7 +69,7 @@ fun main() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR(), 6)
 	glfwWindowHint(GLFW_OPENGL_PROFILE(), GLFW_OPENGL_CORE_PROFILE())
 
-	val window = glfwCreateWindow(640, 480, "My House".cstr(Arena.global()), MemorySegment.NULL, MemorySegment.NULL)
+	val window = glfwCreateWindow(640, 480, "My House".cstr(global), MemorySegment.NULL, MemorySegment.NULL)
 	if (window == MemorySegment.NULL) {
 		println("ERROR - GLFWWindow failed to create!")
 		glfwTerminate()
@@ -83,11 +85,7 @@ fun main() {
 	// https://docs.oracle.com/en/java/javase/25/core/upcalls-passing-java-code-function-pointer-foreign-function.html
 	glfwSetFramebufferSizeCallback(
 		window,
-		Linker.nativeLinker().upcallStub(
-			frameBufferSizeCallback__handle,
-			FunctionDescriptor.ofVoid(C_POINTER, C_INT, C_INT),
-			Arena.global()
-		)
+		frameBufferSizeCallback__cptr
 	)
 	glfwSwapInterval(1)
 
@@ -112,12 +110,22 @@ val VERTEX_SHADER: String by lazy { getResource("/shader.vert") }
 
 fun getResource(name: String): String = implicitClass.getResourceAsStream(name)!!.use(InputStream::readAllBytes).decodeToString()
 
+
+// Called by way of MethodHandle
+@Suppress("unused")
 fun framebufferSizeCallback(window: MemorySegment, width: Int, height: Int) {
 	println("Called: ($width, $height)")
+	GL.viewport(0, 0, width, height)
 }
 
 val frameBufferSizeCallback__handle: MethodHandle = MethodHandles.lookup().findStatic(
 	implicitClass,
 	"framebufferSizeCallback",
 	MethodType.fromMethodDescriptorString("(Ljava/lang/foreign/MemorySegment;II)V", implicitClass.classLoader)
+)
+
+val frameBufferSizeCallback__cptr: MemorySegment = linker.upcallStub(
+	frameBufferSizeCallback__handle,
+	FunctionDescriptor.ofVoid(C_POINTER, C_INT, C_INT),
+	global
 )
