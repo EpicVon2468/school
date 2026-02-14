@@ -16,9 +16,11 @@ data object GL {
 
 	private val linker: Linker = Linker.nativeLinker()
 
-	private val glEnable: MethodHandle = linker.downcallHandle(
-		glad_glEnable(),
-		FunctionDescriptor.ofVoid(ValueLayout.JAVA_INT)
-	)
+	private val glEnable: MethodHandle by lazy {
+		linker.downcallHandle(
+			glad_glEnable(),
+			FunctionDescriptor.ofVoid(ValueLayout.JAVA_INT)
+		)
+	}
 	fun enable(p0: Int) = glEnable.invokeExact(p0) as Unit
 }

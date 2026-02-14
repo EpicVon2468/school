@@ -5,9 +5,15 @@ import org.glfw.glfw3_h.*
 import java.io.InputStream
 
 import java.lang.foreign.Arena
+import java.lang.foreign.FunctionDescriptor
+import java.lang.foreign.Linker
 import java.lang.foreign.MemoryLayout
 import java.lang.foreign.MemorySegment
 import java.lang.foreign.SequenceLayout
+import java.lang.foreign.ValueLayout
+import java.lang.invoke.MethodHandle
+import java.lang.invoke.MethodHandles
+import java.lang.invoke.MethodType
 
 import kotlin.system.exitProcess
 
@@ -74,6 +80,15 @@ fun main() {
 		glfwTerminate()
 		exitProcess(1)
 	}
+	// https://docs.oracle.com/en/java/javase/25/core/upcalls-passing-java-code-function-pointer-foreign-function.html
+	glfwSetFramebufferSizeCallback(
+		window,
+		Linker.nativeLinker().upcallStub(
+			frameBufferSizeCallback__handle,
+			FunctionDescriptor.ofVoid(C_POINTER, C_INT, C_INT),
+			Arena.global()
+		)
+	)
 	glfwSwapInterval(1)
 
 	GL.enable(GL_DEBUG_OUTPUT())
@@ -96,3 +111,13 @@ val FRAGMENT_SHADER: String by lazy { getResource("/shader.frag") }
 val VERTEX_SHADER: String by lazy { getResource("/shader.vert") }
 
 fun getResource(name: String): String = implicitClass.getResourceAsStream(name)!!.use(InputStream::readAllBytes).decodeToString()
+
+fun framebufferSizeCallback(window: MemorySegment, width: Int, height: Int) {
+	println("Called: ($width, $height)")
+}
+
+val frameBufferSizeCallback__handle: MethodHandle = MethodHandles.lookup().findStatic(
+	implicitClass,
+	"framebufferSizeCallback",
+	MethodType.fromMethodDescriptorString("(Ljava/lang/foreign/MemorySegment;II)V", implicitClass.classLoader)
+)
