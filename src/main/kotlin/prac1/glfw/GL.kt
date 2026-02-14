@@ -22,7 +22,7 @@ data object GL {
 		}
 	}
 
-	val linker: Linker = Linker.nativeLinker()
+	private val linker: Linker = Linker.nativeLinker()
 
 	private val glEnable: MethodHandle = linker.downcallHandle(
 		gl_h.glad_glEnable(),
