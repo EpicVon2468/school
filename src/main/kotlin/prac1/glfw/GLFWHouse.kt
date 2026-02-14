@@ -92,6 +92,8 @@ fun main() {
 	GL.enable(GL_DEBUG_OUTPUT())
 	GL.enable(GL_DEBUG_OUTPUT_SYNCHRONOUS())
 
+	println("OpenGL shader language version: ${GL.getString(GL_SHADING_LANGUAGE_VERSION())}")
+
 	while (glfwWindowShouldClose(window) != 1) {
 		glfwSwapBuffers(window)
 		glfwPollEvents()

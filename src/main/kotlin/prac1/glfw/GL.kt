@@ -11,10 +11,17 @@ import java.lang.invoke.MethodHandle
 data object GL {
 
 	// Must be called first.
-	fun loadGL(p0: MemorySegment): Int = gladLoadGL(p0)
+	/**
+	 * `extern int gladLoadGL(GLADloadfunc load);`
+	 */
+	fun loadGL(load: MemorySegment): Int = gladLoadGL(load)
 
 	private val linker: Linker = Linker.nativeLinker()
 
+	/**
+	 * `void glEnable(GLenum cap);`
+	 */
+	fun enable(cap: Int): Unit = glEnable.invokeExact(cap) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glEnable.xhtml
 	private val glEnable: MethodHandle by lazy {
 		linker.downcallHandle(
@@ -22,8 +29,11 @@ data object GL {
 			FunctionDescriptor.ofVoid(GLenum)
 		)
 	}
-	fun enable(p0: Int) = glEnable.invokeExact(p0) as Unit
 
+	/**
+	 * `void glViewport(GLint x, GLint y, GLsizei width, GLsizei height);`
+	 */
+	fun viewport(x: Int, y: Int, width: Int, height: Int): Unit = glViewport.invokeExact(x, y, width, height) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glViewport.xhtml
 	private val glViewport: MethodHandle by lazy {
 		linker.downcallHandle(
@@ -36,5 +46,19 @@ data object GL {
 			)
 		)
 	}
-	fun viewport(p0: Int, p1: Int, p2: Int, p3: Int) = glViewport.invokeExact(p0, p1, p2, p3) as Unit
+
+	/**
+	 * `const GLubyte *glGetString(GLenum name);`
+	 */
+	fun getString(name: Int): String = (glGetString.invokeExact(name) as MemorySegment).getString(0)
+	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glGetString.xhtml
+	private val glGetString: MethodHandle by lazy {
+		linker.downcallHandle(
+			glad_glGetString(),
+			FunctionDescriptor.of(
+				C_POINTER,
+				GLenum
+			)
+		)
+	}
 }
