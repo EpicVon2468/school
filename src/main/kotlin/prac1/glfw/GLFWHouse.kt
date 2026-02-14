@@ -69,8 +69,11 @@ fun main() {
 	}
 
 	glfwMakeContextCurrent(window)
-	@Suppress("UnusedExpression")
-	GL
+	if (GL.loadGL(`glfwGetProcAddress$address`()) == 0) {
+		println("ERROR - Glad failed to load GL!")
+		glfwTerminate()
+		exitProcess(1)
+	}
 	glfwSwapInterval(1)
 
 	GL.enable(GL_DEBUG_OUTPUT())
