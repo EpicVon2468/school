@@ -35,7 +35,7 @@ val verticesLayout: SequenceLayout = MemoryLayout.sequenceLayout(3L, Vertex.LAYO
 //	set(1L, vertices[1].delegate)
 //	set(2L, vertices[2].delegate)
 //}
-val vertices = global.allocateArray(
+val vertices: MemorySegment = global.allocateArray(
 	vecOf(9L),
 	0.0f, 0.5f, 0.0f,
 	0.5f, -0.5f, 0.0f,
@@ -113,6 +113,10 @@ fun main() {
 	GL.bindBuffer(GL_ARRAY_BUFFER(), vertexArray[GLuint, 0])
 	GL.vertexAttribPointer(0, 3, GL_FLOAT(), false, 0, MemorySegment.NULL)
 
+	val vertexShader: Int = GL.createShader(GL_VERTEX_SHADER())
+	if (vertexShader == 0) error("Could not create vertexShader!")
+	GL.shaderSource(vertexShader, 1, VERTEX_SHADER)
+
 	// Do a first glViewport to fix alignment.
 	Arena.ofShared().use { arena: Arena ->
 		val width: MemorySegment = arena.allocate(C_INT)
@@ -124,6 +128,8 @@ fun main() {
 	while (!GLFW.windowShouldClose(window)) {
 		GL.clear(GL_COLOR_BUFFER_BIT())
 		GL.clearColour(1f, 1f, 1f, 1f)
+
+//		GL.bindVertexArray(vertexArray[GLuint, 0])
 
 		glfwSwapBuffers(window)
 		glfwPollEvents()

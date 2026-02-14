@@ -14,6 +14,11 @@ data object GLFW {
 	fun init(): Boolean = glfwInit() != GLFW_FALSE()
 
 	/**
+	 * `double glfwGetTime(void);`
+	 */
+	fun getTime(): Double = glfwGetTime()
+
+	/**
 	 * `int glfwWindowShouldClose(GLFWwindow *window);`
 	 */
 	fun windowShouldClose(window: MemorySegment): Boolean {

@@ -219,4 +219,43 @@ data object GL {
 		GLsizei,
 		C_POINTER
 	)
+
+	/**
+	 * `GLuint glCreateShader(GLenum shaderType);`
+	 */
+	fun createShader(shaderType: Int): Int = glCreateShader.invokeExact(shaderType) as Int
+	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glCreateShader.xhtml
+	private val glCreateShader: MethodHandle by lazy {
+		linker.downcallHandle(glad_glCreateShader(), glCreateShader__descriptor)
+	}
+	val glCreateShader__descriptor: FunctionDescriptor = FunctionDescriptor.of(
+		GLuint,
+		GLenum
+	)
+
+	/**
+	 * `void glShaderSource(GLuint shader, GLsizei count, const GLchar **string, const GLint *length);`
+	 */
+	fun shaderSource(shader: Int, count: Int, string: String, length: Int? = null) = shaderSource(shader, count, listOf(string), length?.let(::listOf))
+	/**
+	 * `void glShaderSource(GLuint shader, GLsizei count, const GLchar **string, const GLint *length);`
+	 */
+	fun shaderSource(shader: Int, count: Int, strings: List<String>, lengths: List<Int>?): Unit = glShaderSource.invokeExact(
+		shader,
+		count,
+		global.allocateArray(C_POINTER, *strings.map { it.cstr(global) }.toTypedArray()),
+		lengths?.toTypedArray()?.let {
+			global.allocateArray(C_INT, *it)
+		} ?: MemorySegment.NULL
+	) as Unit
+	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glShaderSource.xhtml
+	private val glShaderSource: MethodHandle by lazy {
+		linker.downcallHandle(glad_glShaderSource(), glShaderSource__descriptor)
+	}
+	val glShaderSource__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
+		GLuint,
+		GLsizei,
+		C_POINTER,
+		C_POINTER
+	)
 }
