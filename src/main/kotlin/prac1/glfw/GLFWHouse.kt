@@ -1,6 +1,5 @@
 package io.github.epicvon2468.school.prac1.glfw
 
-import org.glfw.GLFWerrorfun
 import org.glfw.GLFWframebuffersizefun
 import org.glfw.glfw3_h.*
 
@@ -49,6 +48,7 @@ val vertices = global.allocateArray(
 // TODO: Add & use glad & see if there's a way to load the Vertex-style vertices properly.
 // https://docs.oracle.com/en/java/javase/25/core/foreign-function-and-memory-api.html
 // https://github.com/EpicVon2468/KMP_GE/blob/master/src/nativeMain/kotlin/io/github/epicvon2468/kmp_ge/core/main.kt
+// https://docs.oracle.com/en/java/javase/25/core/upcalls-passing-java-code-function-pointer-foreign-function.html
 fun main() {
 	NULL()
 	Vertex(pos = arrayOf(1f, 2f), col = arrayOf(3f, 4f, 5f))
@@ -59,15 +59,9 @@ fun main() {
 //		println("Got it: $it")
 //	}
 
-	glfwSetErrorCallback(
-		GLFWerrorfun.allocate(
-			/*fi =*/ { errorCode: Int, description: MemorySegment ->
-				val description: String? = description.jvmNull()?.getString(0)
-				println("ERROR - GLFWErrorFun: (errorCode: '$errorCode', message: '$description')")
-			},
-			/*arena =*/ global
-		)
-	)
+	GLFW.setErrorCallback { errorCode: Int, description: String? ->
+		println("ERROR - GLFWErrorFun: (errorCode: '$errorCode', message: '$description')")
+	}
 
 	if (glfwInit() != 1) {
 		println("ERROR - Failed to initialise GLFW!")
@@ -91,17 +85,10 @@ fun main() {
 		glfwTerminate()
 		exitProcess(1)
 	}
-	// https://docs.oracle.com/en/java/javase/25/core/upcalls-passing-java-code-function-pointer-foreign-function.html
-	glfwSetFramebufferSizeCallback(
-		window,
-		GLFWframebuffersizefun.allocate(
-			/*fi =*/ { _, width: Int, height: Int ->
-				println("Called: ($width, $height)")
-				GL.viewport(0, 0, width, height)
-			},
-			/*arena =*/ global
-		)
-	)
+	GLFW.setFramebufferSizeCallback(window) { window: MemorySegment, width: Int, height: Int ->
+		println("Called: ($width, $height)")
+		GL.viewport(0, 0, width, height)
+	}
 	glfwSwapInterval(1)
 
 	GL.enable(GL_DEBUG_OUTPUT())
