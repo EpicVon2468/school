@@ -1,18 +1,16 @@
 package io.github.epicvon2468.school.prac1.glfw
 
+import org.glfw.GLFWerrorfun
+import org.glfw.GLFWframebuffersizefun
 import org.glfw.glfw3_h.*
 
 import java.io.InputStream
 
 import java.lang.foreign.Arena
-import java.lang.foreign.FunctionDescriptor
 import java.lang.foreign.Linker
 import java.lang.foreign.MemoryLayout
 import java.lang.foreign.MemorySegment
 import java.lang.foreign.SequenceLayout
-import java.lang.invoke.MethodHandle
-import java.lang.invoke.MethodHandles
-import java.lang.invoke.MethodType
 
 import kotlin.system.exitProcess
 
@@ -60,6 +58,17 @@ fun main() {
 //	vecOf(9L).arrayElementVarHandle(MemoryLayout.PathElement.sequenceElement()).get(vertices, 0L, 4L, 0L).let {
 //		println("Got it: $it")
 //	}
+
+	glfwSetErrorCallback(
+		GLFWerrorfun.allocate(
+			/*fi =*/ { errorCode: Int, description: MemorySegment ->
+				val description: String? = description.jvmNull()?.getString(0)
+				println("ERROR - GLFWErrorFun: (errorCode: '$errorCode', message: '$description')")
+			},
+			/*arena =*/ global
+		)
+	)
+
 	if (glfwInit() != 1) {
 		println("ERROR - Failed to initialise GLFW!")
 		exitProcess(1)
@@ -85,7 +94,13 @@ fun main() {
 	// https://docs.oracle.com/en/java/javase/25/core/upcalls-passing-java-code-function-pointer-foreign-function.html
 	glfwSetFramebufferSizeCallback(
 		window,
-		frameBufferSizeCallback__cptr
+		GLFWframebuffersizefun.allocate(
+			/*fi =*/ { _, width: Int, height: Int ->
+				println("Called: ($width, $height)")
+				GL.viewport(0, 0, width, height)
+			},
+			/*arena =*/ global
+		)
 	)
 	glfwSwapInterval(1)
 
@@ -112,22 +127,21 @@ val VERTEX_SHADER: String by lazy { getResource("/shader.vert") }
 
 fun getResource(name: String): String = implicitClass.getResourceAsStream(name)!!.use(InputStream::readAllBytes).decodeToString()
 
-
-// Called by way of MethodHandle
-@Suppress("unused")
-fun framebufferSizeCallback(window: MemorySegment, width: Int, height: Int) {
-	println("Called: ($width, $height)")
-	GL.viewport(0, 0, width, height)
-}
-
-val frameBufferSizeCallback__handle: MethodHandle = MethodHandles.lookup().findStatic(
-	implicitClass,
-	"framebufferSizeCallback",
-	MethodType.fromMethodDescriptorString("(Ljava/lang/foreign/MemorySegment;II)V", implicitClass.classLoader)
-)
-
-val frameBufferSizeCallback__cptr: MemorySegment = linker.upcallStub(
-	frameBufferSizeCallback__handle,
-	FunctionDescriptor.ofVoid(C_POINTER, C_INT, C_INT),
-	global
-)
+//// Called by way of MethodHandle
+//@Suppress("unused")
+//fun framebufferSizeCallback(window: MemorySegment, width: Int, height: Int) {
+//	println("Called: ($width, $height)")
+//	GL.viewport(0, 0, width, height)
+//}
+//
+//val frameBufferSizeCallback__handle: MethodHandle = MethodHandles.lookup().findStatic(
+//	implicitClass,
+//	"framebufferSizeCallback",
+//	MethodType.fromMethodDescriptorString("(Ljava/lang/foreign/MemorySegment;II)V", implicitClass.classLoader)
+//)
+//
+//val frameBufferSizeCallback__cptr: MemorySegment = linker.upcallStub(
+//	frameBufferSizeCallback__handle,
+//	FunctionDescriptor.ofVoid(C_POINTER, C_INT, C_INT),
+//	global
+//)

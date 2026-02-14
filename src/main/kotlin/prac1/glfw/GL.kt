@@ -24,11 +24,9 @@ data object GL {
 	fun enable(cap: Int): Unit = glEnable.invokeExact(cap) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glEnable.xhtml
 	private val glEnable: MethodHandle by lazy {
-		linker.downcallHandle(
-			glad_glEnable(),
-			FunctionDescriptor.ofVoid(GLenum)
-		)
+		linker.downcallHandle(glad_glEnable(), glEnable__descriptor)
 	}
+	val glEnable__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(GLenum)
 
 	/**
 	 * `void glViewport(GLint x, GLint y, GLsizei width, GLsizei height);`
@@ -36,16 +34,14 @@ data object GL {
 	fun viewport(x: Int, y: Int, width: Int, height: Int): Unit = glViewport.invokeExact(x, y, width, height) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glViewport.xhtml
 	private val glViewport: MethodHandle by lazy {
-		linker.downcallHandle(
-			glad_glViewport(),
-			FunctionDescriptor.ofVoid(
-				GLint,
-				GLint,
-				GLsizei,
-				GLsizei
-			)
-		)
+		linker.downcallHandle(glad_glViewport(), glViewport__descriptor)
 	}
+	val glViewport__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
+		GLint,
+		GLint,
+		GLsizei,
+		GLsizei
+	)
 
 	/**
 	 * `const GLubyte *glGetString(GLenum name);`
@@ -53,12 +49,10 @@ data object GL {
 	fun getString(name: Int): String = (glGetString.invokeExact(name) as MemorySegment).getString(0)
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glGetString.xhtml
 	private val glGetString: MethodHandle by lazy {
-		linker.downcallHandle(
-			glad_glGetString(),
-			FunctionDescriptor.of(
-				C_POINTER,
-				GLenum
-			)
-		)
+		linker.downcallHandle(glad_glGetString(), glGetString__descriptor)
 	}
+	val glGetString__descriptor: FunctionDescriptor = FunctionDescriptor.of(
+		C_POINTER,
+		GLenum
+	)
 }
