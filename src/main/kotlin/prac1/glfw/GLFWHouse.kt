@@ -18,30 +18,16 @@ fun vecOf(count: Long): SequenceLayout = MemoryLayout.sequenceLayout(count, C_FL
 
 val global: Arena = Arena.global()
 
-//val verticesLayout: SequenceLayout = MemoryLayout.sequenceLayout(3L, Vertex.LAYOUT)
 // https://dev.java/learn/ffm/access-structure/
-// FIXME: Apparently I also gave up on Vertex in KMP_GE;  I'll have to use the other method for now, but hopefully I'll figure this out.
-//val vertices: MemorySegment = global.allocate(verticesLayout).apply {
-//	val vh: VarHandle = Vertex.LAYOUT.arrayElementVarHandle()
-//	fun set(index: Long, value: Any) = vh.set(this, 0L, index, value)
-//	val vertices = arrayOf(
-//		Vertex(pos = arrayOf(-0.6f, -0.4f), col = arrayOf(1f, 0f, 0f)),
-//		Vertex(pos = arrayOf(0.6f, -0.4f), col = arrayOf(0f, 1f, 0f)),
-//		Vertex(pos = arrayOf(0f, 0.6f), col = arrayOf(0f, 0f, 1f))
-//	)
-//	set(0L, vertices[0].delegate)
-//	set(1L, vertices[1].delegate)
-//	set(2L, vertices[2].delegate)
-//}
+// https://antongerdelan.net/opengl/hellotriangle.html
 val vertices: MemorySegment = global.allocateArray(
 	C_FLOAT,
-	0.0f, 0.5f, 0.0f,
-	0.5f, -0.5f, 0.0f,
-	-0.5f, -0.5f, 0.0f
+	0.0f, 0.35f, 0.0f,
+	0.25f, 0.0f, 0.0f,
+	-0.25f, 0.0f, 0.0f
 )
 
 // Bash: 'locate libGL'
-// TODO: see if there's a way to load the Vertex-style vertices properly.
 // https://docs.oracle.com/en/java/javase/25/core/foreign-function-and-memory-api.html
 // https://github.com/EpicVon2468/KMP_GE/blob/master/src/nativeMain/kotlin/io/github/epicvon2468/kmp_ge/core/main.kt
 // https://docs.oracle.com/en/java/javase/25/core/upcalls-passing-java-code-function-pointer-foreign-function.html
@@ -51,10 +37,6 @@ fun main() {
 //	Vertex(pos = arrayOf(1f, 2f), col = arrayOf(3f, 4f, 5f))
 //	println(FRAGMENT_SHADER)
 //	println(VERTEX_SHADER)
-//	vertices
-//	vecOf(9L).arrayElementVarHandle(MemoryLayout.PathElement.sequenceElement()).get(vertices, 0L, 4L, 0L).let {
-//		println("Got it: $it")
-//	}
 
 	GLFW.setErrorCallback { errorCode: Int, description: String? ->
 		println("ERROR - GLFWErrorFun: (errorCode: '$errorCode', message: '$description')")
@@ -68,7 +50,7 @@ fun main() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR(), 4)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR(), 6)
 	glfwWindowHint(GLFW_OPENGL_PROFILE(), GLFW_OPENGL_CORE_PROFILE())
-	val window = glfwCreateWindow(640, 480, "My House".cstr(global), MemorySegment.NULL, MemorySegment.NULL)
+	val window = glfwCreateWindow(600, 600, "My House".cstr(global), MemorySegment.NULL, MemorySegment.NULL)
 	if (window == MemorySegment.NULL) {
 		println("ERROR - GLFWWindow failed to create!")
 		glfwTerminate()
