@@ -43,7 +43,7 @@ data class Triangle(
 	fun genVertexBuffer() {
 		GL.genBuffers(1, vertexBuffer)
 		GL.bindBuffer(GL_ARRAY_BUFFER(), vertexBuffer[GLuint, 0])
-		GL.bufferData(GL_ARRAY_BUFFER(), VERTICES_SIZE, this.vertices, GL_STATIC_DRAW())
+		GL.bufferData(GL_ARRAY_BUFFER(), VERTICES_SIZE, vertices, GL_STATIC_DRAW())
 	}
 
 	fun genVertexArray() {
@@ -52,6 +52,7 @@ data class Triangle(
 		GL.enableVertexAttribArray(0)
 		GL.bindBuffer(GL_ARRAY_BUFFER(), vertexArray[GLuint, 0])
 		GL.vertexAttribPointer(0, 3, GL_FLOAT(), false, 0, MemorySegment.NULL)
+		GL.bindVertexArray(0)
 	}
 
 	fun draw() {
@@ -127,6 +128,14 @@ fun main() {
 	triangle.genVertexBuffer()
 	triangle.genVertexArray()
 
+	val triangle2 = Triangle(
+		0.0f, 0.35f, 0.0f,
+		0.5f, 1f, 0.0f,
+		-0.5f, 1f, 0.0f
+	)
+	triangle2.genVertexBuffer()
+	triangle2.genVertexArray()
+
 	val vertexShader: Int = GL.createShader(GL_VERTEX_SHADER())
 	if (vertexShader == 0) error("Could not create vertexShader!")
 	GL.shaderSource(vertexShader, 1, VERTEX_SHADER)
@@ -162,7 +171,7 @@ fun main() {
 
 		// https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/2.2.hello_triangle_indexed/hello_triangle_indexed.cpp
 		triangle.draw()
-//		GL.bindVertexArray(0)
+		triangle2.draw()
 
 		glfwSwapBuffers(window)
 		glfwPollEvents()
