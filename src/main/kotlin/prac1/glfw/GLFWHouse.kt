@@ -1,6 +1,5 @@
 package io.github.epicvon2468.school.prac1.glfw
 
-import org.glfw.GLFWframebuffersizefun
 import org.glfw.glfw3_h.*
 
 import java.io.InputStream
@@ -45,10 +44,11 @@ val vertices = global.allocateArray(
 )
 
 // Bash: 'locate libGL'
-// TODO: Add & use glad & see if there's a way to load the Vertex-style vertices properly.
+// TODO: see if there's a way to load the Vertex-style vertices properly.
 // https://docs.oracle.com/en/java/javase/25/core/foreign-function-and-memory-api.html
 // https://github.com/EpicVon2468/KMP_GE/blob/master/src/nativeMain/kotlin/io/github/epicvon2468/kmp_ge/core/main.kt
 // https://docs.oracle.com/en/java/javase/25/core/upcalls-passing-java-code-function-pointer-foreign-function.html
+// It's not stealing if it's my code that I'm 1:1 porting ;)
 fun main() {
 	NULL()
 	Vertex(pos = arrayOf(1f, 2f), col = arrayOf(3f, 4f, 5f))
@@ -95,6 +95,19 @@ fun main() {
 	GL.enable(GL_DEBUG_OUTPUT_SYNCHRONOUS())
 
 	println("OpenGL shader language version: ${GL.getString(GL_SHADING_LANGUAGE_VERSION())}")
+
+	GL.debugMessageCallback { source: Int, type: Int, id: Int, severity: Int, length: Int, message: String?, _ ->
+		println("GL debug callback invoked! Debug info:")
+		println("DebugProc {\n\tsource = $source,\n\ttype = $type,\n\tid = $id,\n\tseverity = $severity,\n\tlength = $length,\n\tmessage = '$message'\n}")
+	}
+
+
+
+	// Do a first glViewport to fix alignment.
+	val width: MemorySegment = global.allocate(C_INT)
+	val height: MemorySegment = global.allocate(C_INT)
+	glfwGetFramebufferSize(window, width, height)
+	GL.viewport(0, 0, width[C_INT, 0], height[C_INT, 0])
 
 	while (!GLFW.windowShouldClose(window)) {
 		glfwSwapBuffers(window)

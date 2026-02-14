@@ -1,5 +1,6 @@
 package io.github.epicvon2468.school.prac1.glfw
 
+import glad.GLDEBUGPROC
 import glad.gl_h.*
 
 import java.lang.foreign.FunctionDescriptor
@@ -55,4 +56,30 @@ data object GL {
 		C_POINTER,
 		GLenum
 	)
+
+	// Parameter overloading doesn't work (like I want) here, since the last parameter isn't the lambda type.
+	/**
+	 * `void glDebugMessageCallback(DEBUGPROC callback, const void *userParam);`
+	 */
+	fun debugMessageCallback(callback: GLDebugProc) = debugMessageCallback(callback, MemorySegment.NULL)
+	/**
+	 * `void glDebugMessageCallback(DEBUGPROC callback, const void *userParam);`
+	 */
+	fun debugMessageCallback(callback: GLDebugProc, userParam: MemorySegment) = glDebugMessageCallback.invokeExact(
+		GLDEBUGPROC.allocate(
+			/*fi =*/ { source: Int, type: Int, id: Int, severity: Int, length: Int, message: MemorySegment, userParam: MemorySegment ->
+				callback(source, type, id, severity, length, message.jvmNull()?.getString(0), userParam)
+			},
+			/*arena =*/ global
+		),
+		userParam
+	) as Unit
+	private val glDebugMessageCallback: MethodHandle by lazy {
+		linker.downcallHandle(glad_glDebugMessageCallback(), glDebugMessageCallback__descriptor)
+	}
+	val glDebugMessageCallback__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
+		C_POINTER,
+		C_POINTER
+	)
+	typealias GLDebugProc = (source: Int, type: Int, id: Int, severity: Int, length: Int, message: String?, userParam: MemorySegment) -> Unit
 }
