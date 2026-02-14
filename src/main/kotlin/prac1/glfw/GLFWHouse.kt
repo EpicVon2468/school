@@ -20,19 +20,52 @@ val global: Arena = Arena.global()
 
 // https://dev.java/learn/ffm/access-structure/
 // https://antongerdelan.net/opengl/hellotriangle.html
-val vertices: MemorySegment = global.allocateArray(
-	C_FLOAT,
-	0.0f, 0.35f, 0.0f,
-	0.25f, 0.0f, 0.0f,
-	-0.25f, 0.0f, 0.0f
-)
+//val vertices: MemorySegment = global.allocateArray(
+//	C_FLOAT,
+//	0.0f, 0.35f, 0.0f,
+//	0.25f, 0.0f, 0.0f,
+//	-0.25f, 0.0f, 0.0f
+//)
+//
+//val vertices2: MemorySegment = global.allocateArray(
+//	C_FLOAT,
+//	0.0f, 0.5f, 0.0f,
+//	0.5f, -0.5f, 0.0f,
+//	-0.5f, -0.5f, 0.0f
+//)
 
-val vertices2: MemorySegment = global.allocateArray(
-	C_FLOAT,
-	0.0f, 0.5f, 0.0f,
-	0.5f, -0.5f, 0.0f,
-	-0.5f, -0.5f, 0.0f
-)
+data class Triangle(
+	val vertexBuffer: MemorySegment = global.allocate(GLuint),
+	val vertexArray: MemorySegment = global.allocate(GLuint),
+	val vertices: MemorySegment,
+) {
+
+	fun genVertexBuffer() {
+		GL.genBuffers(1, vertexBuffer)
+		GL.bindBuffer(GL_ARRAY_BUFFER(), vertexBuffer[GLuint, 0])
+		GL.bufferData(GL_ARRAY_BUFFER(), VERTICES_SIZE, this.vertices, GL_STATIC_DRAW())
+	}
+
+	fun genVertexArray() {
+		GL.genVertexArrays(1, vertexArray)
+		GL.bindVertexArray(vertexArray[GLuint, 0])
+		GL.enableVertexAttribArray(0)
+		GL.bindBuffer(GL_ARRAY_BUFFER(), vertexArray[GLuint, 0])
+		GL.vertexAttribPointer(0, 3, GL_FLOAT(), false, 0, MemorySegment.NULL)
+	}
+
+	fun draw() {
+		GL.bindVertexArray(vertexArray[GLuint, 0])
+		GL.drawArrays(GL_TRIANGLES(), 0, 3)
+	}
+
+	constructor(vararg vertices: Float) : this(vertices = global.allocateArray(C_FLOAT, *vertices.toTypedArray()))
+
+	companion object {
+
+		val VERTICES_SIZE: Long = 9 * C_FLOAT.byteSize()
+	}
+}
 
 // Bash: 'locate libGL'
 // https://docs.oracle.com/en/java/javase/25/core/foreign-function-and-memory-api.html
@@ -86,17 +119,13 @@ fun main() {
 		println("DebugProc {\n\tsource = $source,\n\ttype = $type,\n\tid = $id,\n\tseverity = $severity,\n\tlength = $length,\n\tmessage = '$message'\n}")
 	}
 
-	val vertexBuffer: MemorySegment = global.allocate(GLuint)
-	GL.genBuffers(1, vertexBuffer)
-	GL.bindBuffer(GL_ARRAY_BUFFER(), vertexBuffer[GLuint, 0])
-	GL.bufferData(GL_ARRAY_BUFFER(), 9 * C_FLOAT.byteSize(), vertices, GL_STATIC_DRAW())
-
-	val vertexArray: MemorySegment = global.allocate(GLuint)
-	GL.genVertexArrays(1, vertexArray)
-	GL.bindVertexArray(vertexArray[GLuint, 0])
-	GL.enableVertexAttribArray(0)
-	GL.bindBuffer(GL_ARRAY_BUFFER(), vertexArray[GLuint, 0])
-	GL.vertexAttribPointer(0, 3, GL_FLOAT(), false, 0, MemorySegment.NULL)
+	val triangle = Triangle(
+		0.0f, 0.35f, 0.0f,
+		0.25f, 0.0f, 0.0f,
+		-0.25f, 0.0f, 0.0f
+	)
+	triangle.genVertexBuffer()
+	triangle.genVertexArray()
 
 	val vertexShader: Int = GL.createShader(GL_VERTEX_SHADER())
 	if (vertexShader == 0) error("Could not create vertexShader!")
@@ -132,9 +161,8 @@ fun main() {
 		GL.uniform1f(uTimeLocation, GLFW.getTime().toFloat())
 
 		// https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/2.2.hello_triangle_indexed/hello_triangle_indexed.cpp
-		GL.bindVertexArray(vertexArray[GLuint, 0])
-		GL.drawArrays(GL_TRIANGLES(), 0, 3)
-		GL.bindVertexArray(0)
+		triangle.draw()
+//		GL.bindVertexArray(0)
 
 		glfwSwapBuffers(window)
 		glfwPollEvents()
