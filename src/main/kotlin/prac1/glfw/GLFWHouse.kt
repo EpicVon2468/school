@@ -50,10 +50,10 @@ val vertices: MemorySegment = global.allocateArray(
 // https://docs.oracle.com/en/java/javase/25/core/upcalls-passing-java-code-function-pointer-foreign-function.html
 // It's not stealing if it's my code that I'm 1:1 porting ;)
 fun main() {
-	NULL()
-	Vertex(pos = arrayOf(1f, 2f), col = arrayOf(3f, 4f, 5f))
-	println(FRAGMENT_SHADER)
-	println(VERTEX_SHADER)
+//	NULL()
+//	Vertex(pos = arrayOf(1f, 2f), col = arrayOf(3f, 4f, 5f))
+//	println(FRAGMENT_SHADER)
+//	println(VERTEX_SHADER)
 //	vertices
 //	vecOf(9L).arrayElementVarHandle(MemoryLayout.PathElement.sequenceElement()).get(vertices, 0L, 4L, 0L).let {
 //		println("Got it: $it")
@@ -71,7 +71,6 @@ fun main() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR(), 4)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR(), 6)
 	glfwWindowHint(GLFW_OPENGL_PROFILE(), GLFW_OPENGL_CORE_PROFILE())
-
 	val window = glfwCreateWindow(640, 480, "My House".cstr(global), MemorySegment.NULL, MemorySegment.NULL)
 	if (window == MemorySegment.NULL) {
 		println("ERROR - GLFWWindow failed to create!")
@@ -80,7 +79,7 @@ fun main() {
 	}
 
 	glfwMakeContextCurrent(window)
-	if (GL.loadGL(`glfwGetProcAddress$address`()) == GLFW_FALSE()) {
+	if (!GL.loadGL(`glfwGetProcAddress$address`())) {
 		println("ERROR - Glad failed to load GL!")
 		glfwTerminate()
 		exitProcess(1)
@@ -128,6 +127,8 @@ fun main() {
 	GL.attachShader(program, vertexShader)
 	GL.linkProgram(program)
 
+	val uTimeLocation: Int = GL.getUniformLocation(program, "time")
+
 	// Do a first glViewport to fix alignment.
 	Arena.ofShared().use { arena: Arena ->
 		val width: MemorySegment = arena.allocate(C_INT)
@@ -140,7 +141,11 @@ fun main() {
 		GL.clear(GL_COLOR_BUFFER_BIT())
 		GL.clearColour(1f, 1f, 1f, 1f)
 
-//		GL.bindVertexArray(vertexArray[GLuint, 0])
+		GL.useProgram(program)
+		GL.uniform1f(uTimeLocation, GLFW.getTime().toFloat())
+		GL.bindVertexArray(vertexArray[GLuint, 0])
+
+		GL.drawArrays(GL_TRIANGLES(), 0, 3)
 
 		glfwSwapBuffers(window)
 		glfwPollEvents()

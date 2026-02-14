@@ -15,7 +15,7 @@ data object GL {
 	/**
 	 * `extern int gladLoadGL(GLADloadfunc load);`
 	 */
-	fun loadGL(load: MemorySegment): Int = gladLoadGL(load)
+	fun loadGL(load: MemorySegment): Boolean = gladLoadGL(load) != GL_FALSE()
 
 	private val linker: Linker = Linker.nativeLinker()
 
@@ -306,5 +306,58 @@ data object GL {
 	}
 	val glLinkProgram__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
 		GLuint
+	)
+
+	/**
+	 * `GLint glGetUniformLocation(GLuint program, const GLchar *name);`
+	 */
+	fun getUniformLocation(program: Int, name: String): Int = glGetUniformLocation.invokeExact(program, name.cstr(global)) as Int
+	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glGetUniformLocation.xhtml
+	private val glGetUniformLocation: MethodHandle by lazy {
+		linker.downcallHandle(glad_glGetUniformLocation(), glGetUniformLocation__descriptor)
+	}
+	val glGetUniformLocation__descriptor: FunctionDescriptor = FunctionDescriptor.of(
+		GLint,
+		GLuint,
+		C_POINTER
+	)
+
+	/**
+	 * `void glUseProgram(GLuint program);`
+	 */
+	fun useProgram(program: Int): Unit = glUseProgram.invokeExact(program) as Unit
+	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glUseProgram.xhtml
+	private val glUseProgram: MethodHandle by lazy {
+		linker.downcallHandle(glad_glUseProgram(), glUseProgram__descriptor)
+	}
+	val glUseProgram__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
+		GLuint
+	)
+
+	/**
+	 * `void glUniform1f(GLint location, GLfloat v0);`
+	 */
+	fun uniform1f(location: Int, v0: Float): Unit = glUniform1f.invokeExact(location, v0) as Unit
+	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glUniform.xhtml
+	private val glUniform1f: MethodHandle by lazy {
+		linker.downcallHandle(glad_glUniform1f(), glUniform1f__descriptor)
+	}
+	val glUniform1f__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
+		GLint,
+		GLfloat
+	)
+
+	/**
+	 * `void glDrawArrays(GLenum mode, GLint first, GLsizei count);`
+	 */
+	fun drawArrays(mode: Int, first: Int, count: Int): Unit = glDrawArrays.invokeExact(mode, first, count) as Unit
+	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glDrawArrays.xhtml
+	private val glDrawArrays: MethodHandle by lazy {
+		linker.downcallHandle(glad_glDrawArrays(), glDrawArrays__descriptor)
+	}
+	val glDrawArrays__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
+		GLenum,
+		GLint,
+		GLsizei
 	)
 }
