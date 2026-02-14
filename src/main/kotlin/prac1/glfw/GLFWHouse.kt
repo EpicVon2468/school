@@ -106,6 +106,13 @@ fun main() {
 	GL.bindBuffer(GL_ARRAY_BUFFER(), vertexBuffer[GLuint, 0])
 	GL.bufferData(GL_ARRAY_BUFFER(), vecOf(9).byteSize(), vertices, GL_STATIC_DRAW())
 
+	val vertexArray: MemorySegment = global.allocate(GLuint)
+	GL.genVertexArrays(1, vertexArray)
+	GL.bindVertexArray(vertexArray[GLuint, 0])
+	GL.enableVertexAttribArray(0)
+	GL.bindBuffer(GL_ARRAY_BUFFER(), vertexArray[GLuint, 0])
+	GL.vertexAttribPointer(0, 3, GL_FLOAT(), false, 0, MemorySegment.NULL)
+
 	// Do a first glViewport to fix alignment.
 	Arena.ofShared().use { arena: Arena ->
 		val width: MemorySegment = arena.allocate(C_INT)

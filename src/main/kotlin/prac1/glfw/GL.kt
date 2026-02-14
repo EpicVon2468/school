@@ -151,4 +151,72 @@ data object GL {
 		C_POINTER,
 		GLenum
 	)
+
+	/**
+	 * `void glGenVertexArrays(GLsizei n, GLuint *arrays);`
+	 */
+	fun genVertexArrays(n: Int, arrays: MemorySegment): Unit = glGenVertexArrays.invokeExact(n, arrays) as Unit
+	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glGenVertexArrays.xhtml
+	private val glGenVertexArrays: MethodHandle by lazy {
+		linker.downcallHandle(glad_glGenVertexArrays(), glGenVertexArrays__descriptor)
+	}
+	val glGenVertexArrays__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
+		GLsizei,
+		C_POINTER
+	)
+
+	/**
+	 * `void glBindVertexArray(array: GLuint);`
+	 */
+	fun bindVertexArray(array: Int): Unit = glBindVertexArray.invokeExact(array) as Unit
+	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glBindVertexArray.xhtml
+	private val glBindVertexArray: MethodHandle by lazy {
+		linker.downcallHandle(glad_glBindVertexArray(), glBindVertexArray__descriptor)
+	}
+	val glBindVertexArray__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
+		GLuint
+	)
+
+	/**
+	 * `void glEnableVertexAttribArray(GLuint index);`
+	 */
+	fun enableVertexAttribArray(index: Int): Unit = glEnableVertexAttribArray.invokeExact(index) as Unit
+	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glEnableVertexAttribArray.xhtml
+	private val glEnableVertexAttribArray: MethodHandle by lazy {
+		linker.downcallHandle(glad_glEnableVertexAttribArray(), glEnableVertexAttribArray__descriptor)
+	}
+	val glEnableVertexAttribArray__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
+		GLuint
+	)
+
+	/**
+	 * `void glVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void *pointer);`
+	 */
+	fun vertexAttribPointer(
+		index: Int,
+		size: Int,
+		type: Int,
+		normalised: Boolean,
+		stride: Int,
+		pointer: MemorySegment
+	): Unit = glVertexAttribPointer.invokeExact(
+		index,
+		size,
+		type,
+		(if (normalised) GL_TRUE() else GL_FALSE()).toByte(),
+		stride,
+		pointer
+	) as Unit
+	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glVertexAttribPointer.xhtml
+	private val glVertexAttribPointer: MethodHandle by lazy {
+		linker.downcallHandle(glad_glVertexAttribPointer(), glVertexAttribPointer__descriptor)
+	}
+	val glVertexAttribPointer__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
+		GLuint,
+		GLint,
+		GLenum,
+		GLboolean,
+		GLsizei,
+		C_POINTER
+	)
 }
