@@ -19,6 +19,11 @@ data object GLFW {
 	fun getTime(): Double = glfwGetTime()
 
 	/**
+	 * `void swapInterval(int interval);`
+	 */
+	fun swapInterval(interval: Int): Unit = glfwSwapInterval(interval)
+
+	/**
 	 * `int glfwWindowShouldClose(GLFWwindow *window);`
 	 */
 	fun windowShouldClose(window: MemorySegment): Boolean {

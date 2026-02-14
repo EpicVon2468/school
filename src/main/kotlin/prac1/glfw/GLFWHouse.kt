@@ -9,6 +9,7 @@ import java.lang.foreign.Linker
 import java.lang.foreign.MemoryLayout
 import java.lang.foreign.MemorySegment
 import java.lang.foreign.SequenceLayout
+import java.lang.foreign.ValueLayout
 
 import kotlin.system.exitProcess
 
@@ -36,11 +37,10 @@ val verticesLayout: SequenceLayout = MemoryLayout.sequenceLayout(3L, Vertex.LAYO
 //	set(2L, vertices[2].delegate)
 //}
 val vertices: MemorySegment = global.allocateArray(
-	vecOf(9L),
+	C_FLOAT,
 	0.0f, 0.5f, 0.0f,
 	0.5f, -0.5f, 0.0f,
-	-0.5f, -0.5f, 0.0f,
-	is2DArray = true
+	-0.5f, -0.5f, 0.0f
 )
 
 // Bash: 'locate libGL'
@@ -88,7 +88,7 @@ fun main() {
 		println("Called: ($width, $height)")
 		GL.viewport(0, 0, width, height)
 	}
-	glfwSwapInterval(1)
+	GLFW.swapInterval(1)
 
 	GL.enable(GL_DEBUG_OUTPUT())
 	GL.enable(GL_DEBUG_OUTPUT_SYNCHRONOUS())
@@ -103,7 +103,7 @@ fun main() {
 	val vertexBuffer: MemorySegment = global.allocate(GLuint)
 	GL.genBuffers(1, vertexBuffer)
 	GL.bindBuffer(GL_ARRAY_BUFFER(), vertexBuffer[GLuint, 0])
-	GL.bufferData(GL_ARRAY_BUFFER(), vecOf(9).byteSize(), vertices, GL_STATIC_DRAW())
+	GL.bufferData(GL_ARRAY_BUFFER(), 9 * C_FLOAT.byteSize(), vertices, GL_STATIC_DRAW())
 
 	val vertexArray: MemorySegment = global.allocate(GLuint)
 	GL.genVertexArrays(1, vertexArray)
@@ -128,6 +128,7 @@ fun main() {
 	GL.linkProgram(program)
 
 	val uTimeLocation: Int = GL.getUniformLocation(program, "time")
+	if (uTimeLocation == -1) error("Couldn't get location of uniform 'time'!")
 
 	// Do a first glViewport to fix alignment.
 	Arena.ofShared().use { arena: Arena ->
