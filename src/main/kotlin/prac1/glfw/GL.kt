@@ -136,4 +136,19 @@ data object GL {
 		GLenum,
 		GLuint
 	)
+
+	/**
+	 * `void glBufferData(GLenum target, GLsizeiptr size, const void *data, GLenum usage);`
+	 */
+	fun bufferData(target: Int, size: Long, data: MemorySegment, usage: Int): Unit = glBufferData.invokeExact(target, size, data, usage) as Unit
+	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glBufferData.xhtml
+	private val glBufferData: MethodHandle by lazy {
+		linker.downcallHandle(glad_glBufferData(), glBufferData__descriptor)
+	}
+	val glBufferData__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
+		GLuint,
+		GLsizeiptr,
+		C_POINTER,
+		GLenum
+	)
 }

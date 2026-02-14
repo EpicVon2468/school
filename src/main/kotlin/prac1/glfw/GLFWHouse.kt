@@ -104,12 +104,15 @@ fun main() {
 	val vertexBuffer: MemorySegment = global.allocate(GLuint)
 	GL.genBuffers(1, vertexBuffer)
 	GL.bindBuffer(GL_ARRAY_BUFFER(), vertexBuffer[GLuint, 0])
+	GL.bufferData(GL_ARRAY_BUFFER(), vecOf(9).byteSize(), vertices, GL_STATIC_DRAW())
 
 	// Do a first glViewport to fix alignment.
-	val width: MemorySegment = global.allocate(C_INT)
-	val height: MemorySegment = global.allocate(C_INT)
-	glfwGetFramebufferSize(window, width, height)
-	GL.viewport(0, 0, width[C_INT, 0], height[C_INT, 0])
+	Arena.ofShared().use { arena: Arena ->
+		val width: MemorySegment = arena.allocate(C_INT)
+		val height: MemorySegment = arena.allocate(C_INT)
+		glfwGetFramebufferSize(window, width, height)
+		GL.viewport(0, 0, width[C_INT, 0], height[C_INT, 0])
+	}
 
 	while (!GLFW.windowShouldClose(window)) {
 		GL.clear(GL_COLOR_BUFFER_BIT())
