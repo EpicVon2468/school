@@ -111,6 +111,7 @@ fun main() {
 
 	while (!GLFW.windowShouldClose(window)) {
 		GL.clear(GL_COLOR_BUFFER_BIT())
+		GL.clearColour(1f, 1f, 1f, 1f)
 
 		glfwSwapBuffers(window)
 		glfwPollEvents()

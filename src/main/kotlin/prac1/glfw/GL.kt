@@ -95,4 +95,19 @@ data object GL {
 	val glClear__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
 		GLbitfield
 	)
+
+	/**
+	 * `void glClearColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);`
+	 */
+	fun clearColour(red: Float, green: Float, blue: Float, alpha: Float): Unit = glClearColour.invokeExact(red, green, blue, alpha) as Unit
+	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glClearColor.xhtml
+	private val glClearColour: MethodHandle by lazy {
+		linker.downcallHandle(glad_glClearColor(), glClearColour__descriptor)
+	}
+	val glClearColour__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
+		GLfloat,
+		GLfloat,
+		GLfloat,
+		GLfloat
+	)
 }
