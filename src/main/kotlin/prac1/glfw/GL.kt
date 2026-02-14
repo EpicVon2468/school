@@ -110,4 +110,30 @@ data object GL {
 		GLfloat,
 		GLfloat
 	)
+
+	/**
+	 * `void glGenBuffers(GLsizei n, GLuint *buffers);`
+	 */
+	fun genBuffers(n: Int, buffers: MemorySegment): Unit = glGenBuffers.invokeExact(n, buffers) as Unit
+	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glGenBuffers.xhtml
+	private val glGenBuffers: MethodHandle by lazy {
+		linker.downcallHandle(glad_glGenBuffers(), glGenBuffers__descriptor)
+	}
+	val glGenBuffers__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
+		GLsizei,
+		C_POINTER
+	)
+
+	/**
+	 * `void glBindBuffer(GLenum target, GLuint buffer);`
+	 */
+	fun bindBuffer(target: Int, buffer: Int): Unit = glBindBuffer.invokeExact(target, buffer) as Unit
+	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glBindBuffer.xhtml
+	private val glBindBuffer: MethodHandle by lazy {
+		linker.downcallHandle(glad_glBindBuffer(), glBindBuffer__descriptor)
+	}
+	val glBindBuffer__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
+		GLenum,
+		GLuint
+	)
 }

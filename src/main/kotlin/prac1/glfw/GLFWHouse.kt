@@ -101,7 +101,9 @@ fun main() {
 		println("DebugProc {\n\tsource = $source,\n\ttype = $type,\n\tid = $id,\n\tseverity = $severity,\n\tlength = $length,\n\tmessage = '$message'\n}")
 	}
 
-
+	val vertexBuffer: MemorySegment = global.allocate(GLuint)
+	GL.genBuffers(1, vertexBuffer)
+	GL.bindBuffer(GL_ARRAY_BUFFER(), vertexBuffer[GLuint, 0])
 
 	// Do a first glViewport to fix alignment.
 	val width: MemorySegment = global.allocate(C_INT)
