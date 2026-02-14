@@ -110,6 +110,8 @@ fun main() {
 	GL.viewport(0, 0, width[C_INT, 0], height[C_INT, 0])
 
 	while (!GLFW.windowShouldClose(window)) {
+		GL.clear(GL_COLOR_BUFFER_BIT())
+
 		glfwSwapBuffers(window)
 		glfwPollEvents()
 	}

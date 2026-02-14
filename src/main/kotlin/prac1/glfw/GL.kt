@@ -65,7 +65,7 @@ data object GL {
 	/**
 	 * `void glDebugMessageCallback(DEBUGPROC callback, const void *userParam);`
 	 */
-	fun debugMessageCallback(callback: GLDebugProc, userParam: MemorySegment) = glDebugMessageCallback.invokeExact(
+	fun debugMessageCallback(callback: GLDebugProc, userParam: MemorySegment): Unit = glDebugMessageCallback.invokeExact(
 		GLDEBUGPROC.allocate(
 			/*fi =*/ { source: Int, type: Int, id: Int, severity: Int, length: Int, message: MemorySegment, userParam: MemorySegment ->
 				callback(source, type, id, severity, length, message.jvmNull()?.getString(0), userParam)
@@ -74,6 +74,7 @@ data object GL {
 		),
 		userParam
 	) as Unit
+	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glDebugMessageCallback.xhtml
 	private val glDebugMessageCallback: MethodHandle by lazy {
 		linker.downcallHandle(glad_glDebugMessageCallback(), glDebugMessageCallback__descriptor)
 	}
@@ -82,4 +83,16 @@ data object GL {
 		C_POINTER
 	)
 	typealias GLDebugProc = (source: Int, type: Int, id: Int, severity: Int, length: Int, message: String?, userParam: MemorySegment) -> Unit
+
+	/**
+	 * `void glClear(GLbitfield mask);`
+	 */
+	fun clear(mask: Int): Unit = glClear.invokeExact(mask) as Unit
+	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glClear.xhtml
+	private val glClear: MethodHandle by lazy {
+		linker.downcallHandle(glad_glClear(), glClear__descriptor)
+	}
+	val glClear__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
+		GLbitfield
+	)
 }
