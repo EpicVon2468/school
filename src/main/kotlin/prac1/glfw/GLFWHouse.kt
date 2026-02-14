@@ -5,11 +5,9 @@ import org.glfw.glfw3_h.*
 import java.io.InputStream
 
 import java.lang.foreign.Arena
-import java.lang.foreign.Linker
 import java.lang.foreign.MemoryLayout
 import java.lang.foreign.MemorySegment
 import java.lang.foreign.SequenceLayout
-import java.lang.foreign.ValueLayout
 
 import kotlin.system.exitProcess
 
@@ -18,10 +16,9 @@ val VEC3_LAYOUT: SequenceLayout = vecOf(3L)
 
 fun vecOf(count: Long): SequenceLayout = MemoryLayout.sequenceLayout(count, C_FLOAT)
 
-private val linker: Linker = Linker.nativeLinker()
 val global: Arena = Arena.global()
 
-val verticesLayout: SequenceLayout = MemoryLayout.sequenceLayout(3L, Vertex.LAYOUT)
+//val verticesLayout: SequenceLayout = MemoryLayout.sequenceLayout(3L, Vertex.LAYOUT)
 // https://dev.java/learn/ffm/access-structure/
 // FIXME: Apparently I also gave up on Vertex in KMP_GE;  I'll have to use the other method for now, but hopefully I'll figure this out.
 //val vertices: MemorySegment = global.allocate(verticesLayout).apply {

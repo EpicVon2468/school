@@ -74,13 +74,11 @@ fun Array<Any?>.toNativeArray(
  * @see MemoryLayout.sequenceLayout
  * @see MemoryLayout.arrayElementVarHandle
  */
-fun Arena.allocateArray(elementLayout: MemoryLayout, vararg values: Any?, is2DArray: Boolean = false): MemorySegment {
+fun Arena.allocateArray(elementLayout: MemoryLayout, vararg values: Any?): MemorySegment {
 	val layout: SequenceLayout = MemoryLayout.sequenceLayout(values.size.toLong(), elementLayout)
 	val array: MemorySegment = allocate(layout)
-	val vh: VarHandle = if (is2DArray) elementLayout.arrayElementVarHandle(MemoryLayout.PathElement.sequenceElement()) else elementLayout.arrayElementVarHandle()
-	for (current: Long in 0..<layout.elementCount()) {
-		if (is2DArray) vh.set(array, 0L, current, 0L, values[current.toInt()]) else vh.set(array, 0L, current, values[current.toInt()])
-	}
+	val vh: VarHandle = elementLayout.arrayElementVarHandle()
+	for (current: Long in 0..<layout.elementCount()) vh.set(array, 0L, current, values[current.toInt()])
 	return array
 }
 
