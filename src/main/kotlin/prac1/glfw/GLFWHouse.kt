@@ -63,7 +63,7 @@ fun main() {
 		println("ERROR - GLFWErrorFun: (errorCode: '$errorCode', message: '$description')")
 	}
 
-	if (glfwInit() != 1) {
+	if (!GLFW.init()) {
 		println("ERROR - Failed to initialise GLFW!")
 		exitProcess(1)
 	}
@@ -80,12 +80,12 @@ fun main() {
 	}
 
 	glfwMakeContextCurrent(window)
-	if (GL.loadGL(`glfwGetProcAddress$address`()) == 0) {
+	if (GL.loadGL(`glfwGetProcAddress$address`()) == GLFW_FALSE()) {
 		println("ERROR - Glad failed to load GL!")
 		glfwTerminate()
 		exitProcess(1)
 	}
-	GLFW.setFramebufferSizeCallback(window) { window: MemorySegment, width: Int, height: Int ->
+	GLFW.setFramebufferSizeCallback(window) { _, width: Int, height: Int ->
 		println("Called: ($width, $height)")
 		GL.viewport(0, 0, width, height)
 	}
@@ -96,7 +96,7 @@ fun main() {
 
 	println("OpenGL shader language version: ${GL.getString(GL_SHADING_LANGUAGE_VERSION())}")
 
-	while (glfwWindowShouldClose(window) != 1) {
+	while (!GLFW.windowShouldClose(window)) {
 		glfwSwapBuffers(window)
 		glfwPollEvents()
 	}

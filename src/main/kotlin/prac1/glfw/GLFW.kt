@@ -8,6 +8,13 @@ import java.lang.foreign.MemorySegment
 
 data object GLFW {
 
+	fun init(): Boolean = glfwInit() != GLFW_FALSE()
+
+	fun windowShouldClose(window: MemorySegment): Boolean {
+		if (window == MemorySegment.NULL) throw IllegalArgumentException("NULL was passed to GLFW.windowShouldClose()!")
+		return glfwWindowShouldClose(window) != GLFW_FALSE()
+	}
+
 	/**
 	 * `GLFWerrorfun glfwSetErrorCallback(GLFWerrorfun callback);`
 	 */
