@@ -65,44 +65,50 @@ open class Quadrilateral(override val vertices: MemorySegment) : Shape {
 	override val verticesCount: Long = 18
 
 	constructor(
-		tlx: Float, tly: Float,
-		blx: Float, bly: Float,
-		trx: Float, `try`: Float,
-		brx: Float, bry: Float,
-		tlxo: Float = 0.0f, tlyo: Float = 0.0f,
-		blxo: Float = 0.0f, blyo: Float = 0.0f,
-		trxo: Float = 0.0f, tryo: Float = 0.0f,
-		brxo: Float = 0.0f, bryo: Float = 0.0f,
+		upperLeftX: Float, upperLeftY: Float,
+		lowerLeftX: Float, lowerLeftY: Float,
+		upperRightX: Float, upperRightY: Float,
+		lowerRightX: Float, lowerRightY: Float,
+		tlxOffset: Float = 0.0f, tlyOffset: Float = 0.0f,
+		blxOffset: Float = 0.0f, blyOffset: Float = 0.0f,
+		trxOffset: Float = 0.0f, tryOffset: Float = 0.0f,
+		brxOffset: Float = 0.0f, bryOffset: Float = 0.0f
 	) : this(
 		global.allocateArray(
 			GLfloat,
 
-			tlx + tlxo, tly + tlyo, 0.0f,
-			blx + blxo, bly + blyo, 0.0f,
-			trx + trxo, `try` + tryo, 0.0f,
+			// ul - ur
+			// |
+			// ll
+			upperLeftX + tlxOffset, upperLeftY + tlyOffset, 0.0f,
+			lowerLeftX + blxOffset, lowerLeftY + blyOffset, 0.0f,
+			upperRightX + trxOffset, upperRightY + tryOffset, 0.0f,
 
-			trx + trxo, `try` + tryo, 0.0f,
-			blx + blxo, bly + blyo, 0.0f,
-			brx + brxo, bry + bryo, 0.0f,
+			//      ur
+			//       |
+			// ll - lr
+			upperRightX + trxOffset, upperRightY + tryOffset, 0.0f,
+			lowerLeftX + blxOffset, lowerLeftY + blyOffset, 0.0f,
+			lowerRightX + brxOffset, lowerRightY + bryOffset, 0.0f,
 		)
 	)
 
 	constructor(
-		tlx: Float, tly: Float,
-		blx: Float, bly: Float,
-		trx: Float, `try`: Float,
-		brx: Float, bry: Float,
+		upperLeftX: Float, upperLeftY: Float,
+		lowerLeftX: Float, lowerLeftY: Float,
+		upperRightX: Float, upperRightY: Float,
+		lowerRightX: Float, lowerRightY: Float,
 		offsetX: Float = 0.0f,
 		offsetY: Float = 0.0f
 	) : this(
-		tlx = tlx, tly = tly,
-		blx = blx, bly = bly,
-		trx = trx, `try` = `try`,
-		brx = brx, bry = bry,
-		tlxo = offsetX, tlyo = offsetY,
-		blxo = offsetX, blyo = offsetY,
-		trxo = offsetX, tryo = offsetY,
-		brxo = offsetX, bryo = offsetY,
+		upperLeftX = upperLeftX, upperLeftY = upperLeftY,
+		lowerLeftX = lowerLeftX, lowerLeftY = lowerLeftY,
+		upperRightX = upperRightX, upperRightY = upperRightY,
+		lowerRightX = lowerRightX, lowerRightY = lowerRightY,
+		tlxOffset = offsetX, tlyOffset = offsetY,
+		blxOffset = offsetX, blyOffset = offsetY,
+		trxOffset = offsetX, tryOffset = offsetY,
+		brxOffset = offsetX, bryOffset = offsetY
 	)
 }
 
@@ -129,9 +135,9 @@ data class Square(
 //		x1 + offsetX, y2 + offsetY, 0.0f, // bottom left
 //		x2 + offsetX, y2 + offsetY, 0.0f, // bottom right
 //	)
-	tlx = x1, tly = y1,
-	blx = x1, bly = y2,
-	trx = x2, `try` = y1,
-	brx = x2, bry = y2,
-	offsetX, offsetY
+	upperLeftX = x1, upperLeftY = y1,
+	lowerLeftX = x1, lowerLeftY = y2,
+	upperRightX = x2, upperRightY = y1,
+	lowerRightX = x2, lowerRightY = y2,
+	offsetX = offsetX, offsetY = offsetY
 )
