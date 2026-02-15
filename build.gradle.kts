@@ -26,7 +26,7 @@ tasks.withType<JavaCompile> {
 
 tasks.withType<JavaExec> {
 	jvmArgs("-XX:+UseCompactObjectHeaders", "--enable-native-access=ALL-UNNAMED")
-	systemProperty("awt.toolkit.name", "WLToolkit")
+	if (System.getenv("XDG_SESSION_TYPE") == "wayland") systemProperty("awt.toolkit.name", "WLToolkit")
 	environment("LD_LIBRARY_PATH", "/usr/lib/x86_64-linux-gnu:${projectDir.absolutePath}/generated/glad/src")
 }
 

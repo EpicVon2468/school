@@ -1,5 +1,6 @@
 package io.github.epicvon2468.school.prac1
 
+import io.github.epicvon2468.school.colour
 import io.github.epicvon2468.school.showWithFixes
 
 import java.awt.Color as Colour
@@ -16,6 +17,7 @@ fun main() {
 	frame.showWithFixes()
 	println(Toolkit.getDefaultToolkit()::class.qualifiedName)
 }
+
 object House : JPanel() {
 
 	@Suppress("unused")
@@ -23,26 +25,26 @@ object House : JPanel() {
 
 	override fun paint(g: Graphics) {
 		// Draw the roof
-		g.color = Colour.RED
-		val x = intArrayOf(100, 160, 220)
-		val y = intArrayOf(100, 50, 100)
+		g.colour = Colour.RED
+		val x: IntArray = intArrayOf(100, 160, 220)
+		val y: IntArray = intArrayOf(100, 50, 100)
 		val poly = Polygon(x, y, 3)
 		g.fillPolygon(poly)
 
 		// Draw the body of house
-		g.color = Colour.BLUE
+		g.colour = Colour.BLUE
 		g.fillRect(100, 100, 120, 120)
 
 		// draw the door
-		g.color = Colour.WHITE
+		g.colour = Colour.WHITE
 		g.fillRect(145, 160, 30, 60)
 
 		// draw sun
-		g.color = Colour.YELLOW
+		g.colour = Colour.YELLOW
 		g.fillOval(240, 30, 50, 50)
 
 		// draw chimney
-		g.color = Colour.BLACK
+		g.colour = Colour.BLACK
 		g.fillRect(120, 55, 10, 30)
 	}
 }
