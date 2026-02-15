@@ -65,8 +65,8 @@ fun main() {
 	}
 
 	GLFW.makeContextCurrent(window)
-	if (!GL.loadGL(`glfwGetProcAddress$address`())) {
-		println("ERROR - Glad failed to load GL!")
+	if (!GL.load()) {
+		println("ERROR - Failed to load GL!")
 		glfwTerminate()
 		exitProcess(1)
 	}

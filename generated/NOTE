@@ -1,5 +1,0 @@
-See: https://stackoverflow.com/questions/11116399/crt1-o-in-function-start-undefined-reference-to-main-in-linux
-add '-nostartfiles' to clang when compiling
-
-'clang -c gl.c'
-'clang -fPIC gl.o -nostartfiles -shared -o libglad.so'
