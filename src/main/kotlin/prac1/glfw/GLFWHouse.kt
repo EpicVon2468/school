@@ -34,16 +34,17 @@ val global: Arena = Arena.global()
 //	-0.5f, -0.5f, 0.0f
 //)
 
-data class Triangle(
-	val vertexBuffer: MemorySegment = global.allocate(GLuint),
-	val vertexArray: MemorySegment = global.allocate(GLuint),
-	val vertices: MemorySegment,
-) {
+interface Shape {
+
+	val vertexBuffer: MemorySegment
+	val vertexArray: MemorySegment
+	val vertices: MemorySegment
+	val verticesCount: Long
 
 	fun genVertexBuffer() {
 		GL.genBuffers(1, vertexBuffer)
 		GL.bindBuffer(GL_ARRAY_BUFFER(), vertexBuffer[GLuint, 0])
-		GL.bufferData(GL_ARRAY_BUFFER(), VERTICES_SIZE, vertices, GL_STATIC_DRAW())
+		GL.bufferData(GL_ARRAY_BUFFER(), verticesCount * C_FLOAT.byteSize(), vertices, GL_STATIC_DRAW())
 	}
 
 	fun genVertexArray() {
@@ -51,22 +52,46 @@ data class Triangle(
 		GL.bindVertexArray(vertexArray[GLuint, 0])
 		GL.enableVertexAttribArray(0)
 		GL.bindBuffer(GL_ARRAY_BUFFER(), vertexArray[GLuint, 0])
-		GL.vertexAttribPointer(0, 3, GL_FLOAT(), false, 0, MemorySegment.NULL)
+		GL.vertexAttribPointer(
+			index = 0,
+			size = 3,
+			type = GL_FLOAT(),
+			normalised = false,
+			stride = 0,
+			pointer = MemorySegment.NULL
+		)
 		GL.bindVertexArray(0)
 	}
 
 	fun draw() {
 		GL.bindVertexArray(vertexArray[GLuint, 0])
-		GL.drawArrays(GL_TRIANGLES(), 0, 3)
-	}
-
-	constructor(vararg vertices: Float) : this(vertices = global.allocateArray(C_FLOAT, *vertices.toTypedArray()))
-
-	companion object {
-
-		val VERTICES_SIZE: Long = 9 * C_FLOAT.byteSize()
+		GL.drawArrays(mode = GL_TRIANGLES(), first = 0, count = 3)
 	}
 }
+
+data class Triangle(
+	override val vertices: MemorySegment,
+	override val verticesCount: Long
+) : Shape {
+
+	override val vertexBuffer: MemorySegment = global.allocate(GLuint)
+	override val vertexArray: MemorySegment = global.allocate(GLuint)
+
+	constructor(vararg vertices: Float) : this(global.allocateArray(C_FLOAT, *vertices.toTypedArray()), vertices.size.toLong())
+}
+
+// TODO: Draw with two triangles
+//data class Square(override val vertices: MemorySegment) : Shape {
+//
+//	override val vertexBuffer: MemorySegment = global.allocate(GLuint)
+//	override val vertexArray: MemorySegment = global.allocate(GLuint)
+//
+//	constructor(x1: Float, y1: Float, x2: Float, y2: Float) : this(
+//		global.allocateArray(
+//			C_FLOAT
+//		)
+//	)
+//}
 
 // Bash: 'locate libGL'
 // https://docs.oracle.com/en/java/javase/25/core/foreign-function-and-memory-api.html
