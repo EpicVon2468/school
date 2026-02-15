@@ -4,18 +4,23 @@ import org.glfw.glfw3_h.*
 
 import java.lang.foreign.MemorySegment
 
-interface Shape {
+abstract class Shape {
 
-	val vertexBuffer: MemorySegment
-	val vertexArray: MemorySegment
-	val vertices: MemorySegment
-	val verticesCount: Long
+	val vertexBuffer: MemorySegment = global.allocate(GLuint)
+	val vertexArray: MemorySegment = global.allocate(GLuint)
+	abstract val vertices: MemorySegment
+	abstract val verticesCount: Long
 
 	fun genVertexBuffer() {
 		GL.genBuffers(1, vertexBuffer)
 		GL.bindBuffer(GL_ARRAY_BUFFER(), vertexBuffer[GLuint, 0])
 		GL.bufferData(GL_ARRAY_BUFFER(), verticesCount * GLfloat.byteSize(), vertices, GL_STATIC_DRAW())
 	}
+
+	@JvmField
+	var colourOverride: Triple<Float, Float, Float>? = null
+	// FIXME: Not ideal
+	var colourOverrideLocation: Int = -1
 
 	fun genVertexArray() {
 		GL.genVertexArrays(1, vertexArray)
@@ -34,6 +39,7 @@ interface Shape {
 	}
 
 	fun draw() {
+		GL.uniform3fv(colourOverrideLocation, 1, colourOverride ?: COLOUR_UNSET)
 		GL.bindVertexArray(vertexArray[GLuint, 0])
 		GL.drawArrays(mode = GL_TRIANGLES(), first = 0, count = (verticesCount / 3).toInt())
 	}
@@ -44,10 +50,7 @@ interface Shape {
 data class Triangle(
 	override val vertices: MemorySegment,
 	override val verticesCount: Long
-) : Shape {
-
-	override val vertexBuffer: MemorySegment = global.allocate(GLuint)
-	override val vertexArray: MemorySegment = global.allocate(GLuint)
+) : Shape() {
 
 	constructor(vararg vertices: Float) : this(global.allocateArray(GLfloat, *vertices.toTypedArray()), vertices.size.toLong())
 
@@ -70,10 +73,8 @@ data class Triangle(
 // |					|
 // |					|
 // (blx, bly)--(brx, bry)
-open class Quadrilateral(override val vertices: MemorySegment) : Shape {
+open class Quadrilateral(override val vertices: MemorySegment) : Shape() {
 
-	override val vertexBuffer: MemorySegment = global.allocate(GLuint)
-	override val vertexArray: MemorySegment = global.allocate(GLuint)
 	override val verticesCount: Long = 18
 
 	constructor(

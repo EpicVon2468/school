@@ -245,7 +245,7 @@ data object GL {
 		count,
 		global.allocateArray(C_POINTER, *strings.map { it.cstr(global) }.toTypedArray()),
 		lengths?.toTypedArray()?.let {
-			global.allocateArray(C_INT, *it)
+			global.allocateArray(GLint, *it)
 		} ?: MemorySegment.NULL
 	) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glShaderSource.xhtml
@@ -345,6 +345,28 @@ data object GL {
 	val glUniform1f__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
 		GLint,
 		GLfloat
+	)
+
+	/**
+	 * `void glUniform3fv(GLint location, GLsize count, const GLfloat *value);`
+	 */
+	fun uniform3fv(location: Int, count: Int, value: Triple<Float, Float, Float>): Unit = uniform3fv(location, count, value.toList())
+	/**
+	 * `void glUniform3fv(GLint location, GLsize count, const GLfloat *value);`
+	 */
+	fun uniform3fv(location: Int, count: Int, value: List<Float>): Unit = glUniform3fv.invokeExact(
+		location,
+		count,
+		global.allocateArray(GLfloat, *value.toTypedArray())
+	) as Unit
+	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glUniform.xhtml
+	private val glUniform3fv: MethodHandle by lazy {
+		linker.downcallHandle(glad_glUniform3fv(), glUniform3fv__descriptor)
+	}
+	val glUniform3fv__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
+		GLint,
+		GLsizei,
+		C_POINTER
 	)
 
 	/**

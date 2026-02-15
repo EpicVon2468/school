@@ -88,27 +88,47 @@ fun main() {
 
 	val entries: MutableList<Shape> = mutableListOf()
 
+	// Roof
 	Triangle(
 		0.0f to 0.8f,
 		-0.4f to 0.4f,
 		0.4f to 0.4f
-	).apply(entries::add)
+	).apply {
+		colourOverride = Triple(255.0f, 0.0f, 0.0f)
+		entries.add(this)
+	}
+	// Chimney
 	Square(
 		-0.3f to 0.75f,
 		-0.2f to 0.5f
-	).apply(entries::add)
+	).apply {
+		colourOverride = Triple(0.0f, 0.0f, 0.0f)
+		entries.add(this)
+	}
+	// Top of building
 	Square(
 		-0.4f to 0.4f,
 		0.4f to 0.0f
-	).apply(entries::add)
+	).apply {
+		colourOverride = BLUE
+		entries.add(this)
+	}
+	// Bottom left square
 	Square(
 		-0.4f to 0.0f,
 		-0.1f to -0.4f
-	).apply(entries::add)
+	).apply {
+		colourOverride = BLUE
+		entries.add(this)
+	}
+	// Bottom right square
 	Square(
 		0.1f to 0.0f,
 		0.4f to -0.4f
-	).apply(entries::add)
+	).apply {
+		colourOverride = BLUE
+		entries.add(this)
+	}
 
 	for (shape: Shape in entries) {
 		shape.genVertexBuffer()
@@ -132,6 +152,10 @@ fun main() {
 
 	val uTimeLocation: Int = GL.getUniformLocation(program, "time")
 	if (uTimeLocation == -1) error("Couldn't get location of uniform 'time'!")
+	val uColourOverrideLocation: Int = GL.getUniformLocation(program, "colourOverride")
+	if (uColourOverrideLocation == -1) error("Couldn't get location of uniform 'colourOverride'!")
+
+	entries.forEach { it.colourOverrideLocation = uColourOverrideLocation }
 
 	// Do a first glViewport to fix alignment.
 	Arena.ofShared().use { arena: Arena ->
@@ -161,6 +185,9 @@ fun main() {
 
 	exitProcess(0)
 }
+
+val COLOUR_UNSET: Triple<Float, Float, Float> = Triple(-1.0f, -1.0f, -1.0f)
+val BLUE: Triple<Float, Float, Float> = Triple(0.0f, 0.0f, 255.0f)
 
 private val implicitClass: Class<*> by lazy { Class.forName("io.github.epicvon2468.school.prac1.glfw.GLFWHouseKt") }
 

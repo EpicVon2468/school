@@ -3,6 +3,7 @@ package io.github.epicvon2468.school.prac1.glfw
 import java.lang.foreign.MemorySegment
 import java.lang.invoke.VarHandle
 
+// Ignore this, from an earlier point in testing, no longer used anywhere
 data class StructBackedArray<T>(
 	private val segment: MemorySegment,
 	private val handle: VarHandle,

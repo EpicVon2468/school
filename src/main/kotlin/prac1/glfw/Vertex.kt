@@ -7,6 +7,7 @@ import java.lang.foreign.SequenceLayout
 import java.lang.foreign.StructLayout
 import java.lang.invoke.VarHandle
 
+// Ignore this, from an earlier point in testing, no longer used anywhere
 class Vertex(pos: Pair<Float, Float>, col: Triple<Float, Float, Float>) {
 
 	operator fun component1(): StructBackedArray<Float> = this.pos
