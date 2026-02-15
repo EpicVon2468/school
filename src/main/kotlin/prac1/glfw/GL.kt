@@ -27,7 +27,9 @@ data object GL {
 	private val glEnable: MethodHandle by lazy {
 		linker.downcallHandle(glad_glEnable(), glEnable__descriptor)
 	}
-	val glEnable__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(GLenum)
+	val glEnable__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
+		GLenum
+	)
 
 	/**
 	 * `void glViewport(GLint x, GLint y, GLsizei width, GLsizei height);`

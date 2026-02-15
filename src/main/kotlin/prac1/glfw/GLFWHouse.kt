@@ -54,17 +54,17 @@ fun main() {
 		exitProcess(1)
 	}
 
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR(), 4)
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR(), 6)
-	glfwWindowHint(GLFW_OPENGL_PROFILE(), GLFW_OPENGL_CORE_PROFILE())
-	val window = glfwCreateWindow(600, 600, "My House".cstr(global), MemorySegment.NULL, MemorySegment.NULL)
+	GLFW.windowHint(GLFW_CONTEXT_VERSION_MAJOR(), 4)
+	GLFW.windowHint(GLFW_CONTEXT_VERSION_MINOR(), 6)
+	GLFW.windowHint(GLFW_OPENGL_PROFILE(), GLFW_OPENGL_CORE_PROFILE())
+	val window = GLFW.createWindow(600, 600, "My House", MemorySegment.NULL, MemorySegment.NULL)
 	if (window == MemorySegment.NULL) {
 		println("ERROR - GLFWWindow failed to create!")
 		glfwTerminate()
 		exitProcess(1)
 	}
 
-	glfwMakeContextCurrent(window)
+	GLFW.makeContextCurrent(window)
 	if (!GL.loadGL(`glfwGetProcAddress$address`())) {
 		println("ERROR - Glad failed to load GL!")
 		glfwTerminate()
@@ -161,7 +161,7 @@ fun main() {
 	Arena.ofShared().use { arena: Arena ->
 		val width: MemorySegment = arena.allocate(C_INT)
 		val height: MemorySegment = arena.allocate(C_INT)
-		glfwGetFramebufferSize(window, width, height)
+		GLFW.getFramebufferSize(window, width, height)
 		GL.viewport(0, 0, width[C_INT, 0], height[C_INT, 0])
 	}
 
@@ -175,13 +175,13 @@ fun main() {
 		// https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/2.2.hello_triangle_indexed/hello_triangle_indexed.cpp
 		entries.forEach(Shape::draw)
 
-		glfwSwapBuffers(window)
+		GLFW.swapBuffers(window)
 		// This cannot be at the start, or the JVM hits a segmentation fault in libwayland-client.so.0
-		glfwPollEvents()
+		GLFW.pollEvents()
 	}
 
-	glfwDestroyWindow(window)
-	glfwTerminate()
+	GLFW.destroyWindow(window)
+	GLFW.terminate()
 
 	exitProcess(0)
 }

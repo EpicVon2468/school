@@ -14,6 +14,11 @@ data object GLFW {
 	fun init(): Boolean = glfwInit() != GLFW_FALSE()
 
 	/**
+	 * `void glfwTerminate(void);`
+	 */
+	fun terminate(): Unit = glfwTerminate()
+
+	/**
 	 * `double glfwGetTime(void);`
 	 */
 	fun getTime(): Double = glfwGetTime()
@@ -30,6 +35,47 @@ data object GLFW {
 		if (window == MemorySegment.NULL) throw IllegalArgumentException("NULL was passed to GLFW.windowShouldClose()!")
 		return glfwWindowShouldClose(window) != GLFW_FALSE()
 	}
+
+	/**
+	 * `void glfwWindowHint(int hint, int value);`
+	 */
+	fun windowHint(hint: Int, value: Int): Unit = glfwWindowHint(hint, value)
+
+	/**
+	 * `GLFWwindow *glfwCreateWindow(int width, int height, const char *title, GLFWmonitor *monitor, GLFWwindow *share);`
+	 */
+	fun createWindow(
+		width: Int,
+		height: Int,
+		title: String,
+		monitor: MemorySegment,
+		share: MemorySegment
+	): MemorySegment = glfwCreateWindow(width, height, title.cstr(global), monitor, share)
+
+	/**
+	 * `void glfwMakeContextCurrent(GLFWwindow *window);`
+	 */
+	fun makeContextCurrent(window: MemorySegment): Unit = glfwMakeContextCurrent(window)
+
+	/**
+	 * `void glfwDestroyWindow(GLFWwindow *window);`
+	 */
+	fun destroyWindow(window: MemorySegment): Unit = glfwDestroyWindow(window)
+
+	/**
+	 * `void glfwGetFramebufferSize(GLFWwindow *window, int *width, int *height);`
+	 */
+	fun getFramebufferSize(window: MemorySegment, width: MemorySegment, height: MemorySegment): Unit = glfwGetFramebufferSize(window, width, height)
+
+	/**
+	 * `void glfwSwapBuffers(GLFWwindow *window);`
+	 */
+	fun swapBuffers(window: MemorySegment): Unit = glfwSwapBuffers(window)
+
+	/**
+	 * `void glfwPollEvents(void);`
+	 */
+	fun pollEvents(): Unit = glfwPollEvents()
 
 	/**
 	 * `GLFWerrorfun glfwSetErrorCallback(GLFWerrorfun callback);`
