@@ -86,28 +86,28 @@ fun main() {
 		println("DebugProc {\n\tsource = $source,\n\ttype = $type,\n\tid = $id,\n\tseverity = $severity,\n\tlength = $length,\n\tmessage = '$message'\n}")
 	}
 
-	val triangle = Triangle(
+	val entries: MutableList<Shape> = mutableListOf()
+
+	Triangle(
 		0.0f, 0.35f, 0.0f,
 		0.25f, 0.0f, 0.0f,
 		-0.25f, 0.0f, 0.0f
-	)
-	triangle.genVertexBuffer()
-	triangle.genVertexArray()
-
-	val triangle2 = Triangle(
+	).apply(entries::add)
+	Triangle(
 		0.0f, 0.35f, 0.0f,
 		0.5f, 1f, 0.0f,
 		-0.5f, 1f, 0.0f
-	)
-	triangle2.genVertexBuffer()
-	triangle2.genVertexArray()
-	val square = Square(
+	).apply(entries::add)
+	Square(
 		x1 = -0.35f, y1 = 0.35f,
 		x2 = 0.35f, y2 = -0.35f,
 		offsetY = -0.2f
-	)
-	square.genVertexBuffer()
-	square.genVertexArray()
+	).apply(entries::add)
+
+	for (shape: Shape in entries) {
+		shape.genVertexBuffer()
+		shape.genVertexArray()
+	}
 
 	val vertexShader: Int = GL.createShader(GL_VERTEX_SHADER())
 	if (vertexShader == 0) error("Could not create vertexShader!")
@@ -143,9 +143,7 @@ fun main() {
 		GL.uniform1f(uTimeLocation, GLFW.getTime().toFloat())
 
 		// https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/2.2.hello_triangle_indexed/hello_triangle_indexed.cpp
-		triangle.draw()
-		triangle2.draw()
-		square.draw()
+		entries.forEach(Shape::draw)
 
 		glfwSwapBuffers(window)
 		// This cannot be at the start, or the JVM hits a segmentation fault in libwayland-client.so.0
