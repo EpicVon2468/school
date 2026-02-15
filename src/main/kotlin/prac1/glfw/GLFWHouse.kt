@@ -86,21 +86,26 @@ data class Square(override val vertices: MemorySegment) : Shape {
 	override val vertexArray: MemorySegment = global.allocate(GLuint)
 	override val verticesCount: Long = 18
 
-	// (x1, y1) -- (x2, y1)
+	// (x1, y1)--(x2, y1)
 	// |				|
 	// |				|
-	// (x1, y2) -- (x2, y2)
-	constructor(x1: Float, y1: Float, x2: Float, y2: Float) : this(
+	// (x1, y2)--(x2, y2)
+	constructor(
+		x1: Float, y1: Float,
+		x2: Float, y2: Float,
+		offsetX: Float = 0.0f,
+		offsetY: Float = 0.0f
+	) : this(
 		global.allocateArray(
 			C_FLOAT,
 
-			x1, y1, 0.0f, // top left
-			x1, y2, 0.0f, // bottom left
-			x2, y1, 0.0f, // top right
+			x1 + offsetX, y1 + offsetY, 0.0f, // top left
+			x1 + offsetX, y2 + offsetY, 0.0f, // bottom left
+			x2 + offsetX, y1 + offsetY, 0.0f, // top right
 
-			x2, y1, 0.0f, // top right
-			x1, y2, 0.0f, // bottom left
-			x2, y2, 0.0f, // bottom right
+			x2 + offsetX, y1 + offsetY, 0.0f, // top right
+			x1 + offsetX, y2 + offsetY, 0.0f, // bottom left
+			x2 + offsetX, y2 + offsetY, 0.0f, // bottom right
 		)
 	)
 }
@@ -173,8 +178,9 @@ fun main() {
 	triangle2.genVertexBuffer()
 	triangle2.genVertexArray()
 	val square = Square(
-		x1 = -1.0f, y1 = 1.0f,
-		x2 = 1.0f, y2 = -1.0f
+		x1 = -0.35f, y1 = 0.35f,
+		x2 = 0.35f, y2 = -0.35f,
+		offsetY = -0.2f
 	)
 	square.genVertexBuffer()
 	square.genVertexArray()
