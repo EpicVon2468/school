@@ -77,38 +77,94 @@ data class Triangle(
 	override val vertexBuffer: MemorySegment = global.allocate(GLuint)
 	override val vertexArray: MemorySegment = global.allocate(GLuint)
 
-	constructor(vararg vertices: Float) : this(global.allocateArray(C_FLOAT, *vertices.toTypedArray()), vertices.size.toLong())
+	constructor(vararg vertices: Float) : this(global.allocateArray(GLfloat, *vertices.toTypedArray()), vertices.size.toLong())
 }
 
-data class Square(override val vertices: MemorySegment) : Shape {
+// (tlx, tly)--(trx, try)
+// |					|
+// |					|
+// |					|
+// |					|
+// |					|
+// |					|
+// (blx, bly)--(brx, bry)
+open class Quadrilateral(override val vertices: MemorySegment) : Shape {
 
 	override val vertexBuffer: MemorySegment = global.allocate(GLuint)
 	override val vertexArray: MemorySegment = global.allocate(GLuint)
 	override val verticesCount: Long = 18
 
-	// (x1, y1)--(x2, y1)
-	// |				|
-	// |				|
-	// (x1, y2)--(x2, y2)
 	constructor(
-		x1: Float, y1: Float,
-		x2: Float, y2: Float,
+		tlx: Float, tly: Float,
+		blx: Float, bly: Float,
+		trx: Float, `try`: Float,
+		brx: Float, bry: Float,
+		tlxo: Float = 0.0f, tlyo: Float = 0.0f,
+		blxo: Float = 0.0f, blyo: Float = 0.0f,
+		trxo: Float = 0.0f, tryo: Float = 0.0f,
+		brxo: Float = 0.0f, bryo: Float = 0.0f,
+	) : this(
+		global.allocateArray(
+			GLfloat,
+
+			tlx + tlxo, tly + tlyo, 0.0f,
+			blx + blxo, bly + blyo, 0.0f,
+			trx + trxo, `try` + tryo, 0.0f,
+
+			trx + trxo, `try` + tryo, 0.0f,
+			blx + blxo, bly + blyo, 0.0f,
+			brx + brxo, bry + bryo, 0.0f,
+		)
+	)
+
+	constructor(
+		tlx: Float, tly: Float,
+		blx: Float, bly: Float,
+		trx: Float, `try`: Float,
+		brx: Float, bry: Float,
 		offsetX: Float = 0.0f,
 		offsetY: Float = 0.0f
 	) : this(
-		global.allocateArray(
-			C_FLOAT,
-
-			x1 + offsetX, y1 + offsetY, 0.0f, // top left
-			x1 + offsetX, y2 + offsetY, 0.0f, // bottom left
-			x2 + offsetX, y1 + offsetY, 0.0f, // top right
-
-			x2 + offsetX, y1 + offsetY, 0.0f, // top right
-			x1 + offsetX, y2 + offsetY, 0.0f, // bottom left
-			x2 + offsetX, y2 + offsetY, 0.0f, // bottom right
-		)
+		tlx = tlx, tly = tly,
+		blx = blx, bly = bly,
+		trx = trx, `try` = `try`,
+		brx = brx, bry = bry,
+		tlxo = offsetX, tlyo = offsetY,
+		blxo = offsetX, blyo = offsetY,
+		trxo = offsetX, tryo = offsetY,
+		brxo = offsetX, bryo = offsetY,
 	)
 }
+
+// (x1, y1)--(x2, y1)
+// |				|
+// |				|
+// |				|
+// |				|
+// (x1, y2)--(x2, y2)
+data class Square(
+	val x1: Float, val y1: Float,
+	val x2: Float, val y2: Float,
+	val offsetX: Float = 0.0f,
+	val offsetY: Float = 0.0f
+) : Quadrilateral(
+//	global.allocateArray(
+//		GLfloat,
+//
+//		x1 + offsetX, y1 + offsetY, 0.0f, // top left
+//		x1 + offsetX, y2 + offsetY, 0.0f, // bottom left
+//		x2 + offsetX, y1 + offsetY, 0.0f, // top right
+//
+//		x2 + offsetX, y1 + offsetY, 0.0f, // top right
+//		x1 + offsetX, y2 + offsetY, 0.0f, // bottom left
+//		x2 + offsetX, y2 + offsetY, 0.0f, // bottom right
+//	)
+	tlx = x1, tly = y1,
+	blx = x1, bly = y2,
+	trx = x2, `try` = y1,
+	brx = x2, bry = y2,
+	offsetX, offsetY
+)
 
 // Bash: 'locate libGL'
 // https://docs.oracle.com/en/java/javase/25/core/foreign-function-and-memory-api.html
