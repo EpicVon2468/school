@@ -20,7 +20,7 @@ data object GL {
 		return false
 	}
 
-	private fun addressOf(name: String): MemorySegment = glfwGetProcAddress(name.cstr(global))
+	private fun addressOf(name: String): MemorySegment = GLFW.getProcAddress(name)
 
 	private val linker: Linker = Linker.nativeLinker()
 

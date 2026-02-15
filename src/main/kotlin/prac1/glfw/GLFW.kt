@@ -19,6 +19,11 @@ data object GLFW {
 	fun terminate(): Unit = glfwTerminate()
 
 	/**
+	 * `GLFWglproc glfwGetProcAddress(const char *procname);`
+	 */
+	fun getProcAddress(procname: String): MemorySegment = glfwGetProcAddress(procname.cstr(global))
+
+	/**
 	 * `double glfwGetTime(void);`
 	 */
 	fun getTime(): Double = glfwGetTime()
