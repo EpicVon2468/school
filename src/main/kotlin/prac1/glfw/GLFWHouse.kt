@@ -89,19 +89,25 @@ fun main() {
 	val entries: MutableList<Shape> = mutableListOf()
 
 	Triangle(
-		0.0f to 0.35f,
-		0.25f to 0.0f,
-		-0.25f to 0.0f
-	).apply(entries::add)
-	Triangle(
-		0.0f to 0.35f,
-		0.5f to 1f,
-		-0.5f to 1f
+		0.0f to 0.8f,
+		-0.4f to 0.4f,
+		0.4f to 0.4f
 	).apply(entries::add)
 	Square(
-		x1 = -0.35f, y1 = 0.35f,
-		x2 = 0.35f, y2 = -0.35f,
-		offsetY = -0.2f
+		-0.3f to 0.75f,
+		-0.2f to 0.5f
+	).apply(entries::add)
+	Square(
+		-0.4f to 0.4f,
+		0.4f to 0.0f
+	).apply(entries::add)
+	Square(
+		-0.4f to 0.0f,
+		-0.1f to -0.4f
+	).apply(entries::add)
+	Square(
+		0.1f to 0.0f,
+		0.4f to -0.4f
 	).apply(entries::add)
 
 	for (shape: Shape in entries) {

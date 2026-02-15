@@ -152,4 +152,19 @@ data class Square(
 	upperRightX = x2, upperRightY = y1,
 	lowerRightX = x2, lowerRightY = y2,
 	offsetX = offsetX, offsetY = offsetY
-)
+) {
+
+	constructor(
+		upperLeft: Pair<Float, Float>,
+		lowerRight: Pair<Float, Float>,
+		offsetX: Float = 0.0f,
+		offsetY: Float = 0.0f
+	) : this(
+		x1 = upperLeft.first,
+		y1 = upperLeft.second,
+		x2 = lowerRight.first,
+		y2 = lowerRight.second,
+		offsetX = offsetX,
+		offsetY = offsetY
+	)
+}
