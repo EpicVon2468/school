@@ -65,7 +65,7 @@ interface Shape {
 
 	fun draw() {
 		GL.bindVertexArray(vertexArray[GLuint, 0])
-		GL.drawArrays(mode = GL_TRIANGLES(), first = 0, count = 3)
+		GL.drawArrays(mode = GL_TRIANGLES(), first = 0, count = (verticesCount / 3).toInt())
 	}
 }
 
@@ -80,18 +80,30 @@ data class Triangle(
 	constructor(vararg vertices: Float) : this(global.allocateArray(C_FLOAT, *vertices.toTypedArray()), vertices.size.toLong())
 }
 
-// TODO: Draw with two triangles
-//data class Square(override val vertices: MemorySegment) : Shape {
-//
-//	override val vertexBuffer: MemorySegment = global.allocate(GLuint)
-//	override val vertexArray: MemorySegment = global.allocate(GLuint)
-//
-//	constructor(x1: Float, y1: Float, x2: Float, y2: Float) : this(
-//		global.allocateArray(
-//			C_FLOAT
-//		)
-//	)
-//}
+data class Square(override val vertices: MemorySegment) : Shape {
+
+	override val vertexBuffer: MemorySegment = global.allocate(GLuint)
+	override val vertexArray: MemorySegment = global.allocate(GLuint)
+	override val verticesCount: Long = 18
+
+	// (x1, y1) -- (x2, y1)
+	// |				|
+	// |				|
+	// (x1, y2) -- (x2, y2)
+	constructor(x1: Float, y1: Float, x2: Float, y2: Float) : this(
+		global.allocateArray(
+			C_FLOAT,
+
+			x1, y1, 0.0f, // top left
+			x1, y2, 0.0f, // bottom left
+			x2, y1, 0.0f, // top right
+
+			x2, y1, 0.0f, // top right
+			x1, y2, 0.0f, // bottom left
+			x2, y2, 0.0f, // bottom right
+		)
+	)
+}
 
 // Bash: 'locate libGL'
 // https://docs.oracle.com/en/java/javase/25/core/foreign-function-and-memory-api.html
@@ -160,6 +172,12 @@ fun main() {
 	)
 	triangle2.genVertexBuffer()
 	triangle2.genVertexArray()
+	val square = Square(
+		x1 = -1.0f, y1 = 1.0f,
+		x2 = 1.0f, y2 = -1.0f
+	)
+	square.genVertexBuffer()
+	square.genVertexArray()
 
 	val vertexShader: Int = GL.createShader(GL_VERTEX_SHADER())
 	if (vertexShader == 0) error("Could not create vertexShader!")
@@ -189,7 +207,7 @@ fun main() {
 
 	while (!GLFW.windowShouldClose(window)) {
 		GL.clearColour(1f, 1f, 1f, 1f)
-		GL.clear(GL_COLOR_BUFFER_BIT())
+		GL.clear(GL_COLOR_BUFFER_BIT() or GL_DEPTH_BUFFER_BIT())
 
 		GL.useProgram(program)
 		GL.uniform1f(uTimeLocation, GLFW.getTime().toFloat())
@@ -197,8 +215,10 @@ fun main() {
 		// https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/2.2.hello_triangle_indexed/hello_triangle_indexed.cpp
 		triangle.draw()
 		triangle2.draw()
+		square.draw()
 
 		glfwSwapBuffers(window)
+		// This cannot be at the start, or the JVM hits a segmentation fault in libwayland-client.so.0
 		glfwPollEvents()
 	}
 
