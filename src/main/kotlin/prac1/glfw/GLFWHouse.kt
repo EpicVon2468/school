@@ -89,14 +89,14 @@ fun main() {
 	val entries: MutableList<Shape> = mutableListOf()
 
 	Triangle(
-		0.0f, 0.35f, 0.0f,
-		0.25f, 0.0f, 0.0f,
-		-0.25f, 0.0f, 0.0f
+		0.0f to 0.35f,
+		0.25f to 0.0f,
+		-0.25f to 0.0f
 	).apply(entries::add)
 	Triangle(
-		0.0f, 0.35f, 0.0f,
-		0.5f, 1f, 0.0f,
-		-0.5f, 1f, 0.0f
+		0.0f to 0.35f,
+		0.5f to 1f,
+		-0.5f to 1f
 	).apply(entries::add)
 	Square(
 		x1 = -0.35f, y1 = 0.35f,

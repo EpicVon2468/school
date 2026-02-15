@@ -39,6 +39,8 @@ interface Shape {
 	}
 }
 
+// TODO: use Pair or Point class for most constructors here
+
 data class Triangle(
 	override val vertices: MemorySegment,
 	override val verticesCount: Long
@@ -48,6 +50,16 @@ data class Triangle(
 	override val vertexArray: MemorySegment = global.allocate(GLuint)
 
 	constructor(vararg vertices: Float) : this(global.allocateArray(GLfloat, *vertices.toTypedArray()), vertices.size.toLong())
+
+	constructor(
+		top: Pair<Float, Float>,
+		left: Pair<Float, Float>,
+		right: Pair<Float, Float>
+	) : this(
+		top.first, top.second, 0.0f,
+		left.first, left.second, 0.0f,
+		right.first, right.second, 0.0f
+	)
 }
 
 // (tlx, tly)--(trx, try)
