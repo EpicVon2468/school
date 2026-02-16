@@ -21,7 +21,7 @@ data object GLFW {
 	/**
 	 * `GLFWglproc glfwGetProcAddress(const char *procname);`
 	 */
-	fun getProcAddress(procname: String): MemorySegment = glfwGetProcAddress(procname.cstr(global))
+	fun getProcAddress(procname: String): GLFWGLProc = glfwGetProcAddress(procname.cstr(global))
 
 	/**
 	 * `double glfwGetTime(void);`
@@ -36,7 +36,7 @@ data object GLFW {
 	/**
 	 * `int glfwWindowShouldClose(GLFWwindow *window);`
 	 */
-	fun windowShouldClose(window: MemorySegment): Boolean = glfwWindowShouldClose(window) != 0
+	fun windowShouldClose(window: GLFWWindow): Boolean = glfwWindowShouldClose(window) != 0
 
 	/**
 	 * `void glfwWindowHint(int hint, int value);`
@@ -50,29 +50,29 @@ data object GLFW {
 		width: Int,
 		height: Int,
 		title: String,
-		monitor: MemorySegment = MemorySegment.NULL,
-		share: MemorySegment = MemorySegment.NULL
-	): MemorySegment = glfwCreateWindow(width, height, title.cstr(global), monitor, share)
+		monitor: GLFWMonitor = NULL(),
+		share: GLFWWindow = NULL()
+	): GLFWWindow = glfwCreateWindow(width, height, title.cstr(global), monitor, share)
 
 	/**
 	 * `void glfwMakeContextCurrent(GLFWwindow *window);`
 	 */
-	fun makeContextCurrent(window: MemorySegment): Unit = glfwMakeContextCurrent(window)
+	fun makeContextCurrent(window: GLFWWindow): Unit = glfwMakeContextCurrent(window)
 
 	/**
 	 * `void glfwDestroyWindow(GLFWwindow *window);`
 	 */
-	fun destroyWindow(window: MemorySegment): Unit = glfwDestroyWindow(window)
+	fun destroyWindow(window: GLFWWindow): Unit = glfwDestroyWindow(window)
 
 	/**
 	 * `void glfwGetFramebufferSize(GLFWwindow *window, int *width, int *height);`
 	 */
-	fun getFramebufferSize(window: MemorySegment, width: MemorySegment, height: MemorySegment): Unit = glfwGetFramebufferSize(window, width, height)
+	fun getFramebufferSize(window: GLFWWindow, width: MemorySegment, height: MemorySegment): Unit = glfwGetFramebufferSize(window, width, height)
 
 	/**
 	 * `void glfwSwapBuffers(GLFWwindow *window);`
 	 */
-	fun swapBuffers(window: MemorySegment): Unit = glfwSwapBuffers(window)
+	fun swapBuffers(window: GLFWWindow): Unit = glfwSwapBuffers(window)
 
 	/**
 	 * `void glfwPollEvents(void);`
@@ -99,20 +99,20 @@ data object GLFW {
 	typealias GLFWErrorFun = (errorCode: Int, description: String?) -> Unit
 
 	/**
-	 * `GLFWframebuffersizefun glfwSetFramebufferSizeCallback(GLFWwindow* window, GLFWframebuffersizefun callback);`
+	 * `GLFWframebuffersizefun glfwSetFramebufferSizeCallback(GLFWwindow *window, GLFWframebuffersizefun callback);`
 	 */
-	fun setFramebufferSizeCallback(window: MemorySegment, callback: GLFWFramebufferSizeFun?): GLFWFramebufferSizeFun? {
-		fun MemorySegment.asFunction(): GLFWFramebufferSizeFun? = if (this == NULL()) null else { window: MemorySegment, width: Int, height: Int ->
+	fun setFramebufferSizeCallback(window: GLFWWindow, callback: GLFWFramebufferSizeFun?): GLFWFramebufferSizeFun? {
+		fun MemorySegment.asFunction(): GLFWFramebufferSizeFun? = if (this == NULL()) null else { window: GLFWWindow, width: Int, height: Int ->
 			GLFWframebuffersizefun.invoke(this, window, width, height)
 		}
 		callback ?: return glfwSetFramebufferSizeCallback(window, NULL()).asFunction()
 		return glfwSetFramebufferSizeCallback(
 			window,
 			GLFWframebuffersizefun.allocate(
-				/*fi =*/ { window: MemorySegment, width: Int, height: Int -> callback(window, width, height) },
+				/*fi =*/ { window: GLFWWindow, width: Int, height: Int -> callback(window, width, height) },
 				/*arena =*/ global
 			)
 		).asFunction()
 	}
-	typealias GLFWFramebufferSizeFun = (window: MemorySegment, width: Int, height: Int) -> Unit
+	typealias GLFWFramebufferSizeFun = (window: GLFWWindow, width: Int, height: Int) -> Unit
 }

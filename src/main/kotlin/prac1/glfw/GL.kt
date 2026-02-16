@@ -10,14 +10,14 @@ import java.lang.invoke.MethodHandle
 
 data object GL {
 
-	private fun addressOf(name: String): MemorySegment = GLFW.getProcAddress(name)
+	private fun addressOf(name: String): GLFWGLProc = GLFW.getProcAddress(name)
 
 	private val linker: Linker = Linker.nativeLinker()
 
 	/**
 	 * `void glEnable(GLenum cap);`
 	 */
-	fun enable(cap: Int): Unit = glEnable.invokeExact(cap) as Unit
+	fun enable(cap: GLEnum): Unit = glEnable.invokeExact(cap) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glEnable.xhtml
 	private val glEnable: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glEnable"), glEnable__descriptor)
@@ -44,7 +44,7 @@ data object GL {
 	/**
 	 * `const GLubyte *glGetString(GLenum name);`
 	 */
-	fun getString(name: Int): String = (glGetString.invokeExact(name) as MemorySegment).getString(0)
+	fun getString(name: GLEnum): String = (glGetString.invokeExact(name) as MemorySegment).getString(0)
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glGetString.xhtml
 	private val glGetString: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glGetString"), glGetString__descriptor)
@@ -124,7 +124,7 @@ data object GL {
 	/**
 	 * `void glBindBuffer(GLenum target, GLuint buffer);`
 	 */
-	fun bindBuffer(target: Int, buffer: Int): Unit = glBindBuffer.invokeExact(target, buffer) as Unit
+	fun bindBuffer(target: GLEnum, buffer: Int): Unit = glBindBuffer.invokeExact(target, buffer) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glBindBuffer.xhtml
 	private val glBindBuffer: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glBindBuffer"), glBindBuffer__descriptor)
@@ -137,7 +137,7 @@ data object GL {
 	/**
 	 * `void glBufferData(GLenum target, GLsizeiptr size, const void *data, GLenum usage);`
 	 */
-	fun bufferData(target: Int, size: Long, data: MemorySegment, usage: Int): Unit = glBufferData.invokeExact(target, size, data, usage) as Unit
+	fun bufferData(target: GLEnum, size: Long, data: MemorySegment, usage: GLEnum): Unit = glBufferData.invokeExact(target, size, data, usage) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glBufferData.xhtml
 	private val glBufferData: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glBufferData"), glBufferData__descriptor)
@@ -192,7 +192,7 @@ data object GL {
 	fun vertexAttribPointer(
 		index: Int,
 		size: Int,
-		type: Int,
+		type: GLEnum,
 		normalised: Boolean,
 		stride: Int,
 		pointer: MemorySegment
@@ -220,7 +220,7 @@ data object GL {
 	/**
 	 * `GLuint glCreateShader(GLenum shaderType);`
 	 */
-	fun createShader(shaderType: Int): Int = glCreateShader.invokeExact(shaderType) as Int
+	fun createShader(shaderType: GLEnum): Int = glCreateShader.invokeExact(shaderType) as Int
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glCreateShader.xhtml
 	private val glCreateShader: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glCreateShader"), glCreateShader__descriptor)
@@ -281,7 +281,7 @@ data object GL {
 	)
 
 	/**
-	 * `void glAttachShader(Gluint program, GLuint shader);`
+	 * `void glAttachShader(GLuint program, GLuint shader);`
 	 */
 	fun attachShader(program: Int, shader: Int): Unit = glAttachShader.invokeExact(program, shader) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glAttachShader.xhtml
@@ -369,7 +369,7 @@ data object GL {
 	/**
 	 * `void glDrawArrays(GLenum mode, GLint first, GLsizei count);`
 	 */
-	fun drawArrays(mode: Int, first: Int, count: Int): Unit = glDrawArrays.invokeExact(mode, first, count) as Unit
+	fun drawArrays(mode: GLEnum, first: Int, count: Int): Unit = glDrawArrays.invokeExact(mode, first, count) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glDrawArrays.xhtml
 	private val glDrawArrays: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glDrawArrays"), glDrawArrays__descriptor)
