@@ -33,7 +33,7 @@ abstract class Shape {
 			type = GL_FLOAT(),
 			normalised = false,
 			stride = 0,
-			pointer = MemorySegment.NULL
+			pointer = NULL()
 		)
 		GL.bindVertexArray(0)
 	}

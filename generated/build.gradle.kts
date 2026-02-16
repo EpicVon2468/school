@@ -19,8 +19,9 @@ tasks.withType<JavaCompile> {
 	}
 }
 
-// TODO: https://github.com/openjdk/jextract/blob/master/doc/GUIDE.md#filtering
-// jextract --include-dir /usr/include/GLFW --output . --target-package org.glfw --library glfw --use-system-load-library /usr/include/GLFW/glfw3.h
+// jextract --dump-includes includes.txt /usr/include/GLFW/glfw3.h
+// grep -v -E '\-\-include\-function\ gl.+\/gl(ext)?\.h' includes.txt > includes2.txt
+// jextract --include-dir /usr/include/GLFW --output . --target-package org.glfw --library glfw --use-system-load-library @includes2.txt /usr/include/GLFW/glfw3.h
 
 // Below this line is not included and should not be run, kept in case I need future reference.
 

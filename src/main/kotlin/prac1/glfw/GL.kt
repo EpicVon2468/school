@@ -68,7 +68,7 @@ data object GL {
 	/**
 	 * `void glDebugMessageCallback(DEBUGPROC callback, const void *userParam);`
 	 */
-	fun debugMessageCallback(callback: GLDebugProc) = debugMessageCallback(callback, MemorySegment.NULL)
+	fun debugMessageCallback(callback: GLDebugProc) = debugMessageCallback(callback, NULL())
 	/**
 	 * `void glDebugMessageCallback(DEBUGPROC callback, const void *userParam);`
 	 */
@@ -253,7 +253,7 @@ data object GL {
 		global.allocateArray(C_POINTER, *strings.map { it.cstr(global) }.toTypedArray()),
 		lengths?.toTypedArray()?.let {
 			global.allocateArray(GLint, *it)
-		} ?: MemorySegment.NULL
+		} ?: NULL()
 	) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glShaderSource.xhtml
 	private val glShaderSource: MethodHandle by lazy {

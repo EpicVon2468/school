@@ -11,7 +11,7 @@ data object GLFW {
 	/**
 	 * `int glfwInit(void);`
 	 */
-	fun init(): Boolean = glfwInit() != GLFW_FALSE()
+	fun init(): Boolean = glfwInit() != 0
 
 	/**
 	 * `void glfwTerminate(void);`
@@ -36,10 +36,7 @@ data object GLFW {
 	/**
 	 * `int glfwWindowShouldClose(GLFWwindow *window);`
 	 */
-	fun windowShouldClose(window: MemorySegment): Boolean {
-		if (window == MemorySegment.NULL) throw IllegalArgumentException("NULL was passed to GLFW.windowShouldClose()!")
-		return glfwWindowShouldClose(window) != GLFW_FALSE()
-	}
+	fun windowShouldClose(window: MemorySegment): Boolean = glfwWindowShouldClose(window) != 0
 
 	/**
 	 * `void glfwWindowHint(int hint, int value);`
@@ -86,10 +83,10 @@ data object GLFW {
 	 * `GLFWerrorfun glfwSetErrorCallback(GLFWerrorfun callback);`
 	 */
 	fun setErrorCallback(callback: GLFWErrorFun?): GLFWErrorFun? {
-		fun MemorySegment.asFunction(): GLFWErrorFun? = if (this == MemorySegment.NULL) null else { errorCode: Int, description: String? ->
+		fun MemorySegment.asFunction(): GLFWErrorFun? = if (this == NULL()) null else { errorCode: Int, description: String? ->
 			GLFWerrorfun.invoke(this, errorCode, description.cstr(global))
 		}
-		callback ?: return glfwSetErrorCallback(MemorySegment.NULL).asFunction()
+		callback ?: return glfwSetErrorCallback(NULL()).asFunction()
 		return glfwSetErrorCallback(
 			GLFWerrorfun.allocate(
 				/*fi =*/ { errorCode: Int, description: MemorySegment ->
@@ -105,10 +102,10 @@ data object GLFW {
 	 * `GLFWframebuffersizefun glfwSetFramebufferSizeCallback(GLFWwindow* window, GLFWframebuffersizefun callback);`
 	 */
 	fun setFramebufferSizeCallback(window: MemorySegment, callback: GLFWFramebufferSizeFun?): GLFWFramebufferSizeFun? {
-		fun MemorySegment.asFunction(): GLFWFramebufferSizeFun? = if (this == MemorySegment.NULL) null else { window: MemorySegment, width: Int, height: Int ->
+		fun MemorySegment.asFunction(): GLFWFramebufferSizeFun? = if (this == NULL()) null else { window: MemorySegment, width: Int, height: Int ->
 			GLFWframebuffersizefun.invoke(this, window, width, height)
 		}
-		callback ?: return glfwSetFramebufferSizeCallback(window, MemorySegment.NULL).asFunction()
+		callback ?: return glfwSetFramebufferSizeCallback(window, NULL()).asFunction()
 		return glfwSetFramebufferSizeCallback(
 			window,
 			GLFWframebuffersizefun.allocate(
