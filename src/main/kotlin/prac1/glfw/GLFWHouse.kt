@@ -57,7 +57,7 @@ fun main() {
 	GLFW.windowHint(GLFW_CONTEXT_VERSION_MAJOR(), 4)
 	GLFW.windowHint(GLFW_CONTEXT_VERSION_MINOR(), 6)
 	GLFW.windowHint(GLFW_OPENGL_PROFILE(), GLFW_OPENGL_CORE_PROFILE())
-	val window = GLFW.createWindow(600, 600, "My House", MemorySegment.NULL, MemorySegment.NULL)
+	val window = GLFW.createWindow(600, 600, "My House")
 	if (window == MemorySegment.NULL) {
 		println("ERROR - GLFWWindow failed to create!")
 		glfwTerminate()

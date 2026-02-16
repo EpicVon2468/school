@@ -53,8 +53,8 @@ data object GLFW {
 		width: Int,
 		height: Int,
 		title: String,
-		monitor: MemorySegment,
-		share: MemorySegment
+		monitor: MemorySegment = MemorySegment.NULL,
+		share: MemorySegment = MemorySegment.NULL
 	): MemorySegment = glfwCreateWindow(width, height, title.cstr(global), monitor, share)
 
 	/**
