@@ -26,13 +26,6 @@ val global: Arena = Arena.global()
 //	0.25f, 0.0f, 0.0f,
 //	-0.25f, 0.0f, 0.0f
 //)
-//
-//val vertices2: MemorySegment = global.allocateArray(
-//	C_FLOAT,
-//	0.0f, 0.5f, 0.0f,
-//	0.5f, -0.5f, 0.0f,
-//	-0.5f, -0.5f, 0.0f
-//)
 
 // Bash: 'locate libGL'
 // https://docs.oracle.com/en/java/javase/25/core/foreign-function-and-memory-api.html
@@ -65,11 +58,6 @@ fun main() {
 	}
 
 	GLFW.makeContextCurrent(window)
-	if (!GL.load()) {
-		println("ERROR - Failed to load GL!")
-		glfwTerminate()
-		exitProcess(1)
-	}
 	GLFW.setFramebufferSizeCallback(window) { _, width: Int, height: Int ->
 		println("Called: ($width, $height)")
 		GL.viewport(0, 0, width, height)

@@ -10,16 +10,6 @@ import java.lang.invoke.MethodHandle
 
 data object GL {
 
-	// Must be called first.
-	fun load(): Boolean = try {
-		System.loadLibrary("GL")
-		return true
-	} catch (e: UnsatisfiedLinkError) {
-		// This code doesn't actually run, it just terminates even with the catch >.>
-		e.printStackTrace()
-		return false
-	}
-
 	private fun addressOf(name: String): MemorySegment = GLFW.getProcAddress(name)
 
 	private val linker: Linker = Linker.nativeLinker()
