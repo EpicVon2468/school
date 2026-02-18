@@ -19,7 +19,7 @@ data object GL {
 	 */
 	fun enable(cap: GLEnum): Unit = glEnable.invokeExact(cap) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glEnable.xhtml
-	private val glEnable: MethodHandle by lazy {
+	val glEnable: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glEnable"), glEnable__descriptor)
 	}
 	val glEnable__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
@@ -31,7 +31,7 @@ data object GL {
 	 */
 	fun viewport(x: Int, y: Int, width: Int, height: Int): Unit = glViewport.invokeExact(x, y, width, height) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glViewport.xhtml
-	private val glViewport: MethodHandle by lazy {
+	val glViewport: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glViewport"), glViewport__descriptor)
 	}
 	val glViewport__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
@@ -46,7 +46,7 @@ data object GL {
 	 */
 	fun getString(name: GLEnum): String = (glGetString.invokeExact(name) as MemorySegment).getString(0)
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glGetString.xhtml
-	private val glGetString: MethodHandle by lazy {
+	val glGetString: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glGetString"), glGetString__descriptor)
 	}
 	val glGetString__descriptor: FunctionDescriptor = FunctionDescriptor.of(
@@ -72,7 +72,7 @@ data object GL {
 		userParam
 	) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glDebugMessageCallback.xhtml
-	private val glDebugMessageCallback: MethodHandle by lazy {
+	val glDebugMessageCallback: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glDebugMessageCallback"), glDebugMessageCallback__descriptor)
 	}
 	val glDebugMessageCallback__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
@@ -86,7 +86,7 @@ data object GL {
 	 */
 	fun clear(mask: Int): Unit = glClear.invokeExact(mask) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glClear.xhtml
-	private val glClear: MethodHandle by lazy {
+	val glClear: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glClear"), glClear__descriptor)
 	}
 	val glClear__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
@@ -98,7 +98,7 @@ data object GL {
 	 */
 	fun clearColour(red: Float, green: Float, blue: Float, alpha: Float): Unit = glClearColour.invokeExact(red, green, blue, alpha) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glClearColor.xhtml
-	private val glClearColour: MethodHandle by lazy {
+	val glClearColour: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glClearColor"), glClearColour__descriptor)
 	}
 	val glClearColour__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
@@ -113,7 +113,7 @@ data object GL {
 	 */
 	fun genBuffers(n: Int, buffers: MemorySegment): Unit = glGenBuffers.invokeExact(n, buffers) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glGenBuffers.xhtml
-	private val glGenBuffers: MethodHandle by lazy {
+	val glGenBuffers: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glGenBuffers"), glGenBuffers__descriptor)
 	}
 	val glGenBuffers__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
@@ -126,7 +126,7 @@ data object GL {
 	 */
 	fun bindBuffer(target: GLEnum, buffer: Int): Unit = glBindBuffer.invokeExact(target, buffer) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glBindBuffer.xhtml
-	private val glBindBuffer: MethodHandle by lazy {
+	val glBindBuffer: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glBindBuffer"), glBindBuffer__descriptor)
 	}
 	val glBindBuffer__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
@@ -139,7 +139,7 @@ data object GL {
 	 */
 	fun bufferData(target: GLEnum, size: Long, data: MemorySegment, usage: GLEnum): Unit = glBufferData.invokeExact(target, size, data, usage) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glBufferData.xhtml
-	private val glBufferData: MethodHandle by lazy {
+	val glBufferData: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glBufferData"), glBufferData__descriptor)
 	}
 	val glBufferData__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
@@ -154,7 +154,7 @@ data object GL {
 	 */
 	fun genVertexArrays(n: Int, arrays: MemorySegment): Unit = glGenVertexArrays.invokeExact(n, arrays) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glGenVertexArrays.xhtml
-	private val glGenVertexArrays: MethodHandle by lazy {
+	val glGenVertexArrays: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glGenVertexArrays"), glGenVertexArrays__descriptor)
 	}
 	val glGenVertexArrays__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
@@ -167,7 +167,7 @@ data object GL {
 	 */
 	fun bindVertexArray(array: Int): Unit = glBindVertexArray.invokeExact(array) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glBindVertexArray.xhtml
-	private val glBindVertexArray: MethodHandle by lazy {
+	val glBindVertexArray: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glBindVertexArray"), glBindVertexArray__descriptor)
 	}
 	val glBindVertexArray__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
@@ -179,7 +179,7 @@ data object GL {
 	 */
 	fun enableVertexAttribArray(index: Int): Unit = glEnableVertexAttribArray.invokeExact(index) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glEnableVertexAttribArray.xhtml
-	private val glEnableVertexAttribArray: MethodHandle by lazy {
+	val glEnableVertexAttribArray: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glEnableVertexAttribArray"), glEnableVertexAttribArray__descriptor)
 	}
 	val glEnableVertexAttribArray__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
@@ -205,7 +205,7 @@ data object GL {
 		pointer
 	) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glVertexAttribPointer.xhtml
-	private val glVertexAttribPointer: MethodHandle by lazy {
+	val glVertexAttribPointer: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glVertexAttribPointer"), glVertexAttribPointer__descriptor)
 	}
 	val glVertexAttribPointer__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
@@ -222,7 +222,7 @@ data object GL {
 	 */
 	fun createShader(shaderType: GLEnum): Int = glCreateShader.invokeExact(shaderType) as Int
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glCreateShader.xhtml
-	private val glCreateShader: MethodHandle by lazy {
+	val glCreateShader: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glCreateShader"), glCreateShader__descriptor)
 	}
 	val glCreateShader__descriptor: FunctionDescriptor = FunctionDescriptor.of(
@@ -246,7 +246,7 @@ data object GL {
 		} ?: NULL()
 	) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glShaderSource.xhtml
-	private val glShaderSource: MethodHandle by lazy {
+	val glShaderSource: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glShaderSource"), glShaderSource__descriptor)
 	}
 	val glShaderSource__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
@@ -261,7 +261,7 @@ data object GL {
 	 */
 	fun compileShader(shader: Int): Unit = glCompileShader.invokeExact(shader) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glCompileShader.xhtml
-	private val glCompileShader: MethodHandle by lazy {
+	val glCompileShader: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glCompileShader"), glCompileShader__descriptor)
 	}
 	val glCompileShader__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
@@ -273,7 +273,7 @@ data object GL {
 	 */
 	fun createProgram(): Int = glCreateProgram.invokeExact() as Int
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glCreateProgram.xhtml
-	private val glCreateProgram: MethodHandle by lazy {
+	val glCreateProgram: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glCreateProgram"), glCreateProgram__descriptor)
 	}
 	val glCreateProgram__descriptor: FunctionDescriptor = FunctionDescriptor.of(
@@ -285,7 +285,7 @@ data object GL {
 	 */
 	fun attachShader(program: Int, shader: Int): Unit = glAttachShader.invokeExact(program, shader) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glAttachShader.xhtml
-	private val glAttachShader: MethodHandle by lazy {
+	val glAttachShader: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glAttachShader"), glAttachShader__descriptor)
 	}
 	val glAttachShader__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
@@ -298,7 +298,7 @@ data object GL {
 	 */
 	fun linkProgram(program: Int): Unit = glLinkProgram.invokeExact(program) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glLinkProgram.xhtml
-	private val glLinkProgram: MethodHandle by lazy {
+	val glLinkProgram: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glLinkProgram"), glLinkProgram__descriptor)
 	}
 	val glLinkProgram__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
@@ -310,7 +310,7 @@ data object GL {
 	 */
 	fun getUniformLocation(program: Int, name: String): Int = glGetUniformLocation.invokeExact(program, name.cstr(global)) as Int
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glGetUniformLocation.xhtml
-	private val glGetUniformLocation: MethodHandle by lazy {
+	val glGetUniformLocation: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glGetUniformLocation"), glGetUniformLocation__descriptor)
 	}
 	val glGetUniformLocation__descriptor: FunctionDescriptor = FunctionDescriptor.of(
@@ -324,7 +324,7 @@ data object GL {
 	 */
 	fun useProgram(program: Int): Unit = glUseProgram.invokeExact(program) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glUseProgram.xhtml
-	private val glUseProgram: MethodHandle by lazy {
+	val glUseProgram: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glUseProgram"), glUseProgram__descriptor)
 	}
 	val glUseProgram__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
@@ -336,7 +336,7 @@ data object GL {
 	 */
 	fun uniform1f(location: Int, v0: Float): Unit = glUniform1f.invokeExact(location, v0) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glUniform.xhtml
-	private val glUniform1f: MethodHandle by lazy {
+	val glUniform1f: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glUniform1f"), glUniform1f__descriptor)
 	}
 	val glUniform1f__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
@@ -357,7 +357,7 @@ data object GL {
 		global.allocateArray(GLfloat, *value.toTypedArray())
 	) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glUniform.xhtml
-	private val glUniform3fv: MethodHandle by lazy {
+	val glUniform3fv: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glUniform3fv"), glUniform3fv__descriptor)
 	}
 	val glUniform3fv__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(
@@ -371,7 +371,7 @@ data object GL {
 	 */
 	fun drawArrays(mode: GLEnum, first: Int, count: Int): Unit = glDrawArrays.invokeExact(mode, first, count) as Unit
 	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glDrawArrays.xhtml
-	private val glDrawArrays: MethodHandle by lazy {
+	val glDrawArrays: MethodHandle by lazy {
 		linker.downcallHandle(addressOf("glDrawArrays"), glDrawArrays__descriptor)
 	}
 	val glDrawArrays__descriptor: FunctionDescriptor = FunctionDescriptor.ofVoid(

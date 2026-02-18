@@ -130,6 +130,7 @@ open class Quadrilateral(override val vertices: MemorySegment) : Shape() {
 // |				|
 // |				|
 // |				|
+// |				|
 // (x1, y2)--(x2, y2)
 data class Square(
 	val x1: Float, val y1: Float,
