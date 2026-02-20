@@ -56,7 +56,11 @@ fun main() {
 	GL.enable(GL_DEBUG_OUTPUT())
 	GL.enable(GL_DEBUG_OUTPUT_SYNCHRONOUS())
 
-	println("OpenGL shader language version: ${GL.getString(GL_SHADING_LANGUAGE_VERSION())}")
+	// https://wikis.khronos.org/opengl/Face_Culling
+	GL.enable(GL_CULL_FACE())
+
+	println("GLSL version: ${GL.getString(GL_SHADING_LANGUAGE_VERSION())}")
+	println("OpenGL version: ${GL.getString(GL_VERSION())}")
 
 	GL.debugMessageCallback { source: Int, type: Int, id: Int, severity: Int, length: Int, message: String?, _ ->
 		println("GL debug callback invoked! Debug info:")
@@ -71,7 +75,7 @@ fun main() {
 		-0.4f to 0.4f,
 		0.4f to 0.4f
 	).apply {
-		colourOverride = Triple(255.0f, 0.0f, 0.0f)
+		colour = Colour(255.0f, 0.0f, 0.0f)
 		entries.add(this)
 	}
 	// Chimney
@@ -79,7 +83,7 @@ fun main() {
 		-0.3f to 0.75f,
 		-0.2f to 0.5f
 	).apply {
-		colourOverride = Triple(0.0f, 0.0f, 0.0f)
+		colour = Colour(0.0f, 0.0f, 0.0f)
 		entries.add(this)
 	}
 	// Top of building
@@ -87,7 +91,7 @@ fun main() {
 		-0.4f to 0.4f,
 		0.4f to 0.0f
 	).apply {
-		colourOverride = BLUE
+		colour = BLUE
 		entries.add(this)
 	}
 	// Bottom left square
@@ -95,7 +99,7 @@ fun main() {
 		-0.4f to 0.0f,
 		-0.1f to -0.4f
 	).apply {
-		colourOverride = BLUE
+		colour = BLUE
 		entries.add(this)
 	}
 	// Bottom right square
@@ -103,7 +107,7 @@ fun main() {
 		0.1f to 0.0f,
 		0.4f to -0.4f
 	).apply {
-		colourOverride = BLUE
+		colour = BLUE
 		entries.add(this)
 	}
 
@@ -168,8 +172,7 @@ fun main() {
 	exitProcess(0)
 }
 
-val COLOUR_UNSET: Triple<Float, Float, Float> = Triple(-1.0f, -1.0f, -1.0f)
-val BLUE: Triple<Float, Float, Float> = Triple(0.0f, 0.0f, 255.0f)
+val BLUE: Colour = Colour(0.0f, 0.0f, 255.0f)
 
 // Can't use 'this::class.java', there is no explicit 'this' here
 private val implicitClass: Class<*> by lazy { Class.forName("io.github.epicvon2468.school.prac1.glfw.GLFWHouseKt") }

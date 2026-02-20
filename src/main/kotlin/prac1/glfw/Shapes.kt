@@ -4,7 +4,7 @@ import org.glfw.glfw3_h.*
 
 import java.lang.foreign.MemorySegment
 
-abstract class Shape {
+abstract class Shape : Drawable {
 
 	val vertexBuffer: MemorySegment = global.allocate(GLuint)
 	val vertexArray: MemorySegment = global.allocate(GLuint)
@@ -17,8 +17,7 @@ abstract class Shape {
 		GL.bufferData(GL_ARRAY_BUFFER(), verticesCount * GLfloat.byteSize(), vertices, GL_STATIC_DRAW())
 	}
 
-	@JvmField
-	var colourOverride: Triple<Float, Float, Float>? = null
+	override var colour: Colour = COLOUR_UNSET
 	// FIXME: Not ideal
 	var colourOverrideLocation: Int = -1
 
@@ -38,10 +37,12 @@ abstract class Shape {
 		GL.bindVertexArray(0)
 	}
 
-	fun draw() {
+	override fun draw(colour: Colour) {
 		// Set the value of the 'colourOverride' uniform in shader.frag
-		GL.uniform3fv(colourOverrideLocation, 1, colourOverride ?: COLOUR_UNSET)
+		GL.uniform3fv(location = colourOverrideLocation, count = 1, value = colour)
 		GL.bindVertexArray(vertexArray[GLuint, 0])
+		// Hold my beer
+		// https://stackoverflow.com/questions/20394727/gl-triangle-strip-vs-gl-triangle-fan
 		GL.drawArrays(mode = GL_TRIANGLES(), first = 0, count = (verticesCount / 3).toInt())
 	}
 }
