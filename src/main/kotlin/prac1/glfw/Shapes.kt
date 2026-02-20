@@ -39,6 +39,7 @@ abstract class Shape {
 	}
 
 	fun draw() {
+		// Set the value of the 'colourOverride' uniform in shader.frag
 		GL.uniform3fv(colourOverrideLocation, 1, colourOverride ?: COLOUR_UNSET)
 		GL.bindVertexArray(vertexArray[GLuint, 0])
 		GL.drawArrays(mode = GL_TRIANGLES(), first = 0, count = (verticesCount / 3).toInt())

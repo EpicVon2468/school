@@ -1,6 +1,7 @@
 package io.github.epicvon2468.school.prac1.glfw
 
 import java.lang.foreign.Arena
+import java.lang.foreign.Linker
 import java.lang.foreign.MemoryLayout
 import java.lang.foreign.MemorySegment
 import java.lang.foreign.SequenceLayout
@@ -56,13 +57,18 @@ class Vertex(pos: Pair<Float, Float>, col: Triple<Float, Float, Float>) {
 
 		val LAYOUT: StructLayout
 
-		val LAYOUT__POS: SequenceLayout = VEC2_LAYOUT.withName("pos")
+		val LAYOUT__POS: SequenceLayout = vecOf(2L).withName("pos")
 		val HANDLE__POS: VarHandle
 		val MemorySegment.pos: StructBackedArray<Float> get() = StructBackedArray(this, HANDLE__POS, 2L)
 
-		val LAYOUT__COL: SequenceLayout = VEC3_LAYOUT.withName("col")
+		val LAYOUT__COL: SequenceLayout = vecOf(3L).withName("col")
 		val HANDLE__COL: VarHandle
 		val MemorySegment.col: StructBackedArray<Float> get() = StructBackedArray(this, HANDLE__COL, 3L)
+
+		private fun vecOf(count: Long): SequenceLayout = MemoryLayout.sequenceLayout(
+			count,
+			Linker.nativeLinker().canonicalLayouts()["float"]
+		)
 
 		init {
 			LAYOUT = MemoryLayout.structLayout(
