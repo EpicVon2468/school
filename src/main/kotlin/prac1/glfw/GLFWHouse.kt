@@ -76,9 +76,6 @@ fun main() {
 		0.4f to 0.4f
 	).apply {
 		colour = Colour(255.0f, 0.0f, 0.0f)
-		name = "roof"
-		// The behaviour here is... interesting.
-		zIndex = 3
 		entries.add(this)
 	}
 	// Chimney
@@ -87,7 +84,6 @@ fun main() {
 		-0.2f to 0.5f
 	).apply {
 		colour = Colour(0.0f, 0.0f, 0.0f)
-		name = "chimney"
 		entries.add(this)
 	}
 	// Top of building
@@ -96,7 +92,6 @@ fun main() {
 		0.4f to 0.0f
 	).apply {
 		colour = BLUE
-		name = "top"
 		entries.add(this)
 	}
 	// Bottom left square
@@ -105,7 +100,6 @@ fun main() {
 		-0.1f to -0.4f
 	).apply {
 		colour = BLUE
-		name = "bleft"
 		entries.add(this)
 	}
 	// Bottom right square
@@ -114,15 +108,13 @@ fun main() {
 		0.4f to -0.4f
 	).apply {
 		colour = BLUE
-		name = "bright"
 		entries.add(this)
 	}
 
 	// Many such cases: Vertex Buffer Object & Vertex Array Object
-	for ((_, shape: Shape) in entries.shapes) {
+	for (shape: Shape in entries.shapes) {
 		shape.genVertexBuffer()
 		shape.genVertexArray()
-		println("${shape.name}: ${shape.zIndex}")
 	}
 
 	// TODO: Check compile status of shaders & program
@@ -147,7 +139,7 @@ fun main() {
 	if (uColourOverrideLocation == -1) error("Couldn't get location of uniform 'colourOverride'!")
 
 	// Horrific sin, needs to be fixed
-	entries.shapes.forEach { (_, shape: Shape) -> shape.colourOverrideLocation = uColourOverrideLocation }
+	entries.shapes.forEach { shape: Shape -> shape.colourOverrideLocation = uColourOverrideLocation }
 
 	// Do a first glViewport to fix alignment.
 	Arena.ofShared().use { arena: Arena ->
