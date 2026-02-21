@@ -53,8 +53,8 @@ fun main() {
 	GLFW.swapInterval(1)
 
 	// OpenGL doesn't actually give info or debug logs by default... I know because I spent three days trying to get it to log what was wrong with my shaders in a previous project
-//	GL.enable(GL_DEBUG_OUTPUT())
-//	GL.enable(GL_DEBUG_OUTPUT_SYNCHRONOUS())
+	GL.enable(GL_DEBUG_OUTPUT())
+	GL.enable(GL_DEBUG_OUTPUT_SYNCHRONOUS())
 
 	// https://wikis.khronos.org/opengl/Face_Culling
 	GL.enable(GL_CULL_FACE())
@@ -122,16 +122,19 @@ fun main() {
 	if (vertexShader == 0) error("Could not create vertexShader!")
 	GL.shaderSource(vertexShader, 1, VERTEX_SHADER)
 	GL.compileShader(vertexShader)
+	checkError()
 
 	val fragmentShader: Int = GL.createShader(GL_FRAGMENT_SHADER())
 	if (fragmentShader == 0) error("Could not create fragmentShader!")
 	GL.shaderSource(fragmentShader, 1, FRAGMENT_SHADER)
 	GL.compileShader(fragmentShader)
+	checkError()
 
 	val program: Int = GL.createProgram()
 	GL.attachShader(program, fragmentShader)
 	GL.attachShader(program, vertexShader)
 	GL.linkProgram(program)
+	checkError()
 
 	val uTimeLocation: Int = GL.getUniformLocation(program, "time")
 	if (uTimeLocation == -1) error("Couldn't get location of uniform 'time'!")
@@ -170,6 +173,21 @@ fun main() {
 	GLFW.terminate()
 
 	exitProcess(0)
+}
+
+fun checkError() {
+	val message: String = when (val error: GLEnum = GL.getError()) {
+		GL_NO_ERROR() -> return
+		GL_INVALID_ENUM() -> "INVALID ENUM"
+		GL_INVALID_VALUE() -> "INVALID VALUE"
+		GL_INVALID_OPERATION() -> "INVALID OPERATION"
+		GL_INVALID_FRAMEBUFFER_OPERATION() -> "INVALID FRAMEBUFFER OPERATION"
+		GL_OUT_OF_MEMORY() -> "OUT OF MEMORY"
+		GL_STACK_UNDERFLOW() -> "STACK UNDERFLOW"
+		GL_STACK_OVERFLOW() -> "STACK OVERFLOW"
+		else -> error("Unknown OpenGL error code: '$error'!")
+	}
+	error("OpenGL errored: $message")
 }
 
 val BLUE: Colour = Colour(0.0f, 0.0f, 255.0f)

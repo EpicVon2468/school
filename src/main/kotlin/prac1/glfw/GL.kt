@@ -379,4 +379,16 @@ data object GL {
 		GLint,
 		GLsizei
 	)
+
+	/**
+	 * `GLenum glGetError(void);`
+	 */
+	fun getError(): GLEnum = glGetError.invokeExact() as GLEnum
+	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glGetError.xhtml
+	val glGetError: MethodHandle by lazy {
+		linker.downcallHandle(addressOf("glGetError"), glGetError__descriptor)
+	}
+	val glGetError__descriptor: FunctionDescriptor = FunctionDescriptor.of(
+		GLenum
+	)
 }

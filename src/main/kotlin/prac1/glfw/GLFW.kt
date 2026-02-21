@@ -11,7 +11,7 @@ data object GLFW {
 	/**
 	 * `int glfwInit(void);`
 	 */
-	fun init(): Boolean = glfwInit() != 0
+	fun init(): Boolean = glfwInit() != GLFW_FALSE()
 
 	/**
 	 * `void glfwTerminate(void);`
@@ -36,7 +36,7 @@ data object GLFW {
 	/**
 	 * `int glfwWindowShouldClose(GLFWwindow *window);`
 	 */
-	fun windowShouldClose(window: GLFWWindow): Boolean = glfwWindowShouldClose(window) != 0
+	fun windowShouldClose(window: GLFWWindow): Boolean = glfwWindowShouldClose(window) != GLFW_FALSE()
 
 	/**
 	 * `void glfwWindowHint(int hint, int value);`
