@@ -6,27 +6,43 @@ import java.lang.foreign.MemorySegment
 
 abstract class Shape : Drawable {
 
+	// Purely debug identifier, will be removed
+	var name: String = ""
+
 	var batch: Batch? = null
 		set(value) {
-			field?.shapes?.remove(this)
-			value?.shapes?.add(
-				zIndex.let { if (it == -1) value.shapes.size else it },
-				this
-			)
+			field?.shapes?.remove(zIndex)
+			value?.shapes?.let {
+				val index: Int = zIndex.let { zIndex: Int -> if (zIndex == -1) value.shapes.size else zIndex }
+				val prevValue: Shape? = it.put(index, this)
+				if (prevValue != null) shiftRight(it, index, prevValue)
+			}
 			field = value
 		}
+
+	private tailrec fun shiftRight(map: MutableMap<Int, Shape>, index: Int, value: Shape) {
+		val nextIndex: Int = index + 1
+		val next: Shape? = map[nextIndex]
+		map[nextIndex] = value
+		if (next == null) return
+		shiftRight(map, nextIndex, next)
+	}
 
 	// Delegates to this field so the zIndex can be set beforehand
 	private var _zIndex: Int = -1
 
 	override var zIndex: Int
-		get() = batch?.shapes?.indexOf(this) ?: _zIndex
+		get() {
+			val mapIndex: Int = batch?.shapes?.values?.indexOf(this) ?: return _zIndex
+			if (_zIndex != mapIndex) _zIndex = mapIndex
+			return _zIndex
+		}
 		set(value) {
-			_zIndex = value
 			batch?.shapes?.let {
-				it.remove(this)
-				it.add(value, this)
+				it.remove(zIndex)
+				it.put(value, this)
 			}
+			_zIndex = value
 		}
 
 	val vertexBuffer: MemorySegment = global.allocate(GLuint)
