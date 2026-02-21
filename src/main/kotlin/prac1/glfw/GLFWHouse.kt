@@ -67,7 +67,7 @@ fun main() {
 		println("DebugProc {\n\tsource = $source,\n\ttype = $type,\n\tid = $id,\n\tseverity = $severity,\n\tlength = $length,\n\tmessage = '$message'\n}")
 	}
 
-	val entries: MutableList<Shape> = mutableListOf()
+	val entries = Batch()
 
 	// Roof
 	Triangle(
@@ -112,7 +112,7 @@ fun main() {
 	}
 
 	// Many such cases: Vertex Buffer Object & Vertex Array Object
-	for (shape: Shape in entries) {
+	for (shape: Shape in entries.shapes) {
 		shape.genVertexBuffer()
 		shape.genVertexArray()
 	}
@@ -139,7 +139,7 @@ fun main() {
 	if (uColourOverrideLocation == -1) error("Couldn't get location of uniform 'colourOverride'!")
 
 	// Horrific sin, needs to be fixed
-	entries.forEach { it.colourOverrideLocation = uColourOverrideLocation }
+	entries.shapes.forEach { it.colourOverrideLocation = uColourOverrideLocation }
 
 	// Do a first glViewport to fix alignment.
 	Arena.ofShared().use { arena: Arena ->
@@ -158,7 +158,7 @@ fun main() {
 		GL.uniform1f(uTimeLocation, GLFW.getTime().toFloat())
 
 		// https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/2.2.hello_triangle_indexed/hello_triangle_indexed.cpp
-		entries.forEach(Shape::draw)
+		entries.draw()
 
 		// Swap out the new content onto the screen
 		GLFW.swapBuffers(window)

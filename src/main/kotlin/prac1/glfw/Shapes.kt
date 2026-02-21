@@ -37,9 +37,9 @@ abstract class Shape : Drawable {
 		GL.bindVertexArray(0)
 	}
 
-	override fun draw(colour: Colour) {
+	override fun draw(colour: Colour?) {
 		// Set the value of the 'colourOverride' uniform in shader.frag
-		GL.uniform3fv(location = colourOverrideLocation, count = 1, value = colour)
+		GL.uniform3fv(location = colourOverrideLocation, count = 1, value = colour ?: this.colour)
 		GL.bindVertexArray(vertexArray[GLuint, 0])
 		// Hold my beer
 		// https://stackoverflow.com/questions/20394727/gl-triangle-strip-vs-gl-triangle-fan

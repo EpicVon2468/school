@@ -5,5 +5,5 @@ interface Drawable {
 
 	var colour: Colour
 
-	fun draw(colour: Colour = this.colour)
+	fun draw(colour: Colour? = null)
 }
