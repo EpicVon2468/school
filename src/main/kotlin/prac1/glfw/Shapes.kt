@@ -6,6 +6,29 @@ import java.lang.foreign.MemorySegment
 
 abstract class Shape : Drawable {
 
+	var batch: Batch? = null
+		set(value) {
+			field?.shapes?.remove(this)
+			value?.shapes?.add(
+				zIndex.let { if (it == -1) value.shapes.size else it },
+				this
+			)
+			field = value
+		}
+
+	// Delegates to this field so the zIndex can be set beforehand
+	private var _zIndex: Int = -1
+
+	override var zIndex: Int
+		get() = batch?.shapes?.indexOf(this) ?: _zIndex
+		set(value) {
+			_zIndex = value
+			batch?.shapes?.let {
+				it.remove(this)
+				it.add(value, this)
+			}
+		}
+
 	val vertexBuffer: MemorySegment = global.allocate(GLuint)
 	val vertexArray: MemorySegment = global.allocate(GLuint)
 	abstract val vertices: MemorySegment
@@ -51,7 +74,7 @@ abstract class Shape : Drawable {
 
 data class Triangle(
 	override val vertices: MemorySegment,
-	override val verticesCount: Long
+	override val verticesCount: Long,
 ) : Shape() {
 
 	constructor(vararg vertices: Float) : this(global.allocateArray(GLfloat, *vertices.toTypedArray()), vertices.size.toLong())
