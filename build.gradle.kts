@@ -30,6 +30,7 @@ fun newExecTask(
 newExecTask("runHouse", "prac1.HouseKt")
 newExecTask("runPaintDemo", "prac1.PaintDemoKt")
 newExecTask("runGLFWHouse", "prac1.glfw.GLFWHouseKt")
+newExecTask("runIntegersAndReals", "prac2.IntegersAndRealsKt")
 
 tasks.withType<JavaCompile> {
 	options.apply {
