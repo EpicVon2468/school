@@ -4,6 +4,7 @@ import org.glfw.glfw3_h.*
 
 import java.lang.foreign.MemorySegment
 
+// Yes. lots of not ideals, I'll fix it up soon™
 abstract class Shape : Drawable {
 
 	var batch: Batch? = null
@@ -44,14 +45,20 @@ abstract class Shape : Drawable {
 		GL.bindVertexArray(0)
 	}
 
+	// FIXME: not ideal
+	var mode: GLEnum = GL_TRIANGLES()
+
 	override fun draw(colour: Colour?) {
 		// Set the value of the 'colourOverride' uniform in shader.frag
 		GL.uniform3fv(location = colourOverrideLocation, count = 1, value = colour ?: this.colour)
 		GL.bindVertexArray(vertexArray[GLuint, 0])
 		// Hold my beer
 		// https://stackoverflow.com/questions/20394727/gl-triangle-strip-vs-gl-triangle-fan
-		GL.drawArrays(mode = GL_TRIANGLES(), first = 0, count = (verticesCount / 3).toInt())
+		GL.drawArrays(mode = mode, first = 0, count = verticesCount())
 	}
+
+	// FIXME: not ideal
+	open fun verticesCount(): Int = (verticesCount / 3).toInt()
 }
 
 // TODO: use Pair or Point class for most constructors here

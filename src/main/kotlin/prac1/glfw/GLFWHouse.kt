@@ -7,6 +7,8 @@ import java.io.InputStream
 import java.lang.foreign.Arena
 import java.lang.foreign.MemorySegment
 
+import kotlin.math.cos
+import kotlin.math.sin
 import kotlin.system.exitProcess
 
 val global: Arena = Arena.global()
@@ -35,7 +37,7 @@ fun main() {
 	GLFW.windowHint(GLFW_OPENGL_PROFILE(), GLFW_OPENGL_CORE_PROFILE())
 
 	// The 'GLFWWindow' type is simply a typealias I made for readability, it resolves to 'MemorySegment' (Foreign Functions & Memory API representation of C pointers & variables)
-	val window: GLFWWindow = GLFW.createWindow(600, 600, "My House")
+	val window: GLFWWindow = GLFW.createWindow(600, 600, "My (GLFW) House")
 	if (window == NULL()) {
 		println("ERROR - GLFWWindow failed to create!")
 		glfwTerminate()
@@ -108,6 +110,40 @@ fun main() {
 		0.4f to -0.4f
 	).apply {
 		colour = BLUE
+		entries.add(this)
+	}
+	object : Shape() {
+
+		private val basePoint: Pair<Float, Float> = 0.6f to 0.8f
+
+		fun genPoints(): List<Float> {
+			val entries: MutableList<Float> = mutableListOf()
+			fun MutableList<Float>.add(point: Pair<Float, Float>) {
+				add(point.first)
+				add(point.second)
+				add(0.0f)
+			}
+			entries.add(basePoint)
+
+			val numSides = 360
+			val radius = 0.15f
+			for (pos: Int in 0..<numSides) {
+				entries.add(
+					basePoint.first + (radius * cos(pos.toDouble()).toFloat())
+						to
+					basePoint.second + (radius * sin(pos.toDouble()).toFloat())
+				)
+			}
+			return entries
+		}
+
+		val points: List<Float> by lazy(::genPoints)
+
+		override val vertices: MemorySegment = global.allocateArray(GLfloat, *points.toTypedArray())
+		override val verticesCount: Long = points.size.toLong()
+
+	}.apply {
+		mode = GL_TRIANGLE_FAN()
 		entries.add(this)
 	}
 
