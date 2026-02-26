@@ -1,5 +1,6 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.gradle.kotlin.dsl.register
 
 plugins {
 	alias(libs.plugins.kotlin.jvm)
@@ -16,6 +17,19 @@ dependencies {
 	compileOnly(libs.jetBrains.annotations)
 	implementation(project(":generated"))
 }
+
+fun newExecTask(
+	name: String,
+	entrypoint: String
+): TaskProvider<JavaExec> = tasks.register<JavaExec>(name) {
+	classpath(sourceSets.main.get().compileClasspath)
+	classpath(sourceSets.main.get().runtimeClasspath)
+	mainClass = "io.github.epicvon2468.school.$entrypoint"
+}
+
+newExecTask("runHouse", "prac1.HouseKt")
+newExecTask("runPaintDemo", "prac1.PaintDemoKt")
+newExecTask("runGLFWHouse", "prac1.glfw.GLFWHouseKt")
 
 tasks.withType<JavaCompile> {
 	options.apply {
