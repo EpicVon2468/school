@@ -24,13 +24,15 @@ fun newExecTask(
 ): TaskProvider<JavaExec> = tasks.register<JavaExec>(name) {
 	classpath(sourceSets.main.get().compileClasspath)
 	classpath(sourceSets.main.get().runtimeClasspath)
-	mainClass = "io.github.epicvon2468.school.$entrypoint"
+	mainClass = "io.github.epicvon2468.school.${entrypoint}Kt"
 }
 
-newExecTask("runHouse", "prac1.HouseKt")
-newExecTask("runPaintDemo", "prac1.PaintDemoKt")
-newExecTask("runGLFWHouse", "prac1.glfw.GLFWHouseKt")
-newExecTask("runIntegersAndReals", "prac2.IntegersAndRealsKt")
+newExecTask("runHouse", "prac1.House")
+newExecTask("runPaintDemo", "prac1.PaintDemo")
+newExecTask("runGLFWHouse", "prac1.glfw.GLFWHouse")
+newExecTask("runIntegersAndReals", "prac2.IntegersAndReals")
+newExecTask("runDate", "prac2.Date")
+newExecTask("runTime", "prac2.Time")
 
 tasks.withType<JavaCompile> {
 	options.apply {
