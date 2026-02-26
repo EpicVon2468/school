@@ -34,6 +34,7 @@ newExecTask("runIntegersAndReals", "prac2.IntegersAndReals")
 newExecTask("runDate", "prac2.Date")
 newExecTask("runTime", "prac2.Time")
 newExecTask("runCurrentTime", "prac2.CurrentTime")
+newExecTask("runCustomDataType", "prac2.extension.CustomDataType")
 
 tasks.withType<JavaCompile> {
 	options.apply {
