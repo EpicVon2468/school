@@ -33,6 +33,7 @@ newExecTask("runGLFWHouse", "prac1.glfw.GLFWHouse")
 newExecTask("runIntegersAndReals", "prac2.IntegersAndReals")
 newExecTask("runDate", "prac2.Date")
 newExecTask("runTime", "prac2.Time")
+newExecTask("runCurrentTime", "prac2.CurrentTime")
 
 tasks.withType<JavaCompile> {
 	options.apply {

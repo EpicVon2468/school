@@ -15,7 +15,7 @@ fun main() {
 	printDate($$"Yank format: %1$tA, %3$tB %2$d, %4$tY", day, month, year)
 }
 
-fun printDate(pattern: String, day: Pair<DayOfWeek, Int>, month: Month, year: Year): Unit = println(
+private fun printDate(pattern: String, day: Pair<DayOfWeek, Int>, month: Month, year: Year): Unit = println(
 	pattern.format(
 		day.first,
 		day.second.coerceIn(1..month.maxLength()),
