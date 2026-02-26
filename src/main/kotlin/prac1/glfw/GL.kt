@@ -347,7 +347,7 @@ data object GL {
 	/**
 	 * `void glUniform3fv(GLint location, GLsize count, const GLfloat *value);`
 	 */
-	fun uniform3fv(location: Int, count: Int, value: Triple<Float, Float, Float>): Unit = uniform3fv(location, count, value.toList())
+	fun uniform3fv(location: Int, count: Int, value: Colour): Unit = uniform3fv(location, count, value.toList())
 	/**
 	 * `void glUniform3fv(GLint location, GLsize count, const GLfloat *value);`
 	 */

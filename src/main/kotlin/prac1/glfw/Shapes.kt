@@ -4,6 +4,9 @@ import org.glfw.glfw3_h.*
 
 import java.lang.foreign.MemorySegment
 
+import kotlin.math.cos
+import kotlin.math.sin
+
 // Yes. lots of not ideals, I'll fix it up soon™
 abstract class Shape : Drawable {
 
@@ -45,23 +48,49 @@ abstract class Shape : Drawable {
 		GL.bindVertexArray(0)
 	}
 
-	// FIXME: not ideal
-	var mode: GLEnum = GL_TRIANGLES()
+	protected open val mode: GLEnum = GL_TRIANGLES()
 
 	override fun draw(colour: Colour?) {
 		// Set the value of the 'colourOverride' uniform in shader.frag
 		GL.uniform3fv(location = colourOverrideLocation, count = 1, value = colour ?: this.colour)
 		GL.bindVertexArray(vertexArray[GLuint, 0])
-		// Hold my beer
-		// https://stackoverflow.com/questions/20394727/gl-triangle-strip-vs-gl-triangle-fan
-		GL.drawArrays(mode = mode, first = 0, count = verticesCount())
+		GL.drawArrays(mode = mode, first = 0, count = (verticesCount / 3).toInt())
 	}
-
-	// FIXME: not ideal
-	open fun verticesCount(): Int = (verticesCount / 3).toInt()
 }
 
 // TODO: use Pair or Point class for most constructors here
+
+data class Circle(
+	val basePoint: Pair<Float, Float>,
+	val radius: Float,
+	val numSides: Long = 360L
+) : Shape() {
+
+	override val mode: GLEnum = GL_TRIANGLE_FAN()
+
+	// https://stackoverflow.com/questions/20394727/gl-triangle-strip-vs-gl-triangle-fan
+	// Thanks to engired for giving me the knowledge of "x = r*cos(θ), y = r*sin(θ)", it's been a while since I've done geometry
+	private fun genPoints(): List<Float> {
+		val entries: MutableList<Float> = mutableListOf()
+		fun MutableList<Float>.add(x: Float, y: Float) {
+			add(x)
+			add(y)
+			add(0.0f)
+		}
+		entries.add(basePoint.first, basePoint.second)
+
+		for (pos: Long in 0..<numSides) entries.add(
+			basePoint.first + (radius * cos(pos.toDouble()).toFloat()),
+			basePoint.second + (radius * sin(pos.toDouble()).toFloat())
+		)
+		return entries
+	}
+
+	private val points: List<Float> by lazy(::genPoints)
+
+	override val vertices: MemorySegment = global.allocateArray(GLfloat, *points.toTypedArray())
+	override val verticesCount: Long = points.size.toLong()
+}
 
 data class Triangle(
 	override val vertices: MemorySegment,
