@@ -18,7 +18,7 @@ dependencies {
 	implementation(project(":generated"))
 }
 
-fun newExecTask(
+private fun createExec(
 	name: String,
 	entrypoint: String
 ): TaskProvider<JavaExec> = tasks.register<JavaExec>(name) {
@@ -27,14 +27,14 @@ fun newExecTask(
 	mainClass = "io.github.epicvon2468.school.${entrypoint}Kt"
 }
 
-newExecTask("runHouse", "prac1.House")
-newExecTask("runPaintDemo", "prac1.PaintDemo")
-newExecTask("runGLFWHouse", "prac1.glfw.GLFWHouse")
-newExecTask("runIntegersAndReals", "prac2.IntegersAndReals")
-newExecTask("runDate", "prac2.Date")
-newExecTask("runTime", "prac2.Time")
-newExecTask("runCurrentTime", "prac2.CurrentTime")
-newExecTask("runCustomDataType", "prac2.extension.CustomDataType")
+createExec("runHouse", "prac1.House")
+createExec("runPaintDemo", "prac1.PaintDemo")
+createExec("runGLFWHouse", "prac1.glfw.GLFWHouse")
+createExec("runIntegersAndReals", "prac2.IntegersAndReals")
+createExec("runDate", "prac2.Date")
+createExec("runTime", "prac2.Time")
+createExec("runCurrentTime", "prac2.CurrentTime")
+createExec("runCustomDataType", "prac2.extension.CustomDataType")
 
 tasks.withType<JavaCompile> {
 	options.apply {
