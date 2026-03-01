@@ -3,6 +3,7 @@ package io.github.epicvon2468.school.prac1.glfw
 import org.glfw.glfw3_h.*
 
 import java.lang.foreign.MemorySegment
+import kotlin.math.PI
 
 import kotlin.math.cos
 import kotlin.math.sin
@@ -79,10 +80,14 @@ data class Circle(
 		}
 		entries.add(basePoint.first, basePoint.second)
 
-		for (pos: Long in 0..<numSides) entries.add(
-			basePoint.first + (radius * cos(pos.toDouble()).toFloat()),
-			basePoint.second + (radius * sin(pos.toDouble()).toFloat())
-		)
+		for (pos: Long in 0..numSides) {
+			// Thanks to 7410 (funny numbers guy) for explaining my mistake and how to fix
+			val vertex: Double = pos.toDouble() / numSides.toDouble() * (2 * PI)
+			entries.add(
+				basePoint.first + (radius * cos(vertex).toFloat()),
+				basePoint.second + (radius * sin(vertex).toFloat())
+			)
+		}
 		return entries
 	}
 
