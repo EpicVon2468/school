@@ -57,7 +57,7 @@ data class Point(val x: Int, val y: Int) : Comparable<Point> {
 
 	// I'm not actually sure if this is the "right" way to implement this…
 	// '>=' '>' '<' '<='
-	override fun compareTo(other: Point): Int = (sqrt((this.x*this.x) + (this.y*this.y))).compareTo(sqrt((other.x*other.x) + (other.y*other.7)))
+	override fun compareTo(other: Point): Int = (sqrt((this.x*this.x) + (this.y*this.y))).compareTo(sqrt((other.x*other.x) + (other.y*other.y)))
 
 	override fun toString(): String = "($x, $y)"
 }
