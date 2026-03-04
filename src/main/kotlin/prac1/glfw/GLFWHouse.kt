@@ -156,8 +156,8 @@ fun main() {
 		GL.viewport(0, 0, width[C_INT, 0], height[C_INT, 0])
 	}
 
+	GL.clearColour(1f, 1f, 1f, 1f)
 	while (!GLFW.windowShouldClose(window)) {
-		GL.clearColour(1f, 1f, 1f, 1f)
 		GL.clear(GL_COLOR_BUFFER_BIT() or GL_DEPTH_BUFFER_BIT())
 
 		GL.useProgram(program)
