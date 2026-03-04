@@ -1,3 +1,4 @@
+@file:Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 package io.github.epicvon2468.school
 
 import java.awt.Color as Colour
@@ -15,3 +16,10 @@ fun JFrame.showWithFixes() {
 var Graphics.colour: Colour
 	get() = this.color
 	set(value) { this.color = value }
+
+infix operator fun Byte.div(other: Number): Byte = (this / other.toByte()).toByte()
+infix operator fun Byte.times(other: Number): Byte = (this * other.toByte()).toByte()
+infix operator fun Byte.plus(other: Number): Byte = (this + other.toByte()).toByte()
+infix operator fun Byte.minus(other: Number): Byte = (this - other.toByte()).toByte()
+
+fun Byte.toBinaryString(): String = Integer.toBinaryString(toInt()).takeLast(8)
