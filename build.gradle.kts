@@ -35,6 +35,7 @@ createExec("runDate", "prac2.Date")
 createExec("runTime", "prac2.Time")
 createExec("runCurrentTime", "prac2.CurrentTime")
 createExec("runCustomDataType", "prac2.extension.CustomDataType")
+createExec("runTemperatureConversion", "prac3.TemperatureConversion")
 
 tasks.withType<JavaCompile> {
 	options.apply {
@@ -47,6 +48,7 @@ tasks.withType<JavaExec> {
 	jvmArgs("-XX:+UseCompactObjectHeaders", "--enable-native-access=ALL-UNNAMED")
 	if (System.getenv("XDG_SESSION_TYPE") == "wayland") systemProperty("awt.toolkit.name", "WLToolkit")
 	environment("LD_LIBRARY_PATH", "/usr/lib/x86_64-linux-gnu:${projectDir.absolutePath}/generated/glad/src")
+	standardInput = System.`in`
 }
 
 kotlin {
