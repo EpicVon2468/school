@@ -32,40 +32,55 @@ private fun englishFormat(hour: Int, minute: Int): String {
 	}
 	var minuteFirst = false
 	fun intermediary(oPrefix: Boolean = false): String = "${if (oPrefix) "o'" else ""}${TIME_TO_STRING[minute]}"
-	val minuteText: String = when (minute) {
+	val minuteText: String = when (minute.coerceIn(0..59)) {
 		0 -> "o'clock"
-		1, 2, 3, 4, 5, 6, 7, 8, 9 -> intermediary(oPrefix = true)
+		in 1..9 -> intermediary(oPrefix = true)
+
 		10 -> {
 			minuteFirst = true
 			"ten past"
 		}
-		11, 12, 13, 14 -> intermediary()
+		in 11..14 -> intermediary()
+
 		15 -> {
 			minuteFirst = true
 			"quarter past"
 		}
-		16, 17, 18, 19 -> intermediary()
+		in 16..19 -> intermediary()
+
 		20 -> {
 			minuteFirst = true
 			"twenty past"
 		}
-		21, 22, 23, 24, 25, 26, 27, 28, 29 -> intermediary()
+		in 21..29 -> intermediary()
+
 		30 -> {
 			minuteFirst = true
 			"half past"
 		}
-		31, 32, 33, 34, 35, 36, 37, 38, 39 -> intermediary()
+
+		in 31..39 -> intermediary()
+		40 -> {
+			minuteFirst = true
+			"forty past"
+		}
+
+		in 41..44 -> intermediary()
 		45 -> {
 			minuteFirst = true
 			incHour()
 			"quarter to"
 		}
+
+		in 46..49 -> intermediary()
 		50 -> {
 			minuteFirst = true
 			incHour()
 			"ten to"
 		}
-		else -> TODO()
+
+		in 51..59 -> intermediary()
+		else -> error("This line should NEVER run ($minute escaped range coercion 0..59)")
 	}
 	val format: String = if (minuteFirst) $$"%2$s %1$s" else $$"%1$s %2$s"
 	return format.format(HOUR_TO_STRING[hour], minuteText)
@@ -81,12 +96,18 @@ private val TIME_TO_STRING: Map<Int, String> = mutableMapOf(
 	9 to "nine", 10 to "ten", 11 to "eleven", 12 to "twelve"
 ).apply {
 	for (i in 13..19) this[i] = this[i - 10]!! + "teen"
-	this[20] = "twenty"
-	for (i in 21..29) this[i] = "twenty-" + this[i - 20]!!
-	this[30] = "thirty"
-	for (i in 31..39) this[i] = "thirty-" + this[i - 30]!!
-	this[40] = "forty"
-	for (i in 41..49) this[i] = "forty-" + this[i - 40]!!
+	fun cloneTens(tens: Int, word: String) {
+		this[tens] = word
+		for (i in (1 + tens)..(9 + tens)) this[i] = "$word-${this[i - tens]}"
+	}
+	cloneTens(20, "twenty")
+	cloneTens(30, "thirty")
+	cloneTens(40, "forty")
+	cloneTens(50, "fifty")
+	cloneTens(60, "sixty")
+	cloneTens(70, "seventy")
+	cloneTens(80, "eighty")
+	cloneTens(90, "ninety")
 }
 
 private val HOUR_TO_STRING: Map<Int, String> = LinkedHashMap(TIME_TO_STRING).apply {
