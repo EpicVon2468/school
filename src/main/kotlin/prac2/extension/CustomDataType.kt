@@ -1,5 +1,7 @@
 package io.github.epicvon2468.school.prac2.extension
 
+import kotlin.math.hypot
+
 fun main() {
 	val a = Point(25, 3)
 	val b = Point(2, 9)
@@ -57,7 +59,7 @@ data class Point(val x: Int, val y: Int) : Comparable<Point> {
 
 	// I'm not actually sure if this is the "right" way to implement this…
 	// '>=' '>' '<' '<='
-	override fun compareTo(other: Point): Int = (sqrt((this.x*this.x) + (this.y*this.y))).compareTo(sqrt((other.x*other.x) + (other.y*other.y)))
+	override fun compareTo(other: Point): Int = hypot(this.x.toDouble(), this.y.toDouble()).compareTo(hypot(other.x.toDouble(), other.y.toDouble()))
 
 	override fun toString(): String = "($x, $y)"
 }
