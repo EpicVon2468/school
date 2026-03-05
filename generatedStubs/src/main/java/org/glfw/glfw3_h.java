@@ -33,4 +33,26 @@ public class glfw3_h {
 	public static void glfwPollEvents() { throw stub(); }
 	public static MemorySegment glfwSetErrorCallback(MemorySegment callback) { throw stub(); }
 	public static MemorySegment glfwSetFramebufferSizeCallback(MemorySegment window, MemorySegment callback) { throw stub(); }
+
+	public static int GL_DEBUG_OUTPUT() { throw stub(); }
+	public static int GL_DEBUG_OUTPUT_SYNCHRONOUS() { throw stub(); }
+	public static int GL_CULL_FACE() { throw stub(); }
+	public static int GL_SHADING_LANGUAGE_VERSION() { throw stub(); }
+	public static int GL_VERSION() { throw stub(); }
+	public static int GL_VERTEX_SHADER() { throw stub(); }
+	public static int GL_FRAGMENT_SHADER() { throw stub(); }
+	public static int GL_COLOR_BUFFER_BIT() { throw stub(); }
+	public static int GL_DEPTH_BUFFER_BIT() { throw stub(); }
+	public static int GL_NO_ERROR() { throw stub(); }
+	public static int GL_INVALID_ENUM() { throw stub(); }
+	public static int GL_INVALID_VALUE() { throw stub(); }
+	public static int GL_INVALID_OPERATION() { throw stub(); }
+	public static int GL_OUT_OF_MEMORY() { throw stub(); }
+	public static int GL_STACK_UNDERFLOW() { throw stub(); }
+	public static int GL_STACK_OVERFLOW() { throw stub(); }
+	public static int GL_ARRAY_BUFFER() { throw stub(); }
+	public static int GL_STATIC_DRAW() { throw stub(); }
+	public static int GL_FLOAT() { throw stub(); }
+	public static int GL_TRIANGLES() { throw stub(); }
+	public static int GL_TRIANGLE_FAN() { throw stub(); }
 }
