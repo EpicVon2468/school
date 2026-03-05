@@ -11,14 +11,17 @@ fun main() {
 fun negativeOf(input: Byte): Byte = input.inv() plus 1
 
 fun check(input: Byte) {
-	println(input.toBinaryString())
+	println(input)
+	println(-input)
+	println("'normal' input: ${input.toBinaryString()}")
 
 	val negative: Byte = negativeOf(input)
 	val bin: String = negative.toBinaryString()
-	println(bin)
+	println("negative input: $bin")
 	val bin1: String = (-input).toByte().toBinaryString()
-	println(bin1)
+	println("negative input: $bin1")
 	println(bin == bin1)
 
 	println(input + negative == 0)
+	println()
 }

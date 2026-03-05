@@ -22,4 +22,7 @@ infix operator fun Byte.times(other: Number): Byte = (this * other.toByte()).toB
 infix operator fun Byte.plus(other: Number): Byte = (this + other.toByte()).toByte()
 infix operator fun Byte.minus(other: Number): Byte = (this - other.toByte()).toByte()
 
-fun Byte.toBinaryString(): String = Integer.toBinaryString(toInt()).takeLast(8)
+fun Byte.toBinaryString(): String = Integer.toBinaryString(toInt()).takeLast(8).let {
+	if (it.length < 8) it.padStart(8, '0')
+	else it
+}
