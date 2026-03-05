@@ -15,7 +15,8 @@ repositories {
 
 dependencies {
 	compileOnly(libs.jetBrains.annotations)
-	implementation(project(":generated"))
+	if (properties["school.useStubs"].toString().toBooleanStrict()) implementation(project(":generatedStubs"))
+	else implementation(project(":generated"))
 }
 
 private fun createExec(
