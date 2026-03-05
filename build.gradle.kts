@@ -38,6 +38,7 @@ createExec("runCustomDataType", "prac2.extension.CustomDataType")
 createExec("runTemperatureConversion", "prac3.TemperatureConversion")
 createExec("runSecondsToHMS", "prac3.SecondsToHMS")
 createExec("runGuessMyNumber", "prac3.GuessMyNumber")
+createExec("runTrickyTime", "prac3.TrickyTime")
 
 tasks.withType<JavaCompile> {
 	options.apply {
