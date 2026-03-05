@@ -5,6 +5,8 @@ import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
 import java.time.temporal.ChronoField
 
+import kotlin.collections.set
+
 private val FORMAT: DateTimeFormatter = DateTimeFormatterBuilder()
 	.appendValue(/*field =*/ ChronoField.CLOCK_HOUR_OF_AMPM, /*width =*/ 2)
 	.appendLiteral(':')
@@ -29,16 +31,25 @@ private fun englishFormat(hour: Int, minute: Int): String {
 		if (hour == 23) hour = 0 else hour++
 	}
 	var minuteFirst = false
+	fun intermediary(oPrefix: Boolean = false): String = "${if (oPrefix) "o'" else ""}${TIME_TO_STRING[minute]}"
 	val minuteText: String = when (minute) {
 		0 -> "o'clock"
+		1, 2, 3, 4, 5, 6, 7, 8, 9 -> intermediary(oPrefix = true)
 		10 -> {
 			minuteFirst = true
 			"ten past"
 		}
+		11, 12, 13, 14 -> intermediary()
 		15 -> {
 			minuteFirst = true
 			"quarter past"
 		}
+		16, 17, 18, 19 -> intermediary()
+		20 -> {
+			minuteFirst = true
+			"twenty past"
+		}
+		21, 22, 23, 24, 25, 26, 27, 28, 29 -> intermediary()
 		30 -> {
 			minuteFirst = true
 			"half past"
@@ -56,17 +67,25 @@ private fun englishFormat(hour: Int, minute: Int): String {
 		else -> TODO()
 	}
 	val format: String = if (minuteFirst) $$"%2$s %1$s" else $$"%1$s %2$s"
-	return format.format(TIME_TO_STRING[hour], minuteText)
+	return format.format(HOUR_TO_STRING[hour], minuteText)
+}
+
+private fun MutableMap<Int, String>.copy(new: Int, original: Int) {
+	this[new] = this[original]!!
 }
 
 private val TIME_TO_STRING: Map<Int, String> = mutableMapOf(
 	1 to "one", 2 to "two", 3 to "three", 4 to "four",
 	5 to "five", 6 to "six", 7 to "seven", 8 to "eight",
 	9 to "nine", 10 to "ten", 11 to "eleven", 12 to "twelve"
-).also {
-	fun copy(new: Int, original: Int) {
-		it[new] = it[original]!!
-	}
+).apply {
+	for (i in 13..19) this[i] = this[i - 10]!! + "teen"
+	this[20] = "twenty"
+	for (i in 21..29) this[i] = "twenty-" + this[i - 20]!!
+	this[30] = "thirty"
+}
+
+private val HOUR_TO_STRING: Map<Int, String> = LinkedHashMap(TIME_TO_STRING).apply {
 	copy(13, 1)
 	copy(14, 2)
 	copy(15, 3)
