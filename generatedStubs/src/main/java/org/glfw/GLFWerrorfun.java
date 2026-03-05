@@ -5,7 +5,7 @@ import java.lang.foreign.MemorySegment;
 
 import static org.glfw.glfw3_h.stub;
 
-public class GLFWerrorfun {
+public final class GLFWerrorfun {
 
 	private GLFWerrorfun() {}
 
