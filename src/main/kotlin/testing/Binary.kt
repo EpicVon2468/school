@@ -8,9 +8,15 @@ import io.github.epicvon2468.school.*
 fun main() {
 }
 
+fun checkUnsigned(input: UByte) {
+	println("normal input: $input")
+	println("binary input: ${input.toBinaryString()}")
+	println()
+}
+
 fun negativeOf(input: Byte): Byte = input.inv() plus 1
 
-fun check(input: Byte) {
+fun checkSigned(input: Byte) {
 	println(input)
 	println(-input)
 	println("'normal' input: ${input.toBinaryString()}")
