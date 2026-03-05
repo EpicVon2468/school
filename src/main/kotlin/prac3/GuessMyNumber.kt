@@ -8,7 +8,7 @@ import kotlin.random.nextInt
 fun main() {
 	val range: IntRange = 1..100
 	val number: Int = Random.nextInt(range)
-	println("I'm thinking of a number in $range.  Can you guess what it is?")
+	println("I'm thinking of a number in $range; Can you guess what it is?")
 	val input: String? = IO.readln("Type a number: ")
 	val guess: Int = input?.toIntOrNull()?.coerceIn(range) ?: throw IllegalArgumentException("Invalid number: '$input'!")
 	println("Your guess is: $guess")
