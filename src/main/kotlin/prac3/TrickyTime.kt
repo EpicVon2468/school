@@ -54,6 +54,7 @@ private fun englishFormat(hour: Int, minute: Int): String {
 			minuteFirst = true
 			"half past"
 		}
+		31, 32, 33, 34, 35, 36, 37, 38, 39 -> intermediary()
 		45 -> {
 			minuteFirst = true
 			incHour()
@@ -70,8 +71,8 @@ private fun englishFormat(hour: Int, minute: Int): String {
 	return format.format(HOUR_TO_STRING[hour], minuteText)
 }
 
-private fun MutableMap<Int, String>.copy(new: Int, original: Int) {
-	this[new] = this[original]!!
+private fun MutableMap<Int, String>.copy(from: Int, to: Int) {
+	this[to] = this[from]!!
 }
 
 private val TIME_TO_STRING: Map<Int, String> = mutableMapOf(
@@ -83,19 +84,12 @@ private val TIME_TO_STRING: Map<Int, String> = mutableMapOf(
 	this[20] = "twenty"
 	for (i in 21..29) this[i] = "twenty-" + this[i - 20]!!
 	this[30] = "thirty"
+	for (i in 31..39) this[i] = "thirty-" + this[i - 30]!!
+	this[40] = "forty"
+	for (i in 41..49) this[i] = "forty-" + this[i - 40]!!
 }
 
 private val HOUR_TO_STRING: Map<Int, String> = LinkedHashMap(TIME_TO_STRING).apply {
-	copy(13, 1)
-	copy(14, 2)
-	copy(15, 3)
-	copy(16, 4)
-	copy(17, 5)
-	copy(18, 6)
-	copy(19, 7)
-	copy(20, 8)
-	copy(21, 9)
-	copy(22, 10)
-	copy(23, 11)
-	copy(0, 12)
+	for (i in 1..11) copy(from = i, to = i + 12)
+	copy(from = 12, to = 0)
 }
