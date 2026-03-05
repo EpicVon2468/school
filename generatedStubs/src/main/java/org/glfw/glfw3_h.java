@@ -6,12 +6,10 @@ import java.lang.foreign.ValueLayout;
 
 public class glfw3_h {
 
-	private glfw3_h() { throw stub(); }
+	/*package-private*/ glfw3_h() {}
 
-	private static LinkageError stub() {
-		return new LinkageError("Method was called on stub header!");
-	}
-	private static <T> T stubVal() { throw stub(); }
+	/*package-private*/ static LinkageError stub() { return new LinkageError("Method was called on stub header!"); }
+	/*package-private*/ static <T> T stubVal() { throw stub(); }
 
 	public static MemorySegment NULL() { throw stub(); }
 	public static final AddressLayout C_POINTER = stubVal();
@@ -27,7 +25,7 @@ public class glfw3_h {
 	public static void glfwTerminate() { throw stub(); }
 	public static MemorySegment glfwGetProcAddress(MemorySegment procname) { throw stub(); }
 	public static double glfwGetTime() { throw stub(); }
-	public static void swapInterval(int interval) { throw stub(); }
+	public static void glfwSwapInterval(int interval) { throw stub(); }
 	public static int glfwWindowShouldClose(MemorySegment window) { throw stub(); }
 	public static void glfwWindowHint(int hint, int value) { throw stub(); }
 	public static MemorySegment glfwCreateWindow(int width, int height, MemorySegment title, MemorySegment monitor, MemorySegment share) { throw stub(); }
@@ -61,6 +59,8 @@ public class glfw3_h {
 	public static int GL_FLOAT() { throw stub(); }
 	public static int GL_TRIANGLES() { throw stub(); }
 	public static int GL_TRIANGLE_FAN() { throw stub(); }
+	public static int GL_TRUE() { throw stub(); }
+	public static int GL_FALSE() { throw stub(); }
 
 	public static final ValueLayout.OfInt GLenum = stubVal();
 	public static final ValueLayout.OfInt GLint = stubVal();
