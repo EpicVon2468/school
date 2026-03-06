@@ -5,8 +5,6 @@ import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
 import java.time.temporal.ChronoField
 
-import kotlin.collections.set
-
 private val FORMAT: DateTimeFormatter = DateTimeFormatterBuilder()
 	.appendValue(/*field =*/ ChronoField.CLOCK_HOUR_OF_AMPM, /*width =*/ 2)
 	.appendLiteral(':')
@@ -86,19 +84,17 @@ private fun englishFormat(hour: Int, minute: Int): String {
 	return format.format(HOUR_TO_STRING[hour], minuteText)
 }
 
-private fun MutableMap<Int, String>.copy(from: Int, to: Int) {
-	this[to] = this[from]!!
-}
-
-private val TIME_TO_STRING: Map<Int, String> = mutableMapOf(
-	1 to "one", 2 to "two", 3 to "three", 4 to "four",
-	5 to "five", 6 to "six", 7 to "seven", 8 to "eight",
-	9 to "nine", 10 to "ten", 11 to "eleven", 12 to "twelve"
-).apply {
-	for (i in 13..19) this[i] = this[i - 10]!! + "teen"
+private val TIME_TO_STRING: Array<String> = with(Array(87) { "" }) {
+	val result: Array<String> = arrayOf(
+		"zero",
+		"one", "two", "three", "four",
+		"five", "six", "seven", "eight",
+		"nine", "ten", "eleven", "twelve"
+	) + this
+	for (i in 13..19) result[i] = result[i - 10] + "teen"
 	fun cloneTens(tens: Int, word: String) {
-		this[tens] = word
-		for (i in (1 + tens)..(9 + tens)) this[i] = "$word-${this[i - tens]}"
+		result[tens] = word
+		for (i in (1 + tens)..(9 + tens)) result[i] = "$word-${result[i - tens]}"
 	}
 	cloneTens(20, "twenty")
 	cloneTens(30, "thirty")
@@ -108,9 +104,15 @@ private val TIME_TO_STRING: Map<Int, String> = mutableMapOf(
 	cloneTens(70, "seventy")
 	cloneTens(80, "eighty")
 	cloneTens(90, "ninety")
+	result
 }
 
-private val HOUR_TO_STRING: Map<Int, String> = LinkedHashMap(TIME_TO_STRING).apply {
+private fun Array<String>.copy(from: Int, to: Int) {
+	this[to] = this[from]
+}
+
+private val HOUR_TO_STRING: Array<String> = with(TIME_TO_STRING.copyOfRange(0, 24)) {
 	for (i in 1..11) copy(from = i, to = i + 12)
 	copy(from = 12, to = 0)
+	this
 }
