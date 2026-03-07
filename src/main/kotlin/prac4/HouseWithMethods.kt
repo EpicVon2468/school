@@ -22,15 +22,7 @@ object House : JPanel() {
 	private fun readResolve(): Any = House
 
 	override fun paint(g: Graphics) {
-		g.colour = Colour.CYAN
-		g.fillRect(0, 0, width, 220)
-		g.colour = Colour.GREEN
-		g.fillRect(
-			/*x =*/ 0,
-			/*y =*/ 220,
-			/*width =*/ width,
-			/*height =*/ height - 220
-		)
+		drawBackground(g)
 		g.colour = Colour.WHITE
 		var xStart = 230
 		repeat(4) {
@@ -43,6 +35,20 @@ object House : JPanel() {
 		drawDoor(g)
 		drawSun(g)
 		drawChimney(g)
+	}
+
+	private fun drawBackground(g: Graphics) {
+		// Sky
+		g.colour = Colour.CYAN
+		g.fillRect(0, 0, width, 220)
+		// Grass
+		g.colour = Colour.GREEN
+		g.fillRect(
+			/*x =*/ 0,
+			/*y =*/ 220,
+			/*width =*/ width,
+			/*height =*/ height - 220
+		)
 	}
 
 	private fun drawRoof(
