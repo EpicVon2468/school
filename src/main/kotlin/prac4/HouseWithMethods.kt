@@ -25,6 +25,11 @@ object House : JPanel() {
 		drawBackground(g)
 		drawFence(
 			g = g,
+			startX = 20,
+			startY = 220
+		)
+		drawFence(
+			g = g,
 			startX = 230,
 			startY = 220
 		)
