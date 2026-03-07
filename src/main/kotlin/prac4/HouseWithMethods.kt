@@ -31,6 +31,13 @@ object House : JPanel() {
 			/*width =*/ width,
 			/*height =*/ height - 220
 		)
+		g.colour = Colour.WHITE
+		var xStart = 230
+		repeat(4) {
+			g.fillRect(xStart, 220 - 50, 10, 50)
+			xStart += 20
+		}
+		g.fillRect(225, 220 - 40, 4 * 20, 10)
 		drawRoof(g)
 		drawHouseBody(g)
 		drawDoor(g)
