@@ -23,18 +23,31 @@ object House : JPanel() {
 
 	override fun paint(g: Graphics) {
 		drawBackground(g)
-		g.colour = Colour.WHITE
-		var xStart = 230
-		repeat(4) {
-			g.fillRect(xStart, 220 - 50, 10, 50)
-			xStart += 20
-		}
-		g.fillRect(225, 220 - 40, 4 * 20, 10)
+		drawFence(
+			g = g,
+			startX = 230,
+			startY = 220
+		)
 		drawRoof(g)
 		drawHouseBody(g)
 		drawDoor(g)
 		drawSun(g)
 		drawChimney(g)
+	}
+
+	private fun drawFence(
+		g: Graphics,
+		startX: Int,
+		startY: Int,
+		num: Int = 4
+	) {
+		g.colour = Colour.WHITE
+		var x = startX
+		repeat(num) {
+			g.fillRect(x, startY - 50, 10, 50)
+			x += 20
+		}
+		g.fillRect(startX - 5, startY - 40, num * 20, 10)
 	}
 
 	private fun drawBackground(g: Graphics) {
