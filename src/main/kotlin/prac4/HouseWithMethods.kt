@@ -22,6 +22,15 @@ object House : JPanel() {
 	private fun readResolve(): Any = House
 
 	override fun paint(g: Graphics) {
+		g.colour = Colour.CYAN
+		g.fillRect(0, 0, width, 220)
+		g.colour = Colour.GREEN
+		g.fillRect(
+			/*x =*/ 0,
+			/*y =*/ 220,
+			/*width =*/ width,
+			/*height =*/ height - 220
+		)
 		drawRoof(g)
 		drawHouseBody(g)
 		drawDoor(g)
