@@ -19,7 +19,7 @@ fun main() {
 		input.take(2).toIntOrNull() ?: badInput(),
 		input.takeLast(2).toIntOrNull() ?: badInput()
 	)
-	print("The time is: ${time.format(FORMAT)}${if (time.hour >= 12) "pm" else "am"} or ${englishFormat(time.hour, time.minute)}")
+	println("The time is: ${time.format(FORMAT)}${if (time.hour >= 12) "pm" else "am"} or ${englishFormat(time.hour, time.minute)}")
 }
 
 private fun englishFormat(hour: Int, minute: Int): String {
