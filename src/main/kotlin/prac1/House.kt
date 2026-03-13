@@ -18,7 +18,7 @@ fun main() {
 	println(Toolkit.getDefaultToolkit()::class.qualifiedName)
 }
 
-object House : JPanel() {
+data object House : JPanel() {
 
 	@Suppress("unused")
 	private fun readResolve(): Any = House

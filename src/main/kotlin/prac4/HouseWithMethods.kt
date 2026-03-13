@@ -16,7 +16,7 @@ fun main() {
 	frame.showWithFixes()
 }
 
-object House : JPanel() {
+data object House : JPanel() {
 
 	@Suppress("unused")
 	private fun readResolve(): Any = House
