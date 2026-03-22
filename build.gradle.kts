@@ -41,7 +41,7 @@ createExec("runSecondsToHMS", "prac3.SecondsToHMS")
 createExec("runGuessMyNumber", "prac3.GuessMyNumber")
 createExec("runTrickyTime", "prac3.TrickyTime")
 createExec("runHouseWithMethods", "prac4.HouseWithMethods")
-createExec("runCalculator", "prac5.Calculator")
+createExec("runButtonClicker", "prac5.ButtonClicker")
 
 tasks.withType<JavaCompile> {
 	options.apply {
