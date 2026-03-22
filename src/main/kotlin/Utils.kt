@@ -6,8 +6,8 @@ import java.awt.*
 
 import javax.swing.JFrame
 
-fun JFrame.showWithFixes(fullscreen: Boolean = true) {
-	this.size = Dimension(600, 600)
+fun JFrame.showWithFixes(width: Int = 600, height: Int = 600, fullscreen: Boolean = true) {
+	this.size = Dimension(width, height)
 	if (fullscreen) this.extendedState = this.extendedState or JFrame.MAXIMIZED_BOTH
 	this.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
 	this.isVisible = true

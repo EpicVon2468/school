@@ -1,0 +1,64 @@
+package io.github.epicvon2468.school.prac5
+
+import io.github.epicvon2468.school.showWithFixes
+
+import java.awt.Button
+import java.awt.Graphics
+import java.awt.Label
+import java.awt.TextField
+import java.awt.event.ActionEvent
+import java.awt.event.ActionListener
+
+import javax.swing.JFrame
+import javax.swing.JPanel
+
+fun main() {
+	System.setProperty("awt.toolkit.name", "XToolkit")
+	val frame = JFrame("Simple Addition")
+	frame.add(SimpleAddition)
+	frame.showWithFixes(
+		width = 300,
+		height = 300,
+		fullscreen = false
+	)
+}
+
+data object SimpleAddition : JPanel(), ActionListener {
+
+	private var a: Int = 0
+	private var b: Int = 0
+
+	private val prompt1 = Label("This class will add two numbers.")
+	private val prompt2 = Label("Type in the numbers in the spaces.")
+	private val value1 = TextField(/*columns =*/ 10)
+	private val value2 = TextField(/*columns =*/ 10)
+	private val button = Button("Press to add")
+
+	init {
+		add(prompt1)
+		add(prompt2)
+		add(value1)
+		add(value2)
+		add(button)
+		button.addActionListener(this)
+	}
+
+	@Suppress("unused")
+	private fun readResolve(): Any = SimpleAddition
+
+	override fun paint(g: Graphics) {
+		paintComponent(g)
+		val result: Int = a + b
+		println(result)
+		g.drawString("$a + $b = $result", 100, 200)
+	}
+
+	override fun actionPerformed(e: ActionEvent) {
+		// No exceptions & fields are forced into a valid state
+		a = value1.text.toIntOrNull() ?: 0
+		if (a == 0) value1.text = "0"
+		b = value2.text.toIntOrNull() ?: 0
+		if (b == 0) value2.text = "0"
+		repaint()
+	}
+}
