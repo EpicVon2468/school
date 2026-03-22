@@ -40,6 +40,8 @@ createExec("runTemperatureConversion", "prac3.TemperatureConversion")
 createExec("runSecondsToHMS", "prac3.SecondsToHMS")
 createExec("runGuessMyNumber", "prac3.GuessMyNumber")
 createExec("runTrickyTime", "prac3.TrickyTime")
+createExec("runHouseWithMethods", "prac4.HouseWithMethods")
+createExec("runCalculator", "prac5.Calculator")
 
 tasks.withType<JavaCompile> {
 	options.apply {
