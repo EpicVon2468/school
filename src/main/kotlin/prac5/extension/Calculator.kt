@@ -2,6 +2,7 @@ package io.github.epicvon2468.school.prac5.extension
 
 import io.github.epicvon2468.school.showWithFixes
 
+import java.awt.Button
 import java.awt.Graphics
 import java.awt.TextField
 import java.io.Reader
@@ -22,10 +23,34 @@ fun main() {
 data object Calculator : JPanel() {
 
 	private val resultField = TextField(75)
+	private val expression: StringBuilder = StringBuilder(50)
 
 	init {
 		add(resultField)
 		resultField.isEnabled = false
+		fun createButton(display: String, expressionText: String = display) {
+			val button = Button(display)
+			add(button)
+			button.addActionListener {
+				expression.append(expressionText)
+				resultField.text = expression.toString()
+				repaint()
+			}
+		}
+		//⌫
+		//expression.deleteCharAt(expression.lastIndex)
+		createButton("+")
+		createButton("-")
+		createButton("/")
+		createButton("*")
+		createButton("(")
+		createButton(")")
+		createButton("(-)", "|")
+		for (num: Int in 0..9) createButton(num.digitToChar().toString())
+		val button = Button("exe")
+		add(button)
+		button.addActionListener {
+		}
 	}
 
 	@Suppress("unused")
