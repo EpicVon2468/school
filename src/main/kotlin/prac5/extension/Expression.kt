@@ -9,6 +9,11 @@ interface Expression {
 
 	@Suppress("UNCHECKED_CAST")
 	fun <T> childAt(index: Int): T = getChild(index) as T
+
+	fun validate(): Unit = children.forEach { child: Any ->
+		if (child is Expression) child.validate()
+		else require(child is Char)
+	}
 }
 
 data class TermExpression(
@@ -40,4 +45,7 @@ data class UnaryExpression(
 data class PrimaryExpression(
 	val literal: Double? = null,
 	val child: TermExpression? = null
-)
+) : Expression {
+
+	override val children: MutableList<Any> = mutableListOf()
+}

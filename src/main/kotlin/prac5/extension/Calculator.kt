@@ -35,9 +35,15 @@ data object Calculator : JPanel() {
 		paintComponent(g)
 	}
 
-	fun eval(input: String): Double = evaluateExpression(parseTerm(input.reader()))
+	fun eval(input: String): Double = evaluateExpression(parse(input))
 
-	fun parseTerm(input: Reader): TermExpression {
+	fun parse(input: String): TermExpression {
+		val expr: TermExpression = parseTerm(input.reader())
+		expr.validate()
+		return expr
+	}
+
+	private fun parseTerm(input: Reader): TermExpression {
 		val result = TermExpression(child = parseFactor(input))
 		var next: Char = input.peek()
 		while (next == '+' || next == '-') {
@@ -49,7 +55,7 @@ data object Calculator : JPanel() {
 		return result
 	}
 
-	fun parseFactor(input: Reader): FactorExpression {
+	private fun parseFactor(input: Reader): FactorExpression {
 		val result = FactorExpression(child = parseUnary(input))
 		var next: Char = input.peek()
 		while (next == '/' || next == '*') {
@@ -61,7 +67,7 @@ data object Calculator : JPanel() {
 		return result
 	}
 
-	fun parseUnary(input: Reader): UnaryExpression {
+	private fun parseUnary(input: Reader): UnaryExpression {
 		val negate: Boolean
 		// Use '|' for unary minus to avoid misreading the subtraction operator
 		if (input.peek() == '|') {
@@ -74,7 +80,7 @@ data object Calculator : JPanel() {
 		)
 	}
 
-	fun parsePrimary(input: Reader): PrimaryExpression {
+	private fun parsePrimary(input: Reader): PrimaryExpression {
 		if (input.peek() == '(') {
 			input.skip(1) // '('
 			val result = PrimaryExpression(child = parseTerm(input))
@@ -84,7 +90,7 @@ data object Calculator : JPanel() {
 		return PrimaryExpression(literal = input.readDouble())
 	}
 
-	fun Reader.readDouble(): Double {
+	private fun Reader.readDouble(): Double {
 		val str: String = this.peek(512) {
 			val result: StringBuilder = StringBuilder(12)
 			var read: Char = this.read().toChar()
@@ -98,7 +104,7 @@ data object Calculator : JPanel() {
 		return str.toDouble()
 	}
 
-	fun evaluateOp(
+	private fun evaluateOp(
 		expr: Expression,
 		evaluate: (index: Int) -> Double,
 		evaluateOp: (op: Char, lhs: Double, rhs: Double) -> Double
@@ -118,7 +124,7 @@ data object Calculator : JPanel() {
 		return value
 	}
 
-	fun evaluateExpression(expr: TermExpression): Double = when (expr.childCount) {
+	private fun evaluateExpression(expr: TermExpression): Double = when (expr.childCount) {
 		0 -> error("No children for expression '$expr'!")
 		1 -> evaluateExpression(expr.childAt<FactorExpression>(0))
 		else -> evaluateOp(
@@ -136,7 +142,7 @@ data object Calculator : JPanel() {
 		)
 	}
 
-	fun evaluateExpression(expr: FactorExpression): Double = when (expr.childCount) {
+	private fun evaluateExpression(expr: FactorExpression): Double = when (expr.childCount) {
 		0 -> error("No children for expression '$expr'!")
 		1 -> evaluateExpression(expr.childAt<UnaryExpression>(0))
 		else -> evaluateOp(
@@ -154,9 +160,9 @@ data object Calculator : JPanel() {
 		)
 	}
 
-	fun evaluateExpression(expr: UnaryExpression): Double = evaluateExpression(expr.child).let {
+	private fun evaluateExpression(expr: UnaryExpression): Double = evaluateExpression(expr.child).let {
 		if (expr.negate) it.unaryMinus() else it
 	}
 
-	fun evaluateExpression(expr: PrimaryExpression): Double = if (expr.child != null) evaluateExpression(expr.child) else expr.literal!!
+	private fun evaluateExpression(expr: PrimaryExpression): Double = if (expr.child != null) evaluateExpression(expr.child) else expr.literal!!
 }
