@@ -41,8 +41,8 @@ data object Calculator : JPanel() {
 		var next: Char = input.peek()
 		while (next == '+' || next == '-') {
 			input.skip(1)
-			result.rest += next
-			result.rest += parseFactor(input)
+			result.children += next
+			result.children += parseFactor(input)
 			next = input.peek()
 		}
 		return result
@@ -53,8 +53,8 @@ data object Calculator : JPanel() {
 		var next: Char = input.peek()
 		while (next == '/' || next == '*') {
 			input.skip(1)
-			result.rest += next
-			result.rest += parseUnary(input)
+			result.children += next
+			result.children += parseUnary(input)
 			next = input.peek()
 		}
 		return result
@@ -119,7 +119,7 @@ data object Calculator : JPanel() {
 
 	fun evaluateExpression(expr: TermExpression): Double = when (expr.childCount) {
 		0 -> error("No children for expression '$expr'!")
-		1 -> evaluateExpression(expr.child)
+		1 -> evaluateExpression(expr.childAt<FactorExpression>(0))
 		else -> evaluateOp(
 			expr,
 			evaluate = { index: Int ->
@@ -137,7 +137,7 @@ data object Calculator : JPanel() {
 
 	fun evaluateExpression(expr: FactorExpression): Double = when (expr.childCount) {
 		0 -> error("No children for expression '$expr'!")
-		1 -> evaluateExpression(expr.child)
+		1 -> evaluateExpression(expr.childAt<UnaryExpression>(0))
 		else -> evaluateOp(
 			expr,
 			evaluate = { index: Int ->
