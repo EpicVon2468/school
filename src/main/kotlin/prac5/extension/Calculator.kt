@@ -3,13 +3,13 @@ package io.github.epicvon2468.school.prac5.extension
 import io.github.epicvon2468.school.showWithFixes
 
 import java.awt.Button
+import java.awt.Container
 import java.awt.Graphics
 import java.awt.GridLayout
 import java.awt.TextField
 import java.io.Reader
 
 import javax.swing.Box
-import javax.swing.JComponent
 import javax.swing.JFrame
 import javax.swing.JPanel
 
@@ -32,7 +32,7 @@ data object Calculator : JPanel() {
 		this.layout = GridLayout(/*rows =*/ 5, /*cols =*/ 0)
 		add(resultField)
 		resultField.isEnabled = false
-		fun JComponent.createButton(display: String, expressionText: String = display) {
+		fun Container.createButton(display: String, expressionText: String = display) {
 			val button = Button(display)
 			add(button)
 			button.addActionListener {
@@ -43,24 +43,24 @@ data object Calculator : JPanel() {
 		}
 		//⌫
 		//expression.deleteCharAt(expression.lastIndex)
-		fun JComponent.createRow(vararg buttons: String) {
+		fun Container.createRow(vararg buttons: String) {
 			buttons.forEach(::createButton)
 		}
-//		val rowLayout = GridLayout(0, 5)
-		val row1 = Box.createHorizontalBox()
-//		row1.layout = rowLayout
+		val rowLayout = GridLayout(0, 5)
+		val row1 = Container()
+		row1.layout = rowLayout
 		add(row1)
 		row1.createRow("/", "7", "8", "9", "(")
-		val row2 = Box.createHorizontalBox()
-//		row2.layout = rowLayout
+		val row2 = Container()
+		row2.layout = rowLayout
 		add(row2)
 		row2.createRow("*", "4", "5", "6", ")")
-		val row3 = Box.createHorizontalBox()
-//		row3.layout = rowLayout
+		val row3 = Container()
+		row3.layout = rowLayout
 		add(row3)
 		row3.createRow("-", "1", "2", "3", "⌫")
-		val row4 = Box.createHorizontalBox()
-//		row4.layout = rowLayout
+		val row4 = Container()
+		row4.layout = rowLayout
 		add(row4)
 		row4.createRow("+", "0", ".", "(-)", "exe")
 //		for (num: Int in 0..9) createButton(num.digitToChar().toString())
