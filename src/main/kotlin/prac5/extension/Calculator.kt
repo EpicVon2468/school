@@ -17,7 +17,6 @@ import javax.swing.JScrollPane
 import javax.swing.JTextArea
 import javax.swing.SwingUtilities
 import javax.swing.UIManager
-import javax.swing.plaf.nimbus.NimbusLookAndFeel
 
 import kotlin.math.pow
 
@@ -30,7 +29,7 @@ import kotlin.math.pow
 fun main() {
 	// WLToolkit is broken with Components
 	System.setProperty("awt.toolkit.name", "XToolkit")
-	UIManager.setLookAndFeel(NimbusLookAndFeel())
+	UIManager.setLookAndFeel(CalculatorLookAndFeel())
 	// Apparently all Swing/AWT apps should be started like this.
 	SwingUtilities.invokeLater {
 		val frame = JFrame("Calculator")
@@ -91,6 +90,11 @@ data object Calculator : JPanel() {
 			row.block()
 		}
 
+		// ←  ↑  ↓  →  ^
+		// /  7  8  9  (
+		// *  4  5  6  )
+		// -  1  2  3  ⌫
+		// +  0  . (-) exe
 		row {
 			createButton("←") {
 			}
@@ -119,7 +123,7 @@ data object Calculator : JPanel() {
 		row {
 			createButtons("-", "1", "2", "3")
 			createButton("⌫") { event: ActionEvent ->
-				// The shift constant with `and()` is just kind of... not working?
+				// The shift key constant with `and()` is just kind of... not working?
 				// The only real tell of shift being pressed is the least significant bit being 1
 				val isShiftPressed: Boolean = event.modifiers.takeLowestOneBit() == 1
 				display = if (isShiftPressed) display.dropLastWhile { it != ' ' }
@@ -129,7 +133,7 @@ data object Calculator : JPanel() {
 		}
 		row {
 			createButtons("+", "0", ".")
-			createButton("(-)", "–")
+			createButton(name = "(-)", expressionText = "–")
 			createButton("exe") {
 				var input: String = currentExpression
 				if (input.isEmpty() || input.isBlank()) input = "0"
