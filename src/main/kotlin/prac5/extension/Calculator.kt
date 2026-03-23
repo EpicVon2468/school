@@ -9,7 +9,6 @@ import java.awt.GridLayout
 import java.awt.TextField
 import java.io.Reader
 
-import javax.swing.Box
 import javax.swing.JFrame
 import javax.swing.JPanel
 
@@ -25,53 +24,70 @@ fun main() {
 
 data object Calculator : JPanel() {
 
+	@Suppress("unused")
+	private fun readResolve(): Any = Calculator
+
 	private val resultField = TextField(75)
-	private val expression: StringBuilder = StringBuilder(50)
 
 	init {
 		this.layout = GridLayout(/*rows =*/ 5, /*cols =*/ 0)
 		add(resultField)
-		resultField.isEnabled = false
-		fun Container.createButton(display: String, expressionText: String = display) {
+//		resultField.isEnabled = false
+
+		initialiseButtons()
+	}
+
+	private fun initialiseButtons() {
+		fun Container.createButton(
+			display: String,
+			expressionText: String = display,
+			action: Button.() -> Unit = {
+				resultField.text += expressionText
+			}
+		) {
 			val button = Button(display)
 			add(button)
 			button.addActionListener {
-				expression.append(expressionText)
-				resultField.text = expression.toString()
+				button.action()
 				repaint()
 			}
 		}
-		//⌫
-		//expression.deleteCharAt(expression.lastIndex)
-		fun Container.createRow(vararg buttons: String) {
+		fun Container.createButtons(vararg buttons: String) {
 			buttons.forEach(::createButton)
 		}
-		val rowLayout = GridLayout(0, 5)
-		val row1 = Container()
-		row1.layout = rowLayout
-		add(row1)
-		row1.createRow("/", "7", "8", "9", "(")
-		val row2 = Container()
-		row2.layout = rowLayout
-		add(row2)
-		row2.createRow("*", "4", "5", "6", ")")
-		val row3 = Container()
-		row3.layout = rowLayout
-		add(row3)
-		row3.createRow("-", "1", "2", "3", "⌫")
-		val row4 = Container()
-		row4.layout = rowLayout
-		add(row4)
-		row4.createRow("+", "0", ".", "(-)", "exe")
-//		for (num: Int in 0..9) createButton(num.digitToChar().toString())
-//		val button = Button("exe")
-//		add(button)
-//		button.addActionListener {
-//		}
-	}
+		fun row(block: Container.() -> Unit) {
+			val row = Container()
+			row.layout = GridLayout(0, 5)
+			add(row)
+			row.block()
+		}
 
-	@Suppress("unused")
-	private fun readResolve(): Any = Calculator
+		row {
+			createButtons("/", "7", "8", "9", "(")
+		}
+		row {
+			createButtons("*", "4", "5", "6", ")")
+		}
+		row {
+			createButtons("-", "1", "2", "3")
+			createButton("⌫") {
+				with(resultField) {
+					text = text.dropLast(1)
+				}
+			}
+		}
+		row {
+			createButtons("+", "0", ".")
+			createButton("(-)", "|")
+			createButton("exe") {
+				with(resultField) {
+					val result: Double = eval(text)
+					println(result)
+					text = result.toString()
+				}
+			}
+		}
+	}
 
 	override fun paint(g: Graphics) {
 		paintComponent(g)

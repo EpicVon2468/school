@@ -39,6 +39,8 @@ data class UnaryExpression(
 	override val children: List<Any> = listOf(child)
 }
 
+// TODO: indices operator? (yes, unary comes after in precedence)
+
 data class PrimaryExpression(
 	val literal: Double? = null,
 	val child: TermExpression? = null
