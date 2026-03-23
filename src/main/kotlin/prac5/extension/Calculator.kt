@@ -4,19 +4,20 @@ import io.github.epicvon2468.school.showWithFixes
 
 import java.awt.Button
 import java.awt.Container
-import java.awt.Graphics
 import java.awt.GridLayout
 import java.awt.TextField
+import java.awt.event.ActionEvent
 import java.io.Reader
 
 import javax.swing.JFrame
 import javax.swing.JPanel
 
+// Good examples:
+// 2*3+4; 10
+// 2*(3+4); 14
+// 2*(3+4/2+1*3+(2*3)); 28
 fun main() {
 	System.setProperty("awt.toolkit.name", "XToolkit")
-	println(Calculator.eval("2*3+4"))
-	println(Calculator.eval("2*(3+4)"))
-	println(Calculator.eval("2*(3+4/2+1*3+(2*3))"))
 	val frame = JFrame("Calculator")
 	frame.add(Calculator)
 	frame.showWithFixes(fullscreen = false)
@@ -37,23 +38,23 @@ data object Calculator : JPanel() {
 		initialiseButtons()
 	}
 
+	private var display: String by resultField::text
+
 	private fun initialiseButtons() {
 		fun Container.createButton(
-			display: String,
-			expressionText: String = display,
-			action: Button.() -> Unit = {
-				resultField.text += expressionText
-			}
+			name: String,
+			expressionText: String = name,
+			action: Button.(ActionEvent) -> Unit = { display += expressionText }
 		) {
-			val button = Button(display)
+			val button = Button(name)
 			add(button)
-			button.addActionListener {
-				button.action()
+			button.addActionListener { event: ActionEvent ->
+				button.action(event)
 				repaint()
 			}
 		}
-		fun Container.createButtons(vararg buttons: String) {
-			buttons.forEach(::createButton)
+		fun Container.createButtons(vararg names: String) {
+			names.forEach(this::createButton)
 		}
 		fun row(block: Container.() -> Unit) {
 			val row = Container()
@@ -70,27 +71,22 @@ data object Calculator : JPanel() {
 		}
 		row {
 			createButtons("-", "1", "2", "3")
-			createButton("⌫") {
-				with(resultField) {
-					text = text.dropLast(1)
-				}
+			createButton("⌫") { event: ActionEvent ->
+				// The shift constant with `and()` is just kind of... not working?
+				// The only real tell of shift being pressed is the least significant bit being 1
+				val isShiftPressed: Boolean = event.modifiers.takeLowestOneBit() == 1
+				display = if (isShiftPressed) "" else display.dropLast(1)
 			}
 		}
 		row {
 			createButtons("+", "0", ".")
 			createButton("(-)", "|")
 			createButton("exe") {
-				with(resultField) {
-					val result: Double = eval(text)
-					println(result)
-					text = result.toString()
-				}
+				val result: Double = eval(display)
+				println(result)
+				display = result.toString()
 			}
 		}
-	}
-
-	override fun paint(g: Graphics) {
-		paintComponent(g)
 	}
 
 	fun eval(input: String): Double = evaluateExpression(parse(input))
