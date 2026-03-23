@@ -11,6 +11,8 @@ import javax.swing.JPanel
 
 fun main() {
 	System.setProperty("awt.toolkit.name", "XToolkit")
+	println(Calculator.eval("2*3+4"))
+	println(Calculator.eval("2*(3+4)"))
 	val frame = JFrame("Calculator")
 	frame.add(Calculator)
 	frame.showWithFixes(fullscreen = false)
@@ -31,6 +33,8 @@ data object Calculator : JPanel() {
 	override fun paint(g: Graphics) {
 		paintComponent(g)
 	}
+
+	fun eval(input: String): Double = evaluateExpression(parseTerm(input.reader()))
 
 	fun parseTerm(input: Reader): TermExpression {
 		val result = TermExpression(child = parseFactor(input))
@@ -57,11 +61,16 @@ data object Calculator : JPanel() {
 	}
 
 	fun parseUnary(input: Reader): UnaryExpression {
+		val negate: Boolean
+		// Use '|' for unary minus to avoid misreading the subtraction operator
 		if (input.peek() == '|') {
 			input.skip(1)
-			return UnaryExpression(negateMe = parsePrimary(input))
-		}
-		return UnaryExpression(child = parsePrimary(input))
+			negate = true
+		} else negate = false
+		return UnaryExpression(
+			child = parsePrimary(input),
+			negate = negate
+		)
 	}
 
 	fun parsePrimary(input: Reader): PrimaryExpression {
@@ -93,7 +102,7 @@ data object Calculator : JPanel() {
 		evaluate: (index: Int) -> Double,
 		evaluateOp: (op: Char, lhs: Double, rhs: Double) -> Double
 	): Double {
-		var value = evaluate(0)
+		var value: Double = evaluate(0)
 		var index = 0
 		while (index < expr.childCount) {
 			value = evaluateOp(
@@ -144,10 +153,8 @@ data object Calculator : JPanel() {
 		)
 	}
 
-	fun evaluateExpression(expr: UnaryExpression): Double = when (expr.childCount) {
-		0 -> error("No children for expression '$expr'!")
-		1 -> evaluateExpression(expr.child!!)
-		else -> return evaluateExpression(expr.negateMe!!).unaryMinus()
+	fun evaluateExpression(expr: UnaryExpression): Double = evaluateExpression(expr.child).let {
+		if (expr.negate) it.unaryMinus() else it
 	}
 
 	fun evaluateExpression(expr: PrimaryExpression): Double = if (expr.child != null) evaluateExpression(expr.child) else expr.literal!!

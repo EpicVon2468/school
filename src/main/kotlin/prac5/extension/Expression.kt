@@ -29,16 +29,13 @@ data class FactorExpression(
 }
 
 data class UnaryExpression(
-	val negateMe: PrimaryExpression? = null,
-	val child: PrimaryExpression? = null
+	val child: PrimaryExpression,
+	val negate: Boolean
 ) : Expression {
 
-	override val childCount: Int = if (child != null) 1 else 2
+	override val childCount: Int = if (negate) 2 else 1
 
-	override fun getChild(index: Int): Any {
-		if (child != null) return child
-		return negateMe!!
-	}
+	override fun getChild(index: Int): Any = child
 
 	override val rest: MutableList<Any> = mutableListOf()
 }
