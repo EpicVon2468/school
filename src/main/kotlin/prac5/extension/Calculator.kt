@@ -3,14 +3,16 @@ package io.github.epicvon2468.school.prac5.extension
 import io.github.epicvon2468.school.showWithFixes
 
 import java.awt.Button
+import java.awt.Color as Colour
 import java.awt.Container
 import java.awt.GridLayout
-import java.awt.TextField
 import java.awt.event.ActionEvent
 import java.io.Reader
 
 import javax.swing.JFrame
 import javax.swing.JPanel
+import javax.swing.JScrollPane
+import javax.swing.JTextArea
 
 // Good examples:
 // 2*3+4; 10
@@ -28,12 +30,13 @@ data object Calculator : JPanel() {
 	@Suppress("unused")
 	private fun readResolve(): Any = Calculator
 
-	private val resultField = TextField(75)
+	private val resultField = JTextArea()
 
 	init {
 		this.layout = GridLayout(/*rows =*/ 5, /*cols =*/ 0)
 		add(resultField)
-//		resultField.isEnabled = false
+		resultField.isEnabled = false
+		resultField.disabledTextColor = Colour.BLACK
 
 		initialiseButtons()
 	}
@@ -75,16 +78,16 @@ data object Calculator : JPanel() {
 				// The shift constant with `and()` is just kind of... not working?
 				// The only real tell of shift being pressed is the least significant bit being 1
 				val isShiftPressed: Boolean = event.modifiers.takeLowestOneBit() == 1
-				display = if (isShiftPressed) "" else display.dropLast(1)
+				display = if (isShiftPressed) display.dropLastWhile { it != '\n' } else display.dropLast(1)
 			}
 		}
 		row {
 			createButtons("+", "0", ".")
 			createButton("(-)", "|")
 			createButton("exe") {
-				val result: Double = eval(display)
-				println(result)
-				display = result.toString()
+				val input: String = display.substringAfterLast('\n')
+				val result: Double = eval(input = if (input.isEmpty() || input.isBlank()) "0" else input)
+				display += "\n> $result\n"
 			}
 		}
 	}

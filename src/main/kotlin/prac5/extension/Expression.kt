@@ -11,7 +11,7 @@ interface Expression {
 	fun <T> childAt(index: Int): T = getChild(index) as T
 
 	fun validate() {
-		require(childCount != 0)
+		require(childCount > 0)
 		children.forEach { child: Any ->
 			if (child is Expression) child.validate()
 			else require(child is Char)
