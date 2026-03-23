@@ -52,8 +52,16 @@ data object Calculator : JPanel() {
 	}
 
 	private var display: String by resultField::text
+	private inline var currentExpression: String
+		get() = display.substringAfterLast('\n')
+		set(value) {
+			val prev = display.substringAfterLast('\n')
+			if (prev.isNotEmpty() && prev.isNotBlank() && histIndex > history.lastIndex) history += prev
+			display = display.substringBeforeLast('\n') + '\n' + value
+		}
 
 	private val history: MutableList<String> = mutableListOf()
+	private var histIndex: Int = history.size
 
 	private fun initialiseButtons() {
 		fun Container.createButton(
@@ -79,7 +87,23 @@ data object Calculator : JPanel() {
 		}
 
 		row {
-			createButtons("←", "↑", "↓", "→", "^")
+			createButton("←") {
+			}
+			createButton("↑") {
+				if (history.isEmpty()) return@createButton
+				val newIndex: Int = (histIndex - 1).coerceAtLeast(0)
+				currentExpression = history[newIndex]
+				histIndex = newIndex
+			}
+			createButton("↓") {
+				if (history.isEmpty()) return@createButton
+				val newIndex: Int = (histIndex + 1).coerceAtMost(history.size)
+				currentExpression = history.getOrNull(newIndex) ?: ""
+				histIndex = newIndex
+			}
+			createButton("→") {
+			}
+			createButton("^")
 		}
 		row {
 			createButtons("/", "7", "8", "9", "(")
@@ -100,9 +124,10 @@ data object Calculator : JPanel() {
 			createButtons("+", "0", ".")
 			createButton("(-)", "–")
 			createButton("exe") {
-				var input: String = display.substringAfterLast('\n')
+				var input: String = currentExpression
 				if (input.isEmpty() || input.isBlank()) input = "0"
 				history += input
+				histIndex = history.size
 				val result: Double = eval(input)
 				display += "\n> ${result.readable()}\n"
 			}
