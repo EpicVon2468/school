@@ -15,6 +15,8 @@ import javax.swing.JFrame
 import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.JTextArea
+import javax.swing.UIManager
+import javax.swing.plaf.nimbus.NimbusLookAndFeel
 
 import kotlin.math.pow
 
@@ -26,6 +28,7 @@ import kotlin.math.pow
 // (-2)^2; 4
 fun main() {
 	System.setProperty("awt.toolkit.name", "XToolkit")
+	UIManager.setLookAndFeel(NimbusLookAndFeel())
 	val frame = JFrame("Calculator")
 	frame.add(Calculator)
 	frame.showWithFixes(fullscreen = false)
