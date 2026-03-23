@@ -8,6 +8,8 @@ import java.awt.GridLayout
 import java.awt.TextField
 import java.io.Reader
 
+import javax.swing.Box
+import javax.swing.JComponent
 import javax.swing.JFrame
 import javax.swing.JPanel
 
@@ -27,10 +29,10 @@ data object Calculator : JPanel() {
 	private val expression: StringBuilder = StringBuilder(50)
 
 	init {
-		this.layout = GridLayout(/*rows =*/ 0, /*cols =*/ 5)
-//		add(resultField)
-//		resultField.isEnabled = false
-		fun createButton(display: String, expressionText: String = display) {
+		this.layout = GridLayout(/*rows =*/ 5, /*cols =*/ 0)
+		add(resultField)
+		resultField.isEnabled = false
+		fun JComponent.createButton(display: String, expressionText: String = display) {
 			val button = Button(display)
 			add(button)
 			button.addActionListener {
@@ -41,13 +43,26 @@ data object Calculator : JPanel() {
 		}
 		//⌫
 		//expression.deleteCharAt(expression.lastIndex)
-		fun createRow(vararg buttons: String) {
+		fun JComponent.createRow(vararg buttons: String) {
 			buttons.forEach(::createButton)
 		}
-		createRow("/", "7", "8", "9", "(")
-		createRow("*", "4", "5", "6", ")")
-		createRow("-", "1", "2", "3", "⌫")
-		createRow("+", "0", ".", "(-)", "exe")
+//		val rowLayout = GridLayout(0, 5)
+		val row1 = Box.createHorizontalBox()
+//		row1.layout = rowLayout
+		add(row1)
+		row1.createRow("/", "7", "8", "9", "(")
+		val row2 = Box.createHorizontalBox()
+//		row2.layout = rowLayout
+		add(row2)
+		row2.createRow("*", "4", "5", "6", ")")
+		val row3 = Box.createHorizontalBox()
+//		row3.layout = rowLayout
+		add(row3)
+		row3.createRow("-", "1", "2", "3", "⌫")
+		val row4 = Box.createHorizontalBox()
+//		row4.layout = rowLayout
+		add(row4)
+		row4.createRow("+", "0", ".", "(-)", "exe")
 //		for (num: Int in 0..9) createButton(num.digitToChar().toString())
 //		val button = Button("exe")
 //		add(button)
