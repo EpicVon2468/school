@@ -44,6 +44,7 @@ createExec("runHouseWithMethods", "prac4.HouseWithMethods")
 createExec("runButtonClicker", "prac5.ButtonClicker")
 createExec("runSimpleAddition", "prac5.SimpleAddition")
 createExec("runFourButtons", "prac5.FourButtons")
+createExec("runCalculator", "prac5.extension.Calculator")
 
 tasks.withType<JavaCompile> {
 	options.apply {
