@@ -4,6 +4,7 @@ import io.github.epicvon2468.school.showWithFixes
 
 import java.awt.Button
 import java.awt.Graphics
+import java.awt.GridLayout
 import java.awt.TextField
 import java.io.Reader
 
@@ -26,8 +27,9 @@ data object Calculator : JPanel() {
 	private val expression: StringBuilder = StringBuilder(50)
 
 	init {
-		add(resultField)
-		resultField.isEnabled = false
+		this.layout = GridLayout(/*rows =*/ 0, /*cols =*/ 5)
+//		add(resultField)
+//		resultField.isEnabled = false
 		fun createButton(display: String, expressionText: String = display) {
 			val button = Button(display)
 			add(button)
@@ -39,18 +41,18 @@ data object Calculator : JPanel() {
 		}
 		//⌫
 		//expression.deleteCharAt(expression.lastIndex)
-		createButton("+")
-		createButton("-")
-		createButton("/")
-		createButton("*")
-		createButton("(")
-		createButton(")")
-		createButton("(-)", "|")
-		for (num: Int in 0..9) createButton(num.digitToChar().toString())
-		val button = Button("exe")
-		add(button)
-		button.addActionListener {
+		fun createRow(vararg buttons: String) {
+			buttons.forEach(::createButton)
 		}
+		createRow("/", "7", "8", "9", "(")
+		createRow("*", "4", "5", "6", ")")
+		createRow("-", "1", "2", "3", "⌫")
+		createRow("+", "0", ".", "(-)", "exe")
+//		for (num: Int in 0..9) createButton(num.digitToChar().toString())
+//		val button = Button("exe")
+//		add(button)
+//		button.addActionListener {
+//		}
 	}
 
 	@Suppress("unused")
