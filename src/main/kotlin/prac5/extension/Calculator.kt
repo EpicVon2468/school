@@ -34,7 +34,7 @@ data object Calculator : JPanel() {
 
 	init {
 		this.layout = GridLayout(/*rows =*/ 5, /*cols =*/ 0)
-		add(resultField)
+		add(JScrollPane(resultField))
 		resultField.isEnabled = false
 		resultField.disabledTextColor = Colour.BLACK
 
