@@ -13,6 +13,7 @@ fun main() {
 	System.setProperty("awt.toolkit.name", "XToolkit")
 	println(Calculator.eval("2*3+4"))
 	println(Calculator.eval("2*(3+4)"))
+	println(Calculator.eval("2*(3+4/2+1*3+(2*3))"))
 	val frame = JFrame("Calculator")
 	frame.add(Calculator)
 	frame.showWithFixes(fullscreen = false)

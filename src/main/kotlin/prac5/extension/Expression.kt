@@ -2,7 +2,7 @@ package io.github.epicvon2468.school.prac5.extension
 
 interface Expression {
 
-	val childCount: Int get() = (children.size - 1).coerceAtLeast(1)
+	val childCount: Int get() = children.size
 	val children: MutableList<Any>
 
 	fun getChild(index: Int): Any = children[index]
