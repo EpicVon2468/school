@@ -3,32 +3,29 @@ package io.github.epicvon2468.school.prac5.extension
 interface Expression {
 
 	val childCount: Int get() = children.size
-	val children: MutableList<Any>
+	val children: List<Any>
 
 	fun getChild(index: Int): Any = children[index]
 
 	@Suppress("UNCHECKED_CAST")
 	fun <T> childAt(index: Int): T = getChild(index) as T
 
-	fun validate(): Unit = children.forEach { child: Any ->
-		if (child is Expression) child.validate()
-		else require(child is Char)
+	fun validate() {
+		require(childCount != 0)
+		children.forEach { child: Any ->
+			if (child is Expression) child.validate()
+			else require(child is Char)
+		}
 	}
 }
 
 data class TermExpression(
-	override val children: MutableList<Any>
-) : Expression {
-
-	constructor(child: FactorExpression) : this(children = mutableListOf(child))
-}
+	override val children: List<Any>
+) : Expression
 
 data class FactorExpression(
-	override val children: MutableList<Any>
-) : Expression {
-
-	constructor(child: UnaryExpression) : this(children = mutableListOf(child))
-}
+	override val children: List<Any>
+) : Expression
 
 data class UnaryExpression(
 	val child: PrimaryExpression,
@@ -39,7 +36,7 @@ data class UnaryExpression(
 
 	override fun getChild(index: Int): Any = child
 
-	override val children: MutableList<Any> = mutableListOf(child)
+	override val children: List<Any> = listOf(child)
 }
 
 data class PrimaryExpression(
@@ -47,5 +44,6 @@ data class PrimaryExpression(
 	val child: TermExpression? = null
 ) : Expression {
 
-	override val children: MutableList<Any> = mutableListOf()
+	override val childCount: Int = 1
+	override val children: List<Any> = listOf()
 }

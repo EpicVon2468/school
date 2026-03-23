@@ -44,27 +44,27 @@ data object Calculator : JPanel() {
 	}
 
 	private fun parseTerm(input: Reader): TermExpression {
-		val result = TermExpression(child = parseFactor(input))
+		val children: MutableList<Any> = mutableListOf(parseFactor(input))
 		var next: Char = input.peek()
 		while (next == '+' || next == '-') {
 			input.skip(1)
-			result.children += next
-			result.children += parseFactor(input)
+			children += next
+			children += parseFactor(input)
 			next = input.peek()
 		}
-		return result
+		return TermExpression(children)
 	}
 
 	private fun parseFactor(input: Reader): FactorExpression {
-		val result = FactorExpression(child = parseUnary(input))
+		val children: MutableList<Any> = mutableListOf(parseUnary(input))
 		var next: Char = input.peek()
 		while (next == '/' || next == '*') {
 			input.skip(1)
-			result.children += next
-			result.children += parseUnary(input)
+			children += next
+			children += parseUnary(input)
 			next = input.peek()
 		}
-		return result
+		return FactorExpression(children)
 	}
 
 	private fun parseUnary(input: Reader): UnaryExpression {
@@ -124,7 +124,7 @@ data object Calculator : JPanel() {
 		return value
 	}
 
-	private fun evaluateExpression(expr: TermExpression): Double = when (expr.childCount) {
+	fun evaluateExpression(expr: TermExpression): Double = when (expr.childCount) {
 		0 -> error("No children for expression '$expr'!")
 		1 -> evaluateExpression(expr.childAt<FactorExpression>(0))
 		else -> evaluateOp(
