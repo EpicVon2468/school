@@ -15,6 +15,7 @@ import javax.swing.JFrame
 import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.JTextArea
+import javax.swing.SwingUtilities
 import javax.swing.UIManager
 import javax.swing.plaf.nimbus.NimbusLookAndFeel
 
@@ -27,11 +28,15 @@ import kotlin.math.pow
 // -2^2; -4
 // (-2)^2; 4
 fun main() {
+	// WLToolkit is broken with Components
 	System.setProperty("awt.toolkit.name", "XToolkit")
 	UIManager.setLookAndFeel(NimbusLookAndFeel())
-	val frame = JFrame("Calculator")
-	frame.add(Calculator)
-	frame.showWithFixes(fullscreen = false)
+	// Apparently all Swing/AWT apps should be started like this.
+	SwingUtilities.invokeLater {
+		val frame = JFrame("Calculator")
+		frame.add(Calculator)
+		frame.showWithFixes(fullscreen = false)
+	}
 }
 
 data object Calculator : JPanel() {
@@ -39,7 +44,7 @@ data object Calculator : JPanel() {
 	@Suppress("unused")
 	private fun readResolve(): Any = Calculator
 
-	private val resultField = JTextArea()
+	private val resultField = JTextArea("> ")
 
 	init {
 		font = Font(Font.MONOSPACED, Font.PLAIN, font.size)
@@ -53,11 +58,11 @@ data object Calculator : JPanel() {
 
 	private var display: String by resultField::text
 	private inline var currentExpression: String
-		get() = display.substringAfterLast('\n')
+		get() = display.substringAfterLast("> ")
 		set(value) {
-			val prev = display.substringAfterLast('\n')
+			val prev = display.substringAfterLast("> ")
 			if (prev.isNotEmpty() && prev.isNotBlank() && histIndex > history.lastIndex) history += prev
-			display = display.substringBeforeLast('\n') + '\n' + value
+			display = display.substringBeforeLast(' ') + ' ' + value
 		}
 
 	private val history: MutableList<String> = mutableListOf()
@@ -117,7 +122,9 @@ data object Calculator : JPanel() {
 				// The shift constant with `and()` is just kind of... not working?
 				// The only real tell of shift being pressed is the least significant bit being 1
 				val isShiftPressed: Boolean = event.modifiers.takeLowestOneBit() == 1
-				display = if (isShiftPressed) display.dropLastWhile { it != '\n' } else display.dropLast(1)
+				display = if (isShiftPressed) display.dropLastWhile { it != ' ' }
+				else if (currentExpression.isNotEmpty()) display.dropLast(1)
+				else display
 			}
 		}
 		row {
@@ -129,7 +136,7 @@ data object Calculator : JPanel() {
 				history += input
 				histIndex = history.size
 				val result: Double = eval(input)
-				display += "\n> ${result.readable()}\n"
+				display += "\n${result.readable()}\n> "
 			}
 		}
 	}
