@@ -1,10 +1,12 @@
 package io.github.epicvon2468.school.prac5.extension
 
+import io.github.epicvon2468.school.readable
 import io.github.epicvon2468.school.showWithFixes
 
 import java.awt.Button
 import java.awt.Color as Colour
 import java.awt.Container
+import java.awt.Font
 import java.awt.GridLayout
 import java.awt.event.ActionEvent
 import java.io.Reader
@@ -37,7 +39,8 @@ data object Calculator : JPanel() {
 	private val resultField = JTextArea()
 
 	init {
-		this.layout = GridLayout(/*rows =*/ 6, /*cols =*/ 0)
+		font = Font(Font.MONOSPACED, Font.PLAIN, font.size)
+		layout = GridLayout(/*rows =*/ 6, /*cols =*/ 0)
 		add(JScrollPane(resultField))
 		resultField.isEnabled = false
 		resultField.disabledTextColor = Colour.BLACK
@@ -98,7 +101,7 @@ data object Calculator : JPanel() {
 				if (input.isEmpty() || input.isBlank()) input = "0"
 				history += input
 				val result: Double = eval(input)
-				display += "\n> $result\n"
+				display += "\n> ${result.readable()}\n"
 			}
 		}
 	}

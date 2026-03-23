@@ -10,8 +10,6 @@ import kotlin.math.pow
 fun main() {
 }
 
-fun Double.readable(): String = this.toBigDecimal().stripTrailingZeros().toPlainString()
-
 fun bitInfo(bits: Int) {
 	val half: Double = 2.0.pow(bits) / 2.0
 	Int.MAX_VALUE

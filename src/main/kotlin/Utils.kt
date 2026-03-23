@@ -25,3 +25,5 @@ infix operator fun Byte.minus(other: Number): Byte = (this - other.toByte()).toB
 fun Int.toBinaryString(): String = Integer.toBinaryString(this).takeLast(8).padStart(8, '0')
 fun Byte.toBinaryString(): String = toInt().toBinaryString()
 fun UByte.toBinaryString(): String = toInt().toBinaryString()
+
+fun Double.readable(): String = this.toBigDecimal().stripTrailingZeros().toPlainString()
