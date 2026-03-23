@@ -25,6 +25,9 @@ fun main() {
 
 data object SimpleAddition : JPanel(), ActionListener {
 
+	@Suppress("unused")
+	private fun readResolve(): Any = SimpleAddition
+
 	private var a: Int = 0
 	private var b: Int = 0
 
@@ -42,9 +45,6 @@ data object SimpleAddition : JPanel(), ActionListener {
 		add(button)
 		button.addActionListener(this)
 	}
-
-	@Suppress("unused")
-	private fun readResolve(): Any = SimpleAddition
 
 	override fun paint(g: Graphics) {
 		paintComponent(g)
