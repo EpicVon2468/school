@@ -29,12 +29,12 @@ import kotlin.math.pow
 fun main() {
 	// WLToolkit is broken with Components
 	System.setProperty("awt.toolkit.name", "XToolkit")
-	UIManager.setLookAndFeel(CalculatorLookAndFeel())
 	// Apparently all Swing/AWT apps should be started like this.
 	SwingUtilities.invokeLater {
+		UIManager.setLookAndFeel(CalculatorLookAndFeel())
 		val frame = JFrame("Calculator")
 		frame.add(Calculator)
-		frame.showWithFixes(fullscreen = false)
+		frame.showWithFixes(width = 450, fullscreen = false)
 	}
 }
 
@@ -96,7 +96,7 @@ data object Calculator : JPanel() {
 		// /  7  8  9  (
 		// *  4  5  6  )
 		// -  1  2  3  ⌫
-		// +  0  . (-) exe
+		// +  0  .  √ exe
 		row {
 			createButton("←") {
 			}
@@ -135,9 +135,8 @@ data object Calculator : JPanel() {
 		}
 		row {
 			createButtons("+", "0", ".")
-			createButton("(-)") {
-				// ndash character is used for unary minus, to avoid potential parsing bugs; might try to parse raw soon
-				display += "–"
+			createButton("√") {
+				TODO("Root...?")
 			}
 			createButton("exe") {
 				var input: String = currentExpression
@@ -182,28 +181,16 @@ data object Calculator : JPanel() {
 		return FactorExpression(children)
 	}
 
-	private fun parseUnary(input: Reader): UnaryExpression {
-		val negate: Boolean
-		// TODO: use normal minus for unary? is that possible?
-		// Use '–' for unary minus to avoid misreading the subtraction operator '-'
-		if (input.peek() == '–') {
-			input.skip(1)
-			negate = true
-		} else negate = false
-		return UnaryExpression(
-			child = parsePow(input),
-			negate = negate
-		)
-	}
+	private fun parseUnary(input: Reader): UnaryExpression = UnaryExpression(
+		negate = input.tryEat('-'),
+		child = parsePow(input)
+	)
 
 	private fun parsePow(input: Reader): PowExpression {
 		val children: MutableList<Any> = mutableListOf(parsePrimary(input))
-		var next: Char = input.peek()
-		while (next == '^') {
-			input.skip(1)
-			children += next
+		while (input.tryEat('^')) {
+			children += '^'
 			children += parsePrimary(input)
-			next = input.peek()
 		}
 		return PowExpression(children)
 	}
