@@ -1,6 +1,6 @@
 package io.github.epicvon2468.school.prac5.extension
 
-import kotlin.math.pow
+import kotlin.math.*
 
 fun evaluateExpression(input: String): Double = evaluateExpression(parse(input))
 
@@ -79,6 +79,15 @@ private fun evaluateExpression(expr: PowExpression): Double = when (expr.childCo
 	)
 }
 
-private fun evaluateExpression(expr: FunctionExpression): Double = expr.function.invoke(evaluateExpression(expr.child))
+private fun evaluateExpression(expr: FunctionExpression): Double {
+	val value: Double = evaluateExpression(expr.child)
+	return when (expr.function) {
+		FunctionExpression.Function.IDENTITY -> value
+		FunctionExpression.Function.SQRT -> sqrt(value)
+		FunctionExpression.Function.SIN -> sin(value)
+		FunctionExpression.Function.COS -> cos(value)
+		FunctionExpression.Function.TAN -> tan(value)
+	}
+}
 
 private fun evaluateExpression(expr: PrimaryExpression): Double = expr.child?.let(::evaluateExpression) ?: expr.literal!!

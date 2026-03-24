@@ -67,7 +67,7 @@ data object Calculator : JPanel() {
 					true
 				}
 				KeyEvent.VK_BACK_SPACE -> {
-					backspace(isShiftPressed = event.isShiftDown)
+					backspace(massDelete = event.isAltDown)
 					true
 				}
 				KeyEvent.VK_DOWN -> {
@@ -151,9 +151,10 @@ data object Calculator : JPanel() {
 		row {
 			createButtons("-", "1", "2", "3")
 			createButton("⌫") { event: ActionEvent ->
+				// TODO: Change to alt key (already done for keybinding)
 				// The shift key constant with `and()` is just kind of... not working?
 				// The only real tell of shift being pressed is the least significant bit being 1
-				backspace(isShiftPressed = event.modifiers.takeLowestOneBit() == 1)
+				backspace(massDelete = event.modifiers.takeLowestOneBit() == 1)
 			}
 		}
 		row {
@@ -181,8 +182,8 @@ data object Calculator : JPanel() {
 		repaint()
 	}
 
-	private fun backspace(isShiftPressed: Boolean) {
-		display = if (isShiftPressed) display.dropLastWhile { it != ' ' }
+	private fun backspace(massDelete: Boolean) {
+		display = if (massDelete) display.dropLastWhile { it != ' ' }
 		else if (currentExpression.isNotEmpty()) display.dropLast(1)
 		else display
 		repaint()

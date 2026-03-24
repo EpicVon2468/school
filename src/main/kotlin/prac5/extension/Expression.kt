@@ -1,9 +1,5 @@
 package io.github.epicvon2468.school.prac5.extension
 
-import kotlin.math.sin
-import kotlin.math.sqrt
-import kotlin.math.tan
-
 interface Expression {
 
 	val childCount: Int get() = children.size
@@ -22,6 +18,20 @@ interface Expression {
 	}
 }
 
+abstract class PrefixedExpression<E : Expression> : Expression {
+
+	abstract val child: E
+
+	abstract val hasPrefix: Boolean
+
+	override val childCount: Int = if (hasPrefix) 2 else 1
+
+	@Suppress("UNCHECKED_CAST")
+	override fun <T> getChild(index: Int): T = child as T
+
+	override val children: List<Any> get() = listOf(child)
+}
+
 data class TermExpression(
 	override val children: List<Any>
 ) : Expression
@@ -31,16 +41,11 @@ data class FactorExpression(
 ) : Expression
 
 data class UnaryExpression(
-	val child: PowExpression,
+	override val child: PowExpression,
 	val negate: Boolean
-) : Expression {
+) : PrefixedExpression<PowExpression>() {
 
-	override val childCount: Int = if (negate) 2 else 1
-
-	@Suppress("UNCHECKED_CAST")
-	override fun <T> getChild(index: Int): T = child as T
-
-	override val children: List<Any> = listOf(child)
+	override val hasPrefix: Boolean = negate
 }
 
 data class PowExpression(
@@ -48,47 +53,20 @@ data class PowExpression(
 ) : Expression
 
 data class FunctionExpression(
-	val child: PrimaryExpression,
+	override val child: PrimaryExpression,
 	val function: Function,
-) : Expression {
+) : PrefixedExpression<PrimaryExpression>() {
 
-	override val childCount: Int = if (function != Function.IDENTITY) 2 else 1
+	override val hasPrefix: Boolean = function != Function.IDENTITY
 
-	@Suppress("UNCHECKED_CAST")
-	override fun <T> getChild(index: Int): T = child as T
-
-	override val children: List<Any> = listOf(child)
-
-	// TODO: To stay consistent, the logic shouldn't be stored here, it should be executed in the evaluateExpression function in a when statement
-	enum class Function(
-		val identifier: String,
-		val invoke: (Double) -> Double
-	) {
-		IDENTITY(
-			identifier = "",
-			invoke = { it }
-		),
-		SQRT(
-			identifier = "sqrt",
-			invoke = { sqrt(it) }
-		),
+	enum class Function(val identifier: String) {
+		IDENTITY(""),
+		SQRT("sqrt"),
 		// TODO: What should log do by default?  log10 or ln?
-//		LOG(
-//			identifier = "log",
-//			invoke = { log10(it) }
-//		),
-		SIN(
-			identifier = "sin",
-			invoke = { sin(it) }
-		),
-		COS(
-			identifier = "cos",
-			invoke = { sin(it) }
-		),
-		TAN(
-			identifier = "tan",
-			invoke = { tan(it) }
-		)
+//		LOG("log"),
+		SIN("sin"),
+		COS("cos"),
+		TAN("tan"),
 		;
 
 		override fun toString(): String = this.identifier
