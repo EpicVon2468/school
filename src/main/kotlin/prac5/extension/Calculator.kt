@@ -3,7 +3,6 @@ package io.github.epicvon2468.school.prac5.extension
 import io.github.epicvon2468.school.*
 
 import java.awt.Font
-import java.awt.Graphics
 import java.awt.GridLayout
 import java.awt.Color as Colour
 import java.awt.event.ActionEvent
@@ -12,6 +11,7 @@ import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JFrame
 import javax.swing.JPanel
+import javax.swing.JScrollPane
 import javax.swing.JTextArea
 import javax.swing.SwingUtilities
 import javax.swing.UIManager
@@ -22,6 +22,10 @@ import javax.swing.UIManager
 // 2*(3+4/2+1*3+(2*3)); 28
 // -2^2; -4
 // (-2)^2; 4
+// 0/0; NaN
+// 1/0; Infinity
+// -1/0; -Infinity
+// -0; 0
 fun main() = SwingUtilities.invokeLater {
 	UIManager.setLookAndFeel(CalculatorLookAndFeel())
 	val frame = JFrame("Calculator")
@@ -38,12 +42,12 @@ data object Calculator : JPanel() {
 	@Suppress("unused")
 	private fun readResolve(): Any = Calculator
 
-	private val resultField: JTextArea = KTextArea("> ")
+	private val resultField: JTextArea = JTextArea("> ")
 
 	init {
 		font = Font(Font.MONOSPACED, Font.PLAIN, font.size)
 		layout = GridLayout(/*rows =*/ 6, /*cols =*/ 0)
-		add(KScrollPane(resultField))
+		add(JScrollPane(resultField))
 		resultField.isEnabled = false
 		resultField.disabledTextColor = Colour.BLACK
 
@@ -70,7 +74,7 @@ data object Calculator : JPanel() {
 			label: String,
 			onClick: JButton.(ActionEvent) -> Unit = { display += label }
 		) {
-			val button: JButton = KButton(label)
+			val button = JButton(label)
 			add(button)
 			button.addActionListener { event: ActionEvent ->
 				button.onClick(event)
@@ -138,12 +142,15 @@ data object Calculator : JPanel() {
 				if (input.isEmpty() || input.isBlank()) input = "0"
 				history += input
 				histIndex = history.size
-				// TODO: Graceful catch
-				val result: Double = evaluateExpression(input)
-				display += "\n${result.readable()}\n> "
+				val result: String = try {
+					evaluateExpression(input).readable()
+				} catch (e: ArithmeticException) {
+					e.localizedMessage
+				} catch (_: Exception) {
+					"Syntax error!"
+				}
+				display += "\n$result\n> "
 			}
 		}
 	}
-
-	override fun paint(g: Graphics): Unit = super.paint(fixText(g))
 }

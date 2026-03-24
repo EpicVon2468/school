@@ -62,6 +62,13 @@ tasks.withType<JavaExec> {
 	if (System.getenv("XDG_SESSION_TYPE") == "wayland") systemProperty("awt.toolkit.name", "WLToolkit")
 	environment("LD_LIBRARY_PATH", "/usr/lib/x86_64-linux-gnu:${projectDir.absolutePath}/generated/glad/src")
 	systemProperty("sun.java2d.opengl", "true")
+	// I actually really like this LAF
+	val lookAndFeel = "io.github.epicvon2468.school.prac5.extension.CalculatorLookAndFeel"
+	systemProperty("swing.defaultlaf", lookAndFeel)
+	systemProperty("swing.systemlaf", lookAndFeel)
+	systemProperty("swing.crossplatformlaf", lookAndFeel)
+	systemProperty("awt.useSystemAAFontSettings", "on")
+	systemProperty("swing.aatext", "true")
 	standardInput = System.`in`
 }
 

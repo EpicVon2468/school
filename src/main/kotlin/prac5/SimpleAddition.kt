@@ -16,11 +16,7 @@ import javax.swing.SwingUtilities
 fun main() = SwingUtilities.invokeLater {
 	val frame = JFrame("Simple Addition")
 	frame.add(SimpleAddition)
-	frame.showWithFixes(
-		width = 300,
-		height = 300,
-		fullscreen = false
-	)
+	frame.showWithFixes(fullscreen = false)
 }
 
 data object SimpleAddition : JPanel(), ActionListener {
@@ -31,11 +27,11 @@ data object SimpleAddition : JPanel(), ActionListener {
 	private var a: Int = 0
 	private var b: Int = 0
 
-	private val prompt1: JLabel = KLabel("This class will add two numbers.")
-	private val prompt2: JLabel = KLabel("Type in the numbers in the spaces.")
-	private val value1: JTextField = KTextField(columns = 10)
-	private val value2: JTextField = KTextField(columns = 10)
-	private val button: JButton = KButton("Press to add")
+	private val prompt1: JLabel = JLabel("This class will add two numbers.")
+	private val prompt2: JLabel = JLabel("Type in the numbers in the spaces.")
+	private val value1: JTextField = JTextField(/*columns =*/ 10)
+	private val value2: JTextField = JTextField(/*columns =*/ 10)
+	private val button: JButton = JButton("Press to add")
 
 	init {
 		add(prompt1)
@@ -47,9 +43,9 @@ data object SimpleAddition : JPanel(), ActionListener {
 	}
 
 	override fun paint(g: Graphics) {
-		super.paint(fixText(g))
+		super.paint(g)
 		val result: Int = a + b
-		println(result)
+		// I know the practical says to print the result to System.out as well, but the flashing 'I' bar on the text boxes means this prints twice a second
 		g.drawString("$a + $b = $result", 100, 200)
 	}
 

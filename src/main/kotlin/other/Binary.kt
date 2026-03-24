@@ -1,4 +1,4 @@
-package io.github.epicvon2468.school.testing
+package io.github.epicvon2468.school.other
 
 import kotlin.experimental.inv
 

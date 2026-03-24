@@ -22,7 +22,7 @@ data object ButtonClicker : JPanel(), ActionListener {
 	@Suppress("unused")
 	private fun readResolve(): Any = ButtonClicker
 
-	private val button: JButton = KButton("Press Here")
+	private val button: JButton = JButton("Press Here")
 	private var count: Int = 0
 
 	// Static initialiser block, no need for a method :)
@@ -32,7 +32,7 @@ data object ButtonClicker : JPanel(), ActionListener {
 	}
 
 	override fun paint(g: Graphics) {
-		super.paint(fixText(g))
+		super.paint(g)
 		g.drawString("Number of button presses is $count", 20, 120)
 	}
 
