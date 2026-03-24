@@ -55,8 +55,6 @@ private fun parsePrimary(input: Reader): PrimaryExpression {
 	return PrimaryExpression(literal = input.readDouble())
 }
 
-// TODO: Could swap this out for BigDecimal for infinite* precision
-// *memory limits apply
 private fun Reader.readDouble(): Double {
 	val value: String = this.peek(512) {
 		val result: StringBuilder = StringBuilder(12)
