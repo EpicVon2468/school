@@ -2,7 +2,6 @@ package io.github.epicvon2468.school.prac5.extension
 
 import io.github.epicvon2468.school.*
 
-import java.awt.Font
 import java.awt.GridLayout
 import java.awt.KeyboardFocusManager
 import java.awt.Color as Colour
@@ -105,13 +104,15 @@ data object Calculator : JPanel() {
 	private fun initialiseButtons() {
 		fun JComponent.createButton(
 			label: String,
-			onClick: JButton.(ActionEvent) -> Unit = { display += label }
+			onClick: JButton.(ActionEvent) -> Unit = {
+				display += label
+				repaint()
+			}
 		) {
 			val button = JButton(label)
 			add(button)
 			button.addActionListener { event: ActionEvent ->
 				button.onClick(event)
-				repaint()
 			}
 		}
 		fun JComponent.createButtons(vararg labels: String) {
@@ -172,6 +173,7 @@ data object Calculator : JPanel() {
 		val newIndex: Int = (histIndex - 1).coerceAtLeast(0)
 		currentExpression = history[newIndex]
 		histIndex = newIndex
+		repaint()
 	}
 
 	private fun downArrow() {
@@ -179,12 +181,14 @@ data object Calculator : JPanel() {
 		val newIndex: Int = (histIndex + 1).coerceAtMost(history.size)
 		currentExpression = history.getOrNull(newIndex) ?: ""
 		histIndex = newIndex
+		repaint()
 	}
 
 	private fun backspace(isShiftPressed: Boolean) {
 		display = if (isShiftPressed) display.dropLastWhile { it != ' ' }
 		else if (currentExpression.isNotEmpty()) display.dropLast(1)
 		else display
+		repaint()
 	}
 
 	private fun exe() {
@@ -203,6 +207,9 @@ data object Calculator : JPanel() {
 		} catch (_: Exception) {
 			"Syntax error!"
 		}
+		// If the JScrollPane has to add a horizontal scroll due to line length, it doesn't fully reset to the start on the horizontal access because of the '> '
+		// However, even appending them separately with calls to repaint() in-between doesn't help
 		display += "\n$result\n> "
+		repaint()
 	}
 }
