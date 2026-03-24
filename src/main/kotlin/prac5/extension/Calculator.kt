@@ -3,13 +3,13 @@ package io.github.epicvon2468.school.prac5.extension
 import io.github.epicvon2468.school.readable
 import io.github.epicvon2468.school.showWithFixes
 
-import java.awt.Button
 import java.awt.Color as Colour
 import java.awt.Container
 import java.awt.Font
 import java.awt.GridLayout
 import java.awt.event.ActionEvent
 
+import javax.swing.JButton
 import javax.swing.JFrame
 import javax.swing.JPanel
 import javax.swing.JScrollPane
@@ -17,6 +17,7 @@ import javax.swing.JTextArea
 import javax.swing.SwingUtilities
 import javax.swing.UIManager
 
+// FIXME: The fullscreen lag caused by JButton may be due to how the threading of Swing works.  Figure it out.
 // Good examples:
 // 2*3+4; 10
 // 2*(3+4); 14
@@ -74,9 +75,9 @@ data object Calculator : JPanel() {
 	private fun initialiseButtons() {
 		fun Container.createButton(
 			label: String,
-			onClick: Button.(ActionEvent) -> Unit = { display += label }
+			onClick: JButton.(ActionEvent) -> Unit = { display += label }
 		) {
-			val button = Button(label)
+			val button = JButton(label)
 			add(button)
 			button.addActionListener { event: ActionEvent ->
 				button.onClick(event)
