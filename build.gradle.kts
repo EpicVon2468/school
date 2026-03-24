@@ -53,10 +53,15 @@ tasks.withType<JavaCompile> {
 	}
 }
 
+// NOTE:
+// AWT Buttons are broken on WLToolkit, and on XToolkit they don't scale properly, resulting in incredibly difficult to read text
+// Swing Buttons (JButton) are incredibly laggy on XToolkit, don't show up on XToolkit with OpenGL on, but do show up on WLToolkit with OpenGL on, however text quality is less (not as bad as AWT Buttons though)
+// Also note: Without OpenGL, WLToolkit can't use AWT Components
 tasks.withType<JavaExec> {
 	jvmArgs("-XX:+UseCompactObjectHeaders", "--enable-native-access=ALL-UNNAMED")
 	if (System.getenv("XDG_SESSION_TYPE") == "wayland") systemProperty("awt.toolkit.name", "WLToolkit")
 	environment("LD_LIBRARY_PATH", "/usr/lib/x86_64-linux-gnu:${projectDir.absolutePath}/generated/glad/src")
+	systemProperty("sun.java2d.opengl", "true")
 	standardInput = System.`in`
 }
 

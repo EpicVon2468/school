@@ -9,8 +9,9 @@ import java.awt.Color as Colour
 
 import javax.swing.JFrame
 import javax.swing.JPanel
+import javax.swing.SwingUtilities
 
-fun main() {
+fun main() = SwingUtilities.invokeLater {
 	val frame = JFrame()
 	frame.add(PaintDemo)
 	frame.showWithFixes()

@@ -2,15 +2,15 @@ package io.github.epicvon2468.school.prac5
 
 import io.github.epicvon2468.school.showWithFixes
 
-import java.awt.Button
 import java.awt.Graphics
-import java.awt.TextField
 
+import javax.swing.JButton
 import javax.swing.JFrame
 import javax.swing.JPanel
+import javax.swing.JTextField
+import javax.swing.SwingUtilities
 
-fun main() {
-	System.setProperty("awt.toolkit.name", "XToolkit")
+fun main() = SwingUtilities.invokeLater {
 	val frame = JFrame("Four Operation Calculator")
 	frame.add(FourButtons)
 	frame.showWithFixes(fullscreen = false)
@@ -25,13 +25,13 @@ data object FourButtons : JPanel() {
 	private var b: Int = 0
 	private var result: Int = 0
 
-	private val value1 = TextField(/*columns =*/ 10)
-	private val value2 = TextField(/*columns =*/ 10)
+	private val value1 = JTextField(/*columns =*/ 10)
+	private val value2 = JTextField(/*columns =*/ 10)
 
-	private val addButton = Button("Press to add")
-	private val subButton = Button("Press to subtract")
-	private val mulButton = Button("Press to multiply")
-	private val divButton = Button("Press to divide")
+	private val addButton = JButton("Press to add")
+	private val subButton = JButton("Press to subtract")
+	private val mulButton = JButton("Press to multiply")
+	private val divButton = JButton("Press to divide")
 
 	private var op: Char = '+'
 
@@ -44,7 +44,7 @@ data object FourButtons : JPanel() {
 		add(mulButton)
 		add(divButton)
 
-		fun Button.op(op: Char, block: (lhs: Int, rhs: Int) -> Int) = this.addActionListener {
+		fun JButton.op(op: Char, block: (lhs: Int, rhs: Int) -> Int) = this.addActionListener {
 			a = value1.text.toIntOrNull() ?: 0
 			if (a == 0) value1.text = "0"
 			b = value2.text.toIntOrNull() ?: 0
@@ -62,7 +62,7 @@ data object FourButtons : JPanel() {
 	}
 
 	override fun paint(g: Graphics) {
-		paintComponent(g)
+		super.paint(g)
 		val str = "$a $op $b = $result"
 		g.drawString(str, (width / 2) - str.length, height / 2)
 	}

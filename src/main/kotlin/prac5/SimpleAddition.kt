@@ -2,18 +2,18 @@ package io.github.epicvon2468.school.prac5
 
 import io.github.epicvon2468.school.showWithFixes
 
-import java.awt.Button
 import java.awt.Graphics
-import java.awt.Label
-import java.awt.TextField
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 
+import javax.swing.JButton
 import javax.swing.JFrame
+import javax.swing.JLabel
 import javax.swing.JPanel
+import javax.swing.JTextField
+import javax.swing.SwingUtilities
 
-fun main() {
-	System.setProperty("awt.toolkit.name", "XToolkit")
+fun main() = SwingUtilities.invokeLater {
 	val frame = JFrame("Simple Addition")
 	frame.add(SimpleAddition)
 	frame.showWithFixes(
@@ -31,11 +31,11 @@ data object SimpleAddition : JPanel(), ActionListener {
 	private var a: Int = 0
 	private var b: Int = 0
 
-	private val prompt1 = Label("This class will add two numbers.")
-	private val prompt2 = Label("Type in the numbers in the spaces.")
-	private val value1 = TextField(/*columns =*/ 10)
-	private val value2 = TextField(/*columns =*/ 10)
-	private val button = Button("Press to add")
+	private val prompt1 = JLabel("This class will add two numbers.")
+	private val prompt2 = JLabel("Type in the numbers in the spaces.")
+	private val value1 = JTextField(/*columns =*/ 10)
+	private val value2 = JTextField(/*columns =*/ 10)
+	private val button = JButton("Press to add")
 
 	init {
 		add(prompt1)
@@ -47,7 +47,7 @@ data object SimpleAddition : JPanel(), ActionListener {
 	}
 
 	override fun paint(g: Graphics) {
-		paintComponent(g)
+		super.paint(g)
 		val result: Int = a + b
 		println(result)
 		g.drawString("$a + $b = $result", 100, 200)

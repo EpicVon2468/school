@@ -6,16 +6,15 @@ import io.github.epicvon2468.school.showWithFixes
 import java.awt.Color as Colour
 import java.awt.Graphics
 import java.awt.Polygon
-import java.awt.Toolkit
 
 import javax.swing.JFrame
 import javax.swing.JPanel
+import javax.swing.SwingUtilities
 
-fun main() {
+fun main() = SwingUtilities.invokeLater {
 	val frame = JFrame("My House")
 	frame.add(House)
 	frame.showWithFixes()
-	println(Toolkit.getDefaultToolkit()::class.qualifiedName)
 }
 
 data object House : JPanel() {
@@ -24,6 +23,7 @@ data object House : JPanel() {
 	private fun readResolve(): Any = House
 
 	override fun paint(g: Graphics) {
+		super.paint(g)
 		// Draw the roof
 		g.colour = Colour.RED
 		val x: IntArray = intArrayOf(100, 160, 220)

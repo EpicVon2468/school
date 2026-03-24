@@ -9,8 +9,9 @@ import java.awt.Polygon
 
 import javax.swing.JFrame
 import javax.swing.JPanel
+import javax.swing.SwingUtilities
 
-fun main() {
+fun main() = SwingUtilities.invokeLater {
 	val frame = JFrame("My House")
 	frame.add(House)
 	frame.showWithFixes()
@@ -22,6 +23,7 @@ data object House : JPanel() {
 	private fun readResolve(): Any = House
 
 	override fun paint(g: Graphics) {
+		super.paint(g)
 		drawBackground(g)
 		drawFence(
 			g = g,

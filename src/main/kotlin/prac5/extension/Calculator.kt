@@ -17,27 +17,21 @@ import javax.swing.JTextArea
 import javax.swing.SwingUtilities
 import javax.swing.UIManager
 
-// FIXME: The fullscreen lag caused by JButton may be due to how the threading of Swing works.  Figure it out.
 // Good examples:
 // 2*3+4; 10
 // 2*(3+4); 14
 // 2*(3+4/2+1*3+(2*3)); 28
 // -2^2; -4
 // (-2)^2; 4
-fun main() {
-	// WLToolkit is broken with Components
-	System.setProperty("awt.toolkit.name", "XToolkit")
-	// Apparently all Swing/AWT apps should be started like this.
-	SwingUtilities.invokeLater {
-		UIManager.setLookAndFeel(CalculatorLookAndFeel())
-		val frame = JFrame("Calculator")
-		frame.add(Calculator)
-		frame.showWithFixes(
-			width = 525,
-			height = 700,
-			fullscreen = false
-		)
-	}
+fun main() = SwingUtilities.invokeLater {
+	UIManager.setLookAndFeel(CalculatorLookAndFeel())
+	val frame = JFrame("Calculator")
+	frame.add(Calculator)
+	frame.showWithFixes(
+		width = 525,
+		height = 700,
+		fullscreen = false
+	)
 }
 
 data object Calculator : JPanel() {
