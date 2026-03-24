@@ -3,6 +3,7 @@ package io.github.epicvon2468.school.prac5.extension
 interface Expression {
 
 	val childCount: Int get() = children.size
+	// expr (op expr)*
 	val children: List<Any>
 
 	@Suppress("UNCHECKED_CAST")

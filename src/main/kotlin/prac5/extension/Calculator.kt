@@ -9,7 +9,6 @@ import java.awt.Container
 import java.awt.Font
 import java.awt.GridLayout
 import java.awt.event.ActionEvent
-import java.io.Reader
 
 import javax.swing.JFrame
 import javax.swing.JPanel
@@ -17,8 +16,6 @@ import javax.swing.JScrollPane
 import javax.swing.JTextArea
 import javax.swing.SwingUtilities
 import javax.swing.UIManager
-
-import kotlin.math.pow
 
 // Good examples:
 // 2*3+4; 10
@@ -34,7 +31,11 @@ fun main() {
 		UIManager.setLookAndFeel(CalculatorLookAndFeel())
 		val frame = JFrame("Calculator")
 		frame.add(Calculator)
-		frame.showWithFixes(width = 450, fullscreen = false)
+		frame.showWithFixes(
+			width = 525,
+			height = 700,
+			fullscreen = false
+		)
 	}
 }
 
@@ -43,7 +44,7 @@ data object Calculator : JPanel() {
 	@Suppress("unused")
 	private fun readResolve(): Any = Calculator
 
-	private val resultField = JTextArea("> ")
+	private val resultField: JTextArea = JTextArea("> ")
 
 	init {
 		font = Font(Font.MONOSPACED, Font.PLAIN, font.size)
@@ -143,156 +144,9 @@ data object Calculator : JPanel() {
 				if (input.isEmpty() || input.isBlank()) input = "0"
 				history += input
 				histIndex = history.size
-				val result: Double = eval(input)
+				val result: Double = evaluateExpression(input)
 				display += "\n${result.readable()}\n> "
 			}
 		}
 	}
-
-	fun eval(input: String): Double = evalExpr(parse(input))
-
-	fun parse(input: String): TermExpression {
-		val expr: TermExpression = parseTerm(input.reader())
-		expr.validate()
-		return expr
-	}
-
-	private fun parseTerm(input: Reader): TermExpression {
-		val children: MutableList<Any> = mutableListOf(parseFactor(input))
-		var next: Char = input.peek()
-		while (next == '+' || next == '-') {
-			input.skip(1)
-			children += next
-			children += parseFactor(input)
-			next = input.peek()
-		}
-		return TermExpression(children)
-	}
-
-	private fun parseFactor(input: Reader): FactorExpression {
-		val children: MutableList<Any> = mutableListOf(parseUnary(input))
-		var next: Char = input.peek()
-		while (next == '/' || next == '*') {
-			input.skip(1)
-			children += next
-			children += parseUnary(input)
-			next = input.peek()
-		}
-		return FactorExpression(children)
-	}
-
-	private fun parseUnary(input: Reader): UnaryExpression = UnaryExpression(
-		negate = input.tryEat('-'),
-		child = parsePow(input)
-	)
-
-	private fun parsePow(input: Reader): PowExpression {
-		val children: MutableList<Any> = mutableListOf(parsePrimary(input))
-		while (input.tryEat('^')) {
-			children += '^'
-			children += parsePrimary(input)
-		}
-		return PowExpression(children)
-	}
-
-	private fun parsePrimary(input: Reader): PrimaryExpression {
-		if (input.peek() == '(') {
-			input.skip(1) // '('
-			val result = PrimaryExpression(child = parseTerm(input))
-			input.skip(1) // ')'
-			return result
-		}
-		return PrimaryExpression(literal = input.readDouble())
-	}
-
-	private fun Reader.readDouble(): Double {
-		val value: String = this.peek(512) {
-			val result: StringBuilder = StringBuilder(12)
-			var read: Char = this.read().toChar()
-			while (read.isDigit() || read == '.') {
-				result.append(read)
-				read = this.read().toChar()
-			}
-			result.toString()
-		}
-		this.skip(value.length.toLong())
-		return value.toDouble()
-	}
-
-	private fun evaluateOp(
-		expr: Expression,
-		evaluate: (index: Int) -> Double,
-		evaluateOp: (op: Char, lhs: Double, rhs: Double) -> Double
-	): Double {
-		var value: Double = evaluate(0)
-		var index = 0
-		while (index < expr.childCount) {
-			value = evaluateOp(
-				/*op =*/ expr.getChild(index + 1),
-				/*lhs =*/ value,
-				/*rhs =*/ evaluate(index + 2)
-			)
-			// cRHS op cLHS op nLHS
-			if (index + 4 >= expr.childCount) break
-			index += 2
-		}
-		return value
-	}
-
-	fun evalExpr(expr: TermExpression): Double = when (expr.childCount) {
-		0 -> error("No children for expression '$expr'!")
-		1 -> evalExpr(expr.getChild<FactorExpression>(0))
-		else -> evaluateOp(
-			expr = expr,
-			evaluate = { index: Int ->
-				evalExpr(expr.getChild<FactorExpression>(index))
-			},
-			evaluateOp = { op: Char, lhs: Double, rhs: Double ->
-				when (op) {
-					'+' -> lhs + rhs
-					'-' -> lhs - rhs
-					else -> error("Illegal operator '$op', expected '+' or '-'!")
-				}
-			}
-		)
-	}
-
-	private fun evalExpr(expr: FactorExpression): Double = when (expr.childCount) {
-		0 -> error("No children for expression '$expr'!")
-		1 -> evalExpr(expr.getChild<UnaryExpression>(0))
-		else -> evaluateOp(
-			expr = expr,
-			evaluate = { index: Int ->
-				evalExpr(expr.getChild<UnaryExpression>(index))
-			},
-			evaluateOp = { op: Char, lhs: Double, rhs: Double ->
-				when (op) {
-					'/' -> lhs / rhs
-					'*' -> lhs * rhs
-					else -> error("Illegal operator '$op', expected '/' or '*'!")
-				}
-			}
-		)
-	}
-
-	private fun evalExpr(expr: UnaryExpression): Double = evalExpr(expr.child).let {
-		if (expr.negate) it.unaryMinus() else it
-	}
-
-	private fun evalExpr(expr: PowExpression): Double = when (expr.childCount) {
-		0 -> error("No children for expression '$expr'!")
-		1 -> evalExpr(expr.getChild<PrimaryExpression>(0))
-		else -> evaluateOp(
-			expr = expr,
-			evaluate = { index: Int ->
-				evalExpr(expr.getChild<PrimaryExpression>(index))
-			},
-			evaluateOp = { op: Char, lhs: Double, rhs: Double ->
-				require(op == '^') { "Illegal operator '$op', expected '^'!" }
-				lhs.pow(rhs)
-			}
-		)
-	}
-
-	private fun evalExpr(expr: PrimaryExpression): Double = if (expr.child != null) evalExpr(expr.child) else expr.literal!!
 }

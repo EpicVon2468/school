@@ -2,12 +2,10 @@ package io.github.epicvon2468.school.prac5.extension
 
 import java.io.Reader
 
-fun Reader.tryEat(vararg chars: Char): Boolean {
-	return if (this.peek() in chars) {
-		this.skip(1)
-		true
-	} else false
-}
+fun Reader.tryEat(vararg chars: Char): Boolean = if (peek() in chars) {
+	skip(1)
+	true
+} else false
 
 fun Reader.peek(): Char = this.peek(1, Reader::read).toChar()
 
