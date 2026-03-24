@@ -1,5 +1,6 @@
 package io.github.epicvon2468.school.prac5
 
+import io.github.epicvon2468.school.fixText
 import io.github.epicvon2468.school.showWithFixes
 
 import java.awt.Graphics
@@ -35,6 +36,7 @@ data object ButtonClicker : JPanel(), ActionListener {
 	}
 
 	override fun paint(g: Graphics) {
+		fixText(g)
 		super.paint(g)
 		g.drawString("Number of button presses is $count", 20, 120)
 	}

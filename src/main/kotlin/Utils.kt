@@ -13,6 +13,23 @@ fun JFrame.showWithFixes(width: Int = 600, height: Int = 600, fullscreen: Boolea
 	this.isVisible = true
 }
 
+// FIXME: When you hover over any (J)Component, it redraws them without the correct flag set
+/**
+ * Updates the [Graphics] rendering hints to fix pixelated/blurred text.
+ *
+ * ALWAYS CALL BEFORE `super.paint(g)`!
+ *
+ * [See this post on StackOverflow for details](https://stackoverflow.com/questions/31536952/how-to-fix-text-quality-in-java-graphics)
+ */
+fun fixText(g: Graphics) {
+	(g as Graphics2D).addRenderingHints(
+		mapOf(
+			RenderingHints.KEY_FRACTIONALMETRICS to RenderingHints.VALUE_FRACTIONALMETRICS_ON,
+			RenderingHints.KEY_TEXT_ANTIALIASING to RenderingHints.VALUE_TEXT_ANTIALIAS_ON
+		)
+	)
+}
+
 var Graphics.colour: Colour
 	get() = this.color
 	set(value) { this.color = value }

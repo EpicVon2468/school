@@ -1,15 +1,19 @@
 package io.github.epicvon2468.school.prac5.extension
 
+import io.github.epicvon2468.school.fixText
 import io.github.epicvon2468.school.readable
 import io.github.epicvon2468.school.showWithFixes
 
-import java.awt.Color as Colour
-import java.awt.Container
 import java.awt.Font
+import java.awt.Graphics
+import java.awt.Graphics2D
 import java.awt.GridLayout
+import java.awt.RenderingHints
+import java.awt.Color as Colour
 import java.awt.event.ActionEvent
 
 import javax.swing.JButton
+import javax.swing.JComponent
 import javax.swing.JFrame
 import javax.swing.JPanel
 import javax.swing.JScrollPane
@@ -67,7 +71,7 @@ data object Calculator : JPanel() {
 	private var histIndex: Int = history.size
 
 	private fun initialiseButtons() {
-		fun Container.createButton(
+		fun JComponent.createButton(
 			label: String,
 			onClick: JButton.(ActionEvent) -> Unit = { display += label }
 		) {
@@ -78,11 +82,11 @@ data object Calculator : JPanel() {
 				repaint()
 			}
 		}
-		fun Container.createButtons(vararg labels: String) {
+		fun JComponent.createButtons(vararg labels: String) {
 			labels.forEach(this::createButton)
 		}
-		fun row(block: Container.() -> Unit) {
-			val row = Container()
+		fun row(block: JComponent.() -> Unit) {
+			val row = JPanel()
 			row.layout = GridLayout(0, 5)
 			add(row)
 			row.block()
@@ -143,5 +147,10 @@ data object Calculator : JPanel() {
 				display += "\n${result.readable()}\n> "
 			}
 		}
+	}
+
+	override fun paint(g: Graphics) {
+		fixText(g)
+		super.paint(g)
 	}
 }

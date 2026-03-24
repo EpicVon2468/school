@@ -1,5 +1,6 @@
 package io.github.epicvon2468.school.prac5
 
+import io.github.epicvon2468.school.fixText
 import io.github.epicvon2468.school.showWithFixes
 
 import java.awt.Graphics
@@ -62,6 +63,7 @@ data object FourButtons : JPanel() {
 	}
 
 	override fun paint(g: Graphics) {
+		fixText(g)
 		super.paint(g)
 		val str = "$a $op $b = $result"
 		g.drawString(str, (width / 2) - str.length, height / 2)

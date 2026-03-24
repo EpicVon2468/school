@@ -1,6 +1,7 @@
 package io.github.epicvon2468.school.prac4
 
 import io.github.epicvon2468.school.colour
+import io.github.epicvon2468.school.fixText
 import io.github.epicvon2468.school.showWithFixes
 
 import java.awt.Color as Colour
@@ -23,6 +24,7 @@ data object House : JPanel() {
 	private fun readResolve(): Any = House
 
 	override fun paint(g: Graphics) {
+		fixText(g)
 		super.paint(g)
 		drawBackground(g)
 		drawFence(
