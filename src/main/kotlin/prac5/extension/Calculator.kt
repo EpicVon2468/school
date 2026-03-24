@@ -4,8 +4,10 @@ import io.github.epicvon2468.school.*
 
 import java.awt.Font
 import java.awt.GridLayout
+import java.awt.KeyboardFocusManager
 import java.awt.Color as Colour
 import java.awt.event.ActionEvent
+import java.awt.event.KeyEvent
 
 import javax.swing.JButton
 import javax.swing.JComponent
@@ -52,6 +54,38 @@ data object Calculator : JPanel() {
 		resultField.disabledTextColor = Colour.BLACK
 
 		initialiseButtons()
+
+		val allowedLiterals: Array<Char> = arrayOf(
+			'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+			'/', '*', '-', '+', '.', '(', ')', '^'
+		)
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher { event: KeyEvent ->
+			if (event.id != KeyEvent.KEY_PRESSED) return@addKeyEventDispatcher false
+			val input: Char = event.keyChar
+			if (input in allowedLiterals) {
+				display += input
+				return@addKeyEventDispatcher true
+			}
+			return@addKeyEventDispatcher when (event.keyCode) {
+				KeyEvent.VK_ENTER -> {
+					exe()
+					true
+				}
+				KeyEvent.VK_BACK_SPACE -> {
+					backspace(isShiftPressed = event.isShiftDown)
+					true
+				}
+				KeyEvent.VK_DOWN -> {
+					downArrow()
+					true
+				}
+				KeyEvent.VK_UP -> {
+					upArrow()
+					true
+				}
+				else -> false
+			}
+		}
 	}
 
 	private var display: String by resultField::text
@@ -100,16 +134,10 @@ data object Calculator : JPanel() {
 			createButton("←") {
 			}
 			createButton("↑") {
-				if (history.isEmpty()) return@createButton
-				val newIndex: Int = (histIndex - 1).coerceAtLeast(0)
-				currentExpression = history[newIndex]
-				histIndex = newIndex
+				upArrow()
 			}
 			createButton("↓") {
-				if (history.isEmpty()) return@createButton
-				val newIndex: Int = (histIndex + 1).coerceAtMost(history.size)
-				currentExpression = history.getOrNull(newIndex) ?: ""
-				histIndex = newIndex
+				downArrow()
 			}
 			createButton("→") {
 			}
@@ -126,10 +154,7 @@ data object Calculator : JPanel() {
 			createButton("⌫") { event: ActionEvent ->
 				// The shift key constant with `and()` is just kind of... not working?
 				// The only real tell of shift being pressed is the least significant bit being 1
-				val isShiftPressed: Boolean = event.modifiers.takeLowestOneBit() == 1
-				display = if (isShiftPressed) display.dropLastWhile { it != ' ' }
-				else if (currentExpression.isNotEmpty()) display.dropLast(1)
-				else display
+				backspace(isShiftPressed = event.modifiers.takeLowestOneBit() == 1)
 			}
 		}
 		row {
@@ -138,19 +163,43 @@ data object Calculator : JPanel() {
 				TODO("Root...?")
 			}
 			createButton("exe") {
-				var input: String = currentExpression
-				if (input.isEmpty() || input.isBlank()) input = "0"
-				history += input
-				histIndex = history.size
-				val result: String = try {
-					evaluateExpression(input).readable()
-				} catch (e: ArithmeticException) {
-					e.localizedMessage
-				} catch (_: Exception) {
-					"Syntax error!"
-				}
-				display += "\n$result\n> "
+				exe()
 			}
 		}
+	}
+
+	private fun upArrow() {
+		if (history.isEmpty()) return
+		val newIndex: Int = (histIndex - 1).coerceAtLeast(0)
+		currentExpression = history[newIndex]
+		histIndex = newIndex
+	}
+
+	private fun downArrow() {
+		if (history.isEmpty()) return
+		val newIndex: Int = (histIndex + 1).coerceAtMost(history.size)
+		currentExpression = history.getOrNull(newIndex) ?: ""
+		histIndex = newIndex
+	}
+
+	private fun backspace(isShiftPressed: Boolean) {
+		display = if (isShiftPressed) display.dropLastWhile { it != ' ' }
+		else if (currentExpression.isNotEmpty()) display.dropLast(1)
+		else display
+	}
+
+	private fun exe() {
+		var input: String = currentExpression
+		if (input.isEmpty() || input.isBlank()) input = "0"
+		history += input
+		histIndex = history.size
+		val result: String = try {
+			evaluateExpression(input).readable()
+		} catch (e: ArithmeticException) {
+			e.localizedMessage
+		} catch (_: Exception) {
+			"Syntax error!"
+		}
+		display += "\n$result\n> "
 	}
 }
