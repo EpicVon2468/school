@@ -55,13 +55,13 @@ data object Calculator : JPanel() {
 
 		val allowedLiterals: Array<Char> = arrayOf(
 			'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-			'/', '*', '-', '+', '.', '(', ')', '^'
+			'/', '*', '-', '+', '.', '(', ')', '^', 'A'
 		)
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher { event: KeyEvent ->
 			if (event.id != KeyEvent.KEY_PRESSED) return@addKeyEventDispatcher false
 			val input: Char = event.keyChar
 			if (input in allowedLiterals) {
-				display += input
+				display += if (input == 'A') "ANS" else input
 				return@addKeyEventDispatcher true
 			}
 			return@addKeyEventDispatcher when (event.keyCode) {
@@ -85,6 +85,8 @@ data object Calculator : JPanel() {
 			}
 		}
 	}
+
+	private var ANS: String = "0"
 
 	private var display: String by resultField::text
 	private inline var currentExpression: String
@@ -129,7 +131,7 @@ data object Calculator : JPanel() {
 		// /  7  8  9  (
 		// *  4  5  6  )
 		// -  1  2  3  ⌫
-		// +  0  .  √ exe
+		// +  0  . ANS exe
 		row {
 			createButton("←") {
 			}
@@ -159,9 +161,7 @@ data object Calculator : JPanel() {
 		}
 		row {
 			createButtons("+", "0", ".")
-			createButton("√") {
-				TODO("Root...?")
-			}
+			createButton("ANS")
 			createButton("exe") {
 				exe()
 			}
@@ -192,7 +192,7 @@ data object Calculator : JPanel() {
 	}
 
 	private fun exe() {
-		var input: String = currentExpression
+		var input: String = currentExpression.replace("ANS", "($ANS)")
 		if (input.isEmpty() || input.isBlank()) input = "0"
 		if (history.lastOrNull() != input) {
 			history += input
@@ -207,6 +207,7 @@ data object Calculator : JPanel() {
 		} catch (_: Exception) {
 			"Syntax error!"
 		}
+		if (result.first() != 'S') ANS = input
 		// If the JScrollPane has to add a horizontal scroll due to line length, it doesn't fully reset to the start on the horizontal access because of the '> '
 		// However, even appending them separately with calls to repaint() in-between doesn't help
 		display += "\n$result\n> "
