@@ -1,7 +1,6 @@
 package io.github.epicvon2468.school.prac5
 
-import io.github.epicvon2468.school.fixText
-import io.github.epicvon2468.school.showWithFixes
+import io.github.epicvon2468.school.*
 
 import java.awt.Graphics
 
@@ -26,13 +25,13 @@ data object FourButtons : JPanel() {
 	private var b: Int = 0
 	private var result: Int = 0
 
-	private val value1 = JTextField(/*columns =*/ 10)
-	private val value2 = JTextField(/*columns =*/ 10)
+	private val value1: JTextField = KTextField(/*columns =*/ 10)
+	private val value2: JTextField = KTextField(/*columns =*/ 10)
 
-	private val addButton = JButton("Press to add")
-	private val subButton = JButton("Press to subtract")
-	private val mulButton = JButton("Press to multiply")
-	private val divButton = JButton("Press to divide")
+	private val addButton: JButton = KButton("Press to add")
+	private val subButton: JButton = KButton("Press to subtract")
+	private val mulButton: JButton = KButton("Press to multiply")
+	private val divButton: JButton = KButton("Press to divide")
 
 	private var op: Char = '+'
 
@@ -63,8 +62,7 @@ data object FourButtons : JPanel() {
 	}
 
 	override fun paint(g: Graphics) {
-		fixText(g)
-		super.paint(g)
+		super.paint(fixText(g))
 		val str = "$a $op $b = $result"
 		g.drawString(str, (width / 2) - str.length, height / 2)
 	}

@@ -1,14 +1,10 @@
 package io.github.epicvon2468.school.prac5.extension
 
-import io.github.epicvon2468.school.fixText
-import io.github.epicvon2468.school.readable
-import io.github.epicvon2468.school.showWithFixes
+import io.github.epicvon2468.school.*
 
 import java.awt.Font
 import java.awt.Graphics
-import java.awt.Graphics2D
 import java.awt.GridLayout
-import java.awt.RenderingHints
 import java.awt.Color as Colour
 import java.awt.event.ActionEvent
 
@@ -16,7 +12,6 @@ import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JFrame
 import javax.swing.JPanel
-import javax.swing.JScrollPane
 import javax.swing.JTextArea
 import javax.swing.SwingUtilities
 import javax.swing.UIManager
@@ -43,12 +38,12 @@ data object Calculator : JPanel() {
 	@Suppress("unused")
 	private fun readResolve(): Any = Calculator
 
-	private val resultField: JTextArea = JTextArea("> ")
+	private val resultField: JTextArea = KTextArea("> ")
 
 	init {
 		font = Font(Font.MONOSPACED, Font.PLAIN, font.size)
 		layout = GridLayout(/*rows =*/ 6, /*cols =*/ 0)
-		add(JScrollPane(resultField))
+		add(KScrollPane(resultField))
 		resultField.isEnabled = false
 		resultField.disabledTextColor = Colour.BLACK
 
@@ -75,7 +70,7 @@ data object Calculator : JPanel() {
 			label: String,
 			onClick: JButton.(ActionEvent) -> Unit = { display += label }
 		) {
-			val button = JButton(label)
+			val button: JButton = KButton(label)
 			add(button)
 			button.addActionListener { event: ActionEvent ->
 				button.onClick(event)
@@ -143,14 +138,12 @@ data object Calculator : JPanel() {
 				if (input.isEmpty() || input.isBlank()) input = "0"
 				history += input
 				histIndex = history.size
+				// TODO: Graceful catch
 				val result: Double = evaluateExpression(input)
 				display += "\n${result.readable()}\n> "
 			}
 		}
 	}
 
-	override fun paint(g: Graphics) {
-		fixText(g)
-		super.paint(g)
-	}
+	override fun paint(g: Graphics): Unit = super.paint(fixText(g))
 }

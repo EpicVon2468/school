@@ -24,8 +24,7 @@ data object House : JPanel() {
 	private fun readResolve(): Any = House
 
 	override fun paint(g: Graphics) {
-		fixText(g)
-		super.paint(g)
+		super.paint(fixText(g))
 		drawBackground(g)
 		drawFence(
 			g = g,

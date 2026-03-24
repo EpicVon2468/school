@@ -24,7 +24,7 @@ object PaintDemo : JPanel() {
 	private fun readResolve(): Any = PaintDemo
 
 	override fun paint(g: Graphics) {
-		fixText(g)
+		super.paint(fixText(g))
 		// draw a rectangle using the default colour
 		g.drawRect(10, 10, 340, 200)
 

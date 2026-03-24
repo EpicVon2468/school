@@ -1,7 +1,6 @@
 package io.github.epicvon2468.school.prac5
 
-import io.github.epicvon2468.school.fixText
-import io.github.epicvon2468.school.showWithFixes
+import io.github.epicvon2468.school.*
 
 import java.awt.Graphics
 import java.awt.event.ActionEvent
@@ -32,11 +31,11 @@ data object SimpleAddition : JPanel(), ActionListener {
 	private var a: Int = 0
 	private var b: Int = 0
 
-	private val prompt1 = JLabel("This class will add two numbers.")
-	private val prompt2 = JLabel("Type in the numbers in the spaces.")
-	private val value1 = JTextField(/*columns =*/ 10)
-	private val value2 = JTextField(/*columns =*/ 10)
-	private val button = JButton("Press to add")
+	private val prompt1: JLabel = KLabel("This class will add two numbers.")
+	private val prompt2: JLabel = KLabel("Type in the numbers in the spaces.")
+	private val value1: JTextField = KTextField(columns = 10)
+	private val value2: JTextField = KTextField(columns = 10)
+	private val button: JButton = KButton("Press to add")
 
 	init {
 		add(prompt1)
@@ -48,8 +47,7 @@ data object SimpleAddition : JPanel(), ActionListener {
 	}
 
 	override fun paint(g: Graphics) {
-		fixText(g)
-		super.paint(g)
+		super.paint(fixText(g))
 		val result: Int = a + b
 		println(result)
 		g.drawString("$a + $b = $result", 100, 200)
