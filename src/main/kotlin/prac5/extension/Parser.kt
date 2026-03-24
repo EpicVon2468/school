@@ -1,5 +1,7 @@
 package io.github.epicvon2468.school.prac5.extension
 
+import io.github.epicvon2468.school.ZERO_TO_NINE
+
 import java.io.Reader
 
 fun parse(input: String): TermExpression {
@@ -38,12 +40,33 @@ private fun parseUnary(input: Reader): UnaryExpression = UnaryExpression(
 )
 
 private fun parsePow(input: Reader): PowExpression {
-	val children: MutableList<Any> = mutableListOf(parsePrimary(input))
+	val children: MutableList<Any> = mutableListOf(parseFunction(input))
 	while (input.tryEat('^')) {
 		children += '^'
-		children += parsePrimary(input)
+		children += parseFunction(input)
 	}
 	return PowExpression(children)
+}
+
+private fun parseFunction(input: Reader): FunctionExpression {
+	input.mark(1)
+	val function: FunctionExpression.Function = if (input.tryEat('(', '.', *ZERO_TO_NINE.toCharArray())) {
+		input.reset()
+		FunctionExpression.Function.IDENTITY
+	} else {
+		val identifier: String = input.read(3)
+		// sqrt is the only four-letter function
+		if (input.tryEat('t')) FunctionExpression.Function.SQRT
+		else FunctionExpression.Function.lookup(identifier)
+	}
+	val notIdentity: Boolean = function != FunctionExpression.Function.IDENTITY
+	if (notIdentity) input.skip(1) // '('
+	val result = FunctionExpression(
+		child = parsePrimary(input),
+		function = function
+	)
+	if (notIdentity) input.skip(1) // ')'
+	return result
 }
 
 private fun parsePrimary(input: Reader): PrimaryExpression {

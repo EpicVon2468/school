@@ -53,10 +53,7 @@ data object Calculator : JPanel() {
 
 		initialiseButtons()
 
-		val allowedLiterals: Array<Char> = arrayOf(
-			'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-			'/', '*', '-', '+', '.', '(', ')', '^', 'A'
-		)
+		val allowedLiterals: Array<Char> = arrayOf(*ZERO_TO_NINE.toTypedArray(), '/', '*', '-', '+', '.', '(', ')', '^', 'A')
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher { event: KeyEvent ->
 			if (event.id != KeyEvent.KEY_PRESSED) return@addKeyEventDispatcher false
 			val input: Char = event.keyChar

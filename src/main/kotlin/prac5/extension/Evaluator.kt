@@ -66,11 +66,11 @@ private fun evaluateExpression(expr: UnaryExpression): Double = evaluateExpressi
 
 private fun evaluateExpression(expr: PowExpression): Double = when (expr.childCount) {
 	0 -> error("No children for expression '$expr'!")
-	1 -> evaluateExpression(expr.getChild<PrimaryExpression>(0))
+	1 -> evaluateExpression(expr.getChild<FunctionExpression>(0))
 	else -> evaluateOp(
 		expr = expr,
 		evaluate = { index: Int ->
-			evaluateExpression(expr.getChild<PrimaryExpression>(index))
+			evaluateExpression(expr.getChild<FunctionExpression>(index))
 		},
 		operation = { op: Char, lhs: Double, rhs: Double ->
 			require(op == '^') { "Illegal operator '$op', expected '^'!" }
@@ -78,5 +78,7 @@ private fun evaluateExpression(expr: PowExpression): Double = when (expr.childCo
 		}
 	)
 }
+
+private fun evaluateExpression(expr: FunctionExpression): Double = expr.function.invoke(evaluateExpression(expr.child))
 
 private fun evaluateExpression(expr: PrimaryExpression): Double = expr.child?.let(::evaluateExpression) ?: expr.literal!!

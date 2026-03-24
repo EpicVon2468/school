@@ -9,6 +9,8 @@ import java.awt.Color as Colour
 import javax.swing.JFrame
 import javax.swing.LookAndFeel
 
+val ZERO_TO_NINE: List<Char> = listOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
+
 fun JFrame.showWithFixes(width: Int = 600, height: Int = 600, fullscreen: Boolean = true) {
 	this.size = Dimension(width, height)
 	if (fullscreen) this.extendedState = this.extendedState or JFrame.MAXIMIZED_BOTH
