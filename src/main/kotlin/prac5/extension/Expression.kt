@@ -5,10 +5,8 @@ interface Expression {
 	val childCount: Int get() = children.size
 	val children: List<Any>
 
-	fun getChild(index: Int): Any = children[index]
-
 	@Suppress("UNCHECKED_CAST")
-	fun <T> childAt(index: Int): T = getChild(index) as T
+	fun <T> getChild(index: Int): T = children[index] as T
 
 	fun validate() {
 		require(childCount > 0)
@@ -34,7 +32,8 @@ data class UnaryExpression(
 
 	override val childCount: Int = if (negate) 2 else 1
 
-	override fun getChild(index: Int): Any = child
+	@Suppress("UNCHECKED_CAST")
+	override fun <T> getChild(index: Int): T = child as T
 
 	override val children: List<Any> = listOf(child)
 }

@@ -59,8 +59,11 @@ data object Calculator : JPanel() {
 	private inline var currentExpression: String
 		get() = display.substringAfterLast("> ")
 		set(value) {
-			val prev = display.substringAfterLast("> ")
-			if (prev.isNotEmpty() && prev.isNotBlank() && histIndex > history.lastIndex) history += prev
+			// IDEA's recursion note in the gutter is wrong here, this isn't recursive
+			val prev: String = currentExpression
+			if (prev.isNotEmpty() && prev.isNotBlank() && histIndex > history.lastIndex) {
+				history += prev
+			}
 			display = display.substringBeforeLast(' ') + ' ' + value
 		}
 
@@ -69,19 +72,18 @@ data object Calculator : JPanel() {
 
 	private fun initialiseButtons() {
 		fun Container.createButton(
-			name: String,
-			expressionText: String = name,
-			action: Button.(ActionEvent) -> Unit = { display += expressionText }
+			label: String,
+			onClick: Button.(ActionEvent) -> Unit = { display += label }
 		) {
-			val button = Button(name)
+			val button = Button(label)
 			add(button)
 			button.addActionListener { event: ActionEvent ->
-				button.action(event)
+				button.onClick(event)
 				repaint()
 			}
 		}
-		fun Container.createButtons(vararg names: String) {
-			names.forEach(this::createButton)
+		fun Container.createButtons(vararg labels: String) {
+			labels.forEach(this::createButton)
 		}
 		fun row(block: Container.() -> Unit) {
 			val row = Container()
@@ -133,7 +135,10 @@ data object Calculator : JPanel() {
 		}
 		row {
 			createButtons("+", "0", ".")
-			createButton(name = "(-)", expressionText = "–")
+			createButton("(-)") {
+				// ndash character is used for unary minus, to avoid potential parsing bugs; might try to parse raw soon
+				display += "–"
+			}
 			createButton("exe") {
 				var input: String = currentExpression
 				if (input.isEmpty() || input.isBlank()) input = "0"
@@ -145,7 +150,7 @@ data object Calculator : JPanel() {
 		}
 	}
 
-	fun eval(input: String): Double = evaluateExpression(parse(input))
+	fun eval(input: String): Double = evalExpr(parse(input))
 
 	fun parse(input: String): TermExpression {
 		val expr: TermExpression = parseTerm(input.reader())
@@ -179,6 +184,7 @@ data object Calculator : JPanel() {
 
 	private fun parseUnary(input: Reader): UnaryExpression {
 		val negate: Boolean
+		// TODO: use normal minus for unary? is that possible?
 		// Use '–' for unary minus to avoid misreading the subtraction operator '-'
 		if (input.peek() == '–') {
 			input.skip(1)
@@ -213,7 +219,7 @@ data object Calculator : JPanel() {
 	}
 
 	private fun Reader.readDouble(): Double {
-		val str: String = this.peek(512) {
+		val value: String = this.peek(512) {
 			val result: StringBuilder = StringBuilder(12)
 			var read: Char = this.read().toChar()
 			while (read.isDigit() || read == '.') {
@@ -222,8 +228,8 @@ data object Calculator : JPanel() {
 			}
 			result.toString()
 		}
-		this.skip(str.length.toLong())
-		return str.toDouble()
+		this.skip(value.length.toLong())
+		return value.toDouble()
 	}
 
 	private fun evaluateOp(
@@ -235,7 +241,7 @@ data object Calculator : JPanel() {
 		var index = 0
 		while (index < expr.childCount) {
 			value = evaluateOp(
-				/*op =*/ expr.childAt(index + 1),
+				/*op =*/ expr.getChild(index + 1),
 				/*lhs =*/ value,
 				/*rhs =*/ evaluate(index + 2)
 			)
@@ -246,13 +252,13 @@ data object Calculator : JPanel() {
 		return value
 	}
 
-	fun evaluateExpression(expr: TermExpression): Double = when (expr.childCount) {
+	fun evalExpr(expr: TermExpression): Double = when (expr.childCount) {
 		0 -> error("No children for expression '$expr'!")
-		1 -> evaluateExpression(expr.childAt<FactorExpression>(0))
+		1 -> evalExpr(expr.getChild<FactorExpression>(0))
 		else -> evaluateOp(
 			expr = expr,
 			evaluate = { index: Int ->
-				evaluateExpression(expr.childAt<FactorExpression>(index))
+				evalExpr(expr.getChild<FactorExpression>(index))
 			},
 			evaluateOp = { op: Char, lhs: Double, rhs: Double ->
 				when (op) {
@@ -264,13 +270,13 @@ data object Calculator : JPanel() {
 		)
 	}
 
-	private fun evaluateExpression(expr: FactorExpression): Double = when (expr.childCount) {
+	private fun evalExpr(expr: FactorExpression): Double = when (expr.childCount) {
 		0 -> error("No children for expression '$expr'!")
-		1 -> evaluateExpression(expr.childAt<UnaryExpression>(0))
+		1 -> evalExpr(expr.getChild<UnaryExpression>(0))
 		else -> evaluateOp(
 			expr = expr,
 			evaluate = { index: Int ->
-				evaluateExpression(expr.childAt<UnaryExpression>(index))
+				evalExpr(expr.getChild<UnaryExpression>(index))
 			},
 			evaluateOp = { op: Char, lhs: Double, rhs: Double ->
 				when (op) {
@@ -282,17 +288,17 @@ data object Calculator : JPanel() {
 		)
 	}
 
-	private fun evaluateExpression(expr: UnaryExpression): Double = evaluateExpression(expr.child).let {
+	private fun evalExpr(expr: UnaryExpression): Double = evalExpr(expr.child).let {
 		if (expr.negate) it.unaryMinus() else it
 	}
 
-	private fun evaluateExpression(expr: PowExpression): Double = when (expr.childCount) {
+	private fun evalExpr(expr: PowExpression): Double = when (expr.childCount) {
 		0 -> error("No children for expression '$expr'!")
-		1 -> evaluateExpression(expr.childAt<PrimaryExpression>(0))
+		1 -> evalExpr(expr.getChild<PrimaryExpression>(0))
 		else -> evaluateOp(
 			expr = expr,
 			evaluate = { index: Int ->
-				evaluateExpression(expr.childAt<PrimaryExpression>(index))
+				evalExpr(expr.getChild<PrimaryExpression>(index))
 			},
 			evaluateOp = { op: Char, lhs: Double, rhs: Double ->
 				require(op == '^') { "Illegal operator '$op', expected '^'!" }
@@ -301,5 +307,5 @@ data object Calculator : JPanel() {
 		)
 	}
 
-	private fun evaluateExpression(expr: PrimaryExpression): Double = if (expr.child != null) evaluateExpression(expr.child) else expr.literal!!
+	private fun evalExpr(expr: PrimaryExpression): Double = if (expr.child != null) evalExpr(expr.child) else expr.literal!!
 }
