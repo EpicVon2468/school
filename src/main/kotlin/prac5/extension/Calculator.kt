@@ -196,7 +196,9 @@ data object Calculator : JPanel() {
 		val result: String = try {
 			evaluateExpression(input).readable()
 		} catch (e: ArithmeticException) {
-			e.localizedMessage
+			"Syntax Error!  Arithmetic failed!  Cause: '${e.localizedMessage}'!"
+		} catch (e: NumberFormatException) {
+			"Syntax Error!  Invalid number!  Cause: '${e.localizedMessage}'!"
 		} catch (_: Exception) {
 			"Syntax error!"
 		}
