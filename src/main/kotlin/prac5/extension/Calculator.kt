@@ -47,7 +47,6 @@ data object Calculator : JPanel() {
 	private val resultField: JTextArea = JTextArea("> ")
 
 	init {
-		font = Font(Font.MONOSPACED, Font.PLAIN, font.size)
 		layout = GridLayout(/*rows =*/ 6, /*cols =*/ 0)
 		add(JScrollPane(resultField))
 		resultField.isEnabled = false
@@ -94,7 +93,7 @@ data object Calculator : JPanel() {
 		set(value) {
 			// IDEA's recursion note in the gutter is wrong here, this isn't recursive
 			val prev: String = currentExpression
-			if (prev.isNotEmpty() && prev.isNotBlank() && histIndex > history.lastIndex) {
+			if (prev.isNotEmpty() && prev.isNotBlank() && histIndex > history.lastIndex && history.lastOrNull() != prev) {
 				history += prev
 			}
 			display = display.substringBeforeLast(' ') + ' ' + value
@@ -191,8 +190,10 @@ data object Calculator : JPanel() {
 	private fun exe() {
 		var input: String = currentExpression
 		if (input.isEmpty() || input.isBlank()) input = "0"
-		history += input
-		histIndex = history.size
+		if (history.lastOrNull() != input) {
+			history += input
+			histIndex = history.size
+		}
 		val result: String = try {
 			evaluateExpression(input).readable()
 		} catch (e: ArithmeticException) {
