@@ -10,6 +10,7 @@ fun parse(input: String): TermExpression {
 	return expr
 }
 
+// factorExpr (('+' | '-') factorExpr)*
 private fun parseTerm(input: Reader): TermExpression {
 	val children: MutableList<Any> = mutableListOf(parseFactor(input))
 	var next: Char = input.peek()
@@ -22,6 +23,7 @@ private fun parseTerm(input: Reader): TermExpression {
 	return TermExpression(children)
 }
 
+// unaryExpr (('/' | '*') unaryExpr)*
 private fun parseFactor(input: Reader): FactorExpression {
 	val children: MutableList<Any> = mutableListOf(parseUnary(input))
 	var next: Char = input.peek()
@@ -34,11 +36,13 @@ private fun parseFactor(input: Reader): FactorExpression {
 	return FactorExpression(children)
 }
 
+// '-'? powExpr
 private fun parseUnary(input: Reader): UnaryExpression = UnaryExpression(
 	negate = input.tryEat('-'),
 	child = parsePow(input)
 )
 
+// functionExpr ('^' functionExpr)*
 private fun parsePow(input: Reader): PowExpression {
 	val children: MutableList<Any> = mutableListOf(parseFunction(input))
 	while (input.tryEat('^')) {
@@ -48,9 +52,10 @@ private fun parsePow(input: Reader): PowExpression {
 	return PowExpression(children)
 }
 
+// ('sqrt' | 'sin' | 'cos' | 'tan') '(' primaryExpr ')' | primaryExpr
 private fun parseFunction(input: Reader): FunctionExpression {
-	input.mark(1)
 	val function: FunctionExpression.Function = if (input.tryEat('(', '.', *ZERO_TO_NINE.toCharArray())) {
+		// un-eat
 		input.reset()
 		FunctionExpression.Function.IDENTITY
 	} else {
@@ -69,17 +74,19 @@ private fun parseFunction(input: Reader): FunctionExpression {
 	return result
 }
 
+// literal | '(' termExpr ')'
 private fun parsePrimary(input: Reader): PrimaryExpression {
 	if (input.tryEat('(')) {
 		val result = PrimaryExpression(child = parseTerm(input))
 		input.skip(1) // ')'
 		return result
 	}
-	return PrimaryExpression(literal = input.readDouble())
+	return PrimaryExpression(literal = parseLiteral(input))
 }
 
-private fun Reader.readDouble(): Double {
-	val value: String = this.peek(512) {
+// [0-9]* '.'* [0-9]*
+private fun parseLiteral(input: Reader): Double {
+	val value: String = input.peek(512) {
 		val result: StringBuilder = StringBuilder(12)
 		var read: Char = this.read().toChar()
 		while (read.isDigit() || read == '.') {
@@ -88,6 +95,6 @@ private fun Reader.readDouble(): Double {
 		}
 		result.toString()
 	}
-	this.skip(value.length.toLong())
+	input.skip(value.length.toLong())
 	return value.toDouble()
 }
