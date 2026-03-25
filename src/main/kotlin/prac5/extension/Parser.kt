@@ -54,23 +54,22 @@ private fun parsePow(input: Reader): PowExpression {
 
 // ('sqrt' | 'sin' | 'cos' | 'tan') '(' primaryExpr ')' | primaryExpr
 private fun parseFunction(input: Reader): FunctionExpression {
-	val function: FunctionExpression.Function = if (input.tryEat('(', '.', *ZERO_TO_NINE.toCharArray())) {
-		// un-eat
-		input.reset()
+	var hasFunction = false
+	val function: FunctionExpression.Function = if (input.peek() in arrayOf('(', '.', *ZERO_TO_NINE)) {
 		FunctionExpression.Function.IDENTITY
 	} else {
+		hasFunction = true
 		val identifier: String = input.read(3)
 		// sqrt is the only four-letter function
 		if (input.tryEat('t')) FunctionExpression.Function.SQRT
 		else FunctionExpression.Function.lookup(identifier)
 	}
-	val notIdentity: Boolean = function != FunctionExpression.Function.IDENTITY
-	if (notIdentity) input.skip(1) // '('
+	if (hasFunction) input.skip(1) // '('
 	val result = FunctionExpression(
 		child = parsePrimary(input),
 		function = function
 	)
-	if (notIdentity) input.skip(1) // ')'
+	if (hasFunction) input.skip(1) // ')'
 	return result
 }
 

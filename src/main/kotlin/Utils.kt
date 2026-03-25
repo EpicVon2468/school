@@ -9,7 +9,7 @@ import java.awt.Color as Colour
 import javax.swing.JFrame
 import javax.swing.LookAndFeel
 
-val ZERO_TO_NINE: List<Char> = listOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
+val ZERO_TO_NINE: Array<Char> = arrayOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
 
 fun JFrame.showWithFixes(width: Int = 600, height: Int = 600, fullscreen: Boolean = true) {
 	this.size = Dimension(width, height)
