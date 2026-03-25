@@ -28,8 +28,6 @@ fun <T : LookAndFeel> T.fixText(): T = this.apply {
 	this.defaults[RenderingHints.KEY_TEXT_ANTIALIASING] = RenderingHints.VALUE_TEXT_ANTIALIAS_ON
 }
 
-// Kotlin 'fixes' for the Java Components.  I wish there was an easier way to do this.
-
 var Graphics.colour: Colour
 	get() = this.color
 	set(value) { this.color = value }
