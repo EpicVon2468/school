@@ -8,6 +8,7 @@ import java.awt.Color as Colour
 
 import javax.swing.JFrame
 import javax.swing.LookAndFeel
+import javax.swing.UIDefaults
 
 val ZERO_TO_NINE: Array<Char> = arrayOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
 
@@ -24,8 +25,9 @@ fun JFrame.showWithFixes(width: Int = 600, height: Int = 600, fullscreen: Boolea
  * [See this post on StackOverflow for details](https://stackoverflow.com/questions/31536952/how-to-fix-text-quality-in-java-graphics)
  */
 fun <T : LookAndFeel> T.fixText(): T = this.apply {
-	this.defaults[RenderingHints.KEY_FRACTIONALMETRICS] = RenderingHints.VALUE_FRACTIONALMETRICS_ON
-	this.defaults[RenderingHints.KEY_TEXT_ANTIALIASING] = RenderingHints.VALUE_TEXT_ANTIALIAS_ON
+	val uiDefaults: UIDefaults = this.defaults
+	uiDefaults[RenderingHints.KEY_FRACTIONALMETRICS] = RenderingHints.VALUE_FRACTIONALMETRICS_ON
+	uiDefaults[RenderingHints.KEY_TEXT_ANTIALIASING] = RenderingHints.VALUE_TEXT_ANTIALIAS_ON
 }
 
 var Graphics.colour: Colour

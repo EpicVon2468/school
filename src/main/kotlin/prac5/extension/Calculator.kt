@@ -15,7 +15,6 @@ import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.JTextArea
 import javax.swing.SwingUtilities
-import javax.swing.UIManager
 
 // Good examples:
 // 2*3+4; 10
@@ -28,7 +27,7 @@ import javax.swing.UIManager
 // -1/0; -Infinity
 // -0; 0
 fun main() = SwingUtilities.invokeLater {
-	UIManager.setLookAndFeel(CalculatorLookAndFeel())
+	CalculatorLookAndFeel.enable()
 	val frame = JFrame("Calculator")
 	frame.add(Calculator)
 	frame.showWithFixes(

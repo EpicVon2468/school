@@ -5,9 +5,15 @@ import io.github.epicvon2468.school.ZERO_TO_NINE
 import java.io.Reader
 
 fun parse(input: String): TermExpression {
-	val expr: TermExpression = parseTerm(input.reader())
+	val expr: TermExpression = input.reader().use(::parse)
 	expr.validate()
 	return expr
+}
+
+fun parse(input: Reader): TermExpression {
+	val result: TermExpression = parseTerm(input)
+	require(input.peek() == (-1).toChar())
+	return result
 }
 
 // factorExpr (('+' | '-') factorExpr)*
