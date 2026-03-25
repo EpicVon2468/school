@@ -27,12 +27,13 @@ import javax.swing.SwingUtilities
 // -1/0; -Infinity
 // -0; 0
 fun main() = SwingUtilities.invokeLater {
+	System.setProperty("mavity.calculator.fontsize", "18")
 	CalculatorLookAndFeel.enable()
 	val frame = JFrame("Calculator")
 	frame.add(Calculator)
 	frame.showWithFixes(
 		width = 525,
-		height = 700,
+		height = 725,
 		fullscreen = false
 	)
 }
