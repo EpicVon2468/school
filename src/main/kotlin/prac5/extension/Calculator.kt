@@ -2,8 +2,10 @@ package io.github.epicvon2468.school.prac5.extension
 
 import io.github.epicvon2468.school.*
 
+import java.awt.Font
 import java.awt.GridLayout
 import java.awt.KeyboardFocusManager
+import java.awt.Toolkit
 import java.awt.Color as Colour
 import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
@@ -15,6 +17,8 @@ import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.JTextArea
 import javax.swing.SwingUtilities
+
+import kotlin.synchronized as synchronised
 
 // Good examples:
 // 2*3+4; 10
@@ -108,7 +112,19 @@ data object Calculator : JPanel() {
 				repaint()
 			}
 		) {
-			val button = JButton(label)
+			val button: JButton = object : JButton(label) {
+
+				override fun setBounds(x: Int, y: Int, width: Int, height: Int) {
+					super.setBounds(x, y, width, height)
+					synchronised(treeLock) {
+						val prevFont: Font = this.font
+						this.font = prevFont.deriveFont(
+							/*style =*/ prevFont.style,
+							/*size =*/ (Toolkit.getDefaultToolkit().screenResolution + width + height) / 10f
+						)
+					}
+				}
+			}
 			add(button)
 			button.addActionListener { event: ActionEvent ->
 				button.onClick(event)

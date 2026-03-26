@@ -14,6 +14,7 @@ val ZERO_TO_NINE: Array<Char> = arrayOf('0', '1', '2', '3', '4', '5', '6', '7', 
 
 fun JFrame.showWithFixes(width: Int = 600, height: Int = 600, fullscreen: Boolean = true) {
 	this.size = Dimension(width, height)
+	this.minimumSize = this.size
 	if (fullscreen) this.extendedState = this.extendedState or JFrame.MAXIMIZED_BOTH
 	this.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
 	this.isVisible = true
