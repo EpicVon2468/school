@@ -6,6 +6,7 @@ import java.awt.Graphics
 
 import javax.swing.JButton
 import javax.swing.JFrame
+import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JTextField
 import javax.swing.SwingUtilities
@@ -36,7 +37,10 @@ data object FourButtons : JPanel() {
 	private var op: Char = '+'
 
 	init {
+		add(JLabel("This data object will perform a mathematical operation on two numbers."))
+		add(JLabel("The first number:"))
 		add(value1)
+		add(JLabel("The second number:"))
 		add(value2)
 
 		add(addButton)

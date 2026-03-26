@@ -33,7 +33,8 @@ fun <T : LookAndFeel> T.fixText(): T = this.apply {
 }
 
 // There's no other way.
-// Graphics.drawString() doesn't listen to LookAndFeel, and nothing short of --add-opens reflection (which could break on other vendors) will allow you to modify Toolkit Desktop Properties
+// Graphics.drawString() doesn't listen to LookAndFeel
+// Nothing short of `--add-opens` reflection (which could break on other vendors) will allow you to mutate Toolkit Desktop Properties
 // https://docs.oracle.com/javase/tutorial/2d/text/renderinghints.html
 fun Graphics.fixText(): Graphics = (this as Graphics2D).apply {
 	this.addRenderingHints(mapOf(
