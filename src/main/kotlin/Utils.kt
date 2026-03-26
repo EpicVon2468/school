@@ -3,6 +3,7 @@ package io.github.epicvon2468.school
 
 import java.awt.Graphics
 import java.awt.Dimension
+import java.awt.Graphics2D
 import java.awt.RenderingHints
 import java.awt.Color as Colour
 
@@ -29,6 +30,16 @@ fun <T : LookAndFeel> T.fixText(): T = this.apply {
 	val uiDefaults: UIDefaults = this.defaults
 	uiDefaults[RenderingHints.KEY_FRACTIONALMETRICS] = RenderingHints.VALUE_FRACTIONALMETRICS_ON
 	uiDefaults[RenderingHints.KEY_TEXT_ANTIALIASING] = RenderingHints.VALUE_TEXT_ANTIALIAS_ON
+}
+
+// There's no other way.
+// Graphics.drawString() doesn't listen to LookAndFeel, and nothing short of --add-opens reflection (which could break on other vendors) will allow you to modify Toolkit Desktop Properties
+// https://docs.oracle.com/javase/tutorial/2d/text/renderinghints.html
+fun Graphics.fixText(): Graphics = (this as Graphics2D).apply {
+	this.addRenderingHints(mapOf(
+		RenderingHints.KEY_FRACTIONALMETRICS to RenderingHints.VALUE_FRACTIONALMETRICS_ON,
+		RenderingHints.KEY_TEXT_ANTIALIASING to RenderingHints.VALUE_TEXT_ANTIALIAS_ON
+	))
 }
 
 var Graphics.colour: Colour

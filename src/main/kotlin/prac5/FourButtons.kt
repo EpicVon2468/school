@@ -62,7 +62,7 @@ data object FourButtons : JPanel() {
 	}
 
 	override fun paint(g: Graphics) {
-		super.paint(g)
+		super.paint(g.fixText())
 		val str = "$a $op $b = $result"
 		g.drawString(str, (width / 2) - str.length, height / 2)
 	}

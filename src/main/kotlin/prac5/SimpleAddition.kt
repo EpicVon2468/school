@@ -43,7 +43,7 @@ data object SimpleAddition : JPanel(), ActionListener {
 	}
 
 	override fun paint(g: Graphics) {
-		super.paint(g)
+		super.paint(g.fixText())
 		val result: Int = a + b
 		// I know the practical says to print the result to System.out as well, but the flashing 'I' bar on the text boxes means this prints twice a second
 		g.drawString("$a + $b = $result", 100, 200)

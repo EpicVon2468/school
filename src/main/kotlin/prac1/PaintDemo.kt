@@ -1,6 +1,7 @@
 package io.github.epicvon2468.school.prac1
 
 import io.github.epicvon2468.school.colour
+import io.github.epicvon2468.school.fixText
 import io.github.epicvon2468.school.showWithFixes
 
 import java.awt.Font
@@ -23,7 +24,7 @@ data object PaintDemo : JPanel() {
 	private fun readResolve(): Any = PaintDemo
 
 	override fun paint(g: Graphics) {
-		super.paint(g)
+		super.paint(g.fixText())
 		// draw a rectangle using the default colour
 		g.drawRect(10, 10, 340, 200)
 

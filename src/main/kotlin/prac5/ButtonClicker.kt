@@ -3,8 +3,6 @@ package io.github.epicvon2468.school.prac5
 import io.github.epicvon2468.school.*
 
 import java.awt.Graphics
-import java.awt.Graphics2D
-import java.awt.RenderingHints
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 
@@ -37,15 +35,7 @@ data object ButtonClicker : JPanel(), ActionListener {
 	}
 
 	override fun paint(g: Graphics) {
-		// FIXME: LookAndFeel didn't affect Graphics!
-		g as Graphics2D
-		g.addRenderingHints(
-			mapOf(
-				RenderingHints.KEY_FRACTIONALMETRICS to RenderingHints.VALUE_FRACTIONALMETRICS_ON,
-				RenderingHints.KEY_TEXT_ANTIALIASING to RenderingHints.VALUE_TEXT_ANTIALIAS_ON
-			)
-		)
-		super.paint(g)
+		super.paint(g.fixText())
 		g.drawString("Number of button presses is $count", 20, 120)
 	}
 
