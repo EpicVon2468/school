@@ -31,7 +31,7 @@ import kotlin.synchronized as synchronised
 // -1/0; -Infinity
 // -0; 0
 fun main() = SwingUtilities.invokeLater {
-	System.setProperty("mavity.calculator.fontsize", "18")
+	CalculatorLookAndFeel.fontSize = 18
 	CalculatorLookAndFeel.enable()
 	val frame = JFrame("Calculator")
 	frame.add(Calculator)
@@ -197,10 +197,11 @@ data object Calculator : JPanel() {
 	}
 
 	private fun backspace(massDelete: Boolean) {
-		display = if (massDelete) display.dropLastWhile { it != ' ' }
-		else if (currentExpression.isNotEmpty()) display.dropLast(
-			n = if (currentExpression.endsWith("ANS")) 3 else 1
-		) else display
+		display = when {
+			massDelete -> display.dropLastWhile { it != ' ' }
+			currentExpression.isNotEmpty() -> display.dropLast(n = if (currentExpression.endsWith("ANS")) 3 else 1)
+			else -> display
+		}
 		repaint()
 	}
 
