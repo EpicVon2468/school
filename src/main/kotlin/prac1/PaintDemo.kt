@@ -17,7 +17,7 @@ fun main() = SwingUtilities.invokeLater {
 	frame.showWithFixes()
 }
 
-object PaintDemo : JPanel() {
+data object PaintDemo : JPanel() {
 
 	@Suppress("unused")
 	private fun readResolve(): Any = PaintDemo

@@ -15,6 +15,7 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel
 class CalculatorLookAndFeel : NimbusLookAndFeel() {
 
 	override fun getName(): String = "Mavity's Calculator"
+	override fun getDescription(): String = "Tweak of ${super.description}"
 
 	init {
 		// Everything about Nimbus is great, except for the scrollbar/pane.  Java's default scrollbar/pane fits the ideal theme much better.
